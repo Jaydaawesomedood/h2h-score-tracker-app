@@ -1,0 +1,371 @@
+import { DbQueries } from "@/constants/messages/DbQueries";
+import { Match } from "@/models/Match";
+import { Player, Team } from "@/models/Player";
+import { SQLiteBindParams, SQLiteDatabase } from "expo-sqlite";
+import moment from "moment";
+
+export async function InsertPlayer(db: SQLiteDatabase, params: SQLiteBindParams) {
+  const id = await GenerateId(db, "players");
+
+  if (id !== "") {
+    await db.runAsync(
+      `INSERT INTO players (id, firstName, lastName, lastNameFirst, gender) VALUES ('${id}', ?, ?, ?, ?)`,
+      params
+    )
+    .catch((error: any) => {
+      console.log(error);
+    });
+  }
+};
+
+export async function GetAllPlayers(db: SQLiteDatabase) {
+  const players = await db.getAllAsync<Player>('SELECT * FROM players').catch((error: any) => {
+    console.log(error);
+  });
+
+  return players ?? [];
+};
+
+export async function GetPlayer(db: SQLiteDatabase, id: string) {
+  const player = await db.getFirstAsync<Player>(`SELECT * FROM players WHERE id = '${id}'`).catch((error: any) => {
+    console.log(error);
+  });
+
+  return player ?? undefined;
+};
+
+export async function UpdatePlayer(db: SQLiteDatabase, params: SQLiteBindParams) {
+  await db.runAsync(
+    `UPDATE players SET firstName = ?, lastName = ?, lastNameFirst = ?, gender = ? WHERE id = ?`,
+    params
+  )
+  .catch((error: any) => {
+    console.log(error);
+  });
+};
+
+export async function DeletePlayer(db: SQLiteDatabase, id: string) {
+  await db.runAsync(`DELETE FROM players WHERE id = ?`, id).catch((error: any) => {
+    console.log(error);
+  });
+};
+
+export async function InsertTeam(db: SQLiteDatabase, params: SQLiteBindParams) {
+  const id = await GenerateId(db, "teams");
+
+  if (id !== "") {
+    await db.runAsync(
+      `INSERT INTO teams (id, name, category, player1ID, player2ID) VALUES ('${id}', ?, ?, ?, ?);`,
+      params
+    )
+    .catch((error: any) => {
+      console.log(error);
+    });
+  }
+};
+
+export async function UpdateTeam(db: SQLiteDatabase, params: SQLiteBindParams, id: string) {
+  await db.runAsync(
+    `UPDATE teams SET name = ? WHERE id = '${id}'`,
+    params
+  )
+  .catch((error: any) => {
+    console.log(error);
+  });
+};
+
+export async function DeleteTeam(db: SQLiteDatabase, id: string) {
+  await db.runAsync(`DELETE FROM teams WHERE id = ?`, id).catch((error: any) => {
+    console.log(error);
+  });
+};
+
+export async function GetAllTeams(db: SQLiteDatabase) {
+  const teams = await db.getAllAsync<any>(DbQueries.GetTeams).catch((error: any) => {
+    console.log(error);
+  });
+
+  return (teams as any[]).map(team => (
+    <Team>{
+      id: team.id,
+      name: team.name,
+      category: team.category,
+      players: [
+        {
+          id: team.player1ID,
+          firstName: team.player1FirstName,
+          lastName: team.player1LastName,
+          lastNameFirst: team.player1LastNameFirst,
+          gender: team.player1Gender
+        },
+        {
+          id: team.player2ID,
+          firstName: team.player2FirstName,
+          lastName: team.player2LastName,
+          lastNameFirst: team.player2LastNameFirst,
+          gender: team.player2Gender
+        }
+      ]
+    })
+  ) ?? [];
+};
+
+export async function GetTeam(db: SQLiteDatabase, id: string) {
+  const team = await db.getFirstAsync<any>(
+    `${DbQueries.GetTeams} WHERE t.id = ?`, [id]
+  ).catch((error: any) => {
+    console.log(error);
+  });
+
+  return {
+    id: team.id,
+    name: team.name,
+    category: team.category,
+    players: [
+      {
+        id: team.player1ID,
+        firstName: team.player1FirstName,
+        lastName: team.player1LastName,
+        lastNameFirst: team.player1LastNameFirst,
+        gender: team.player1Gender
+      },
+      {
+        id: team.player2ID,
+        firstName: team.player2FirstName,
+        lastName: team.player2LastName,
+        lastNameFirst: team.player2LastNameFirst,
+        gender: team.player2Gender
+      }
+    ]
+  } ?? undefined;
+};
+
+export async function IsTeamExists(db: SQLiteDatabase, params: SQLiteBindParams) {
+  const team = await db.getFirstAsync<Team>(
+    `SELECT * FROM teams WHERE player1ID = ? AND player2ID = ?`,
+    params
+  ).catch((error: any) => {
+    console.log(error);
+  });
+
+  return { response: team ? true : false, id: team ? team.id : "" };
+};
+
+export async function GetAllSinglesMatches(db: SQLiteDatabase) {
+  let matches: any = [];
+
+  await db.getAllAsync(`
+    ${DbQueries.GetSinglesMatches} LIMIT 20;
+  `)
+  .then((response: any[]) => {
+    matches = response.map((match) => (
+      <Match>{
+        id: match.id,
+        category: match.category,
+        score: match.score.split(",").map((teamScore: string) => teamScore.split("-").map((value: string) => parseInt(value))),
+        datetime: moment(match.datetime, "DD-MM-YYYY").format("DD MMM YYYY"),
+        mode: match.mode,
+        tournament: match.tournamentID,
+        teams: [
+          {
+            id: match.player1ID,
+            firstName: match.player1FirstName,
+            lastName: match.player1LastName,
+            lastNameFirst: match.player1LastNameFirst,
+            gender: match.player1Gender
+          },
+          {
+            id: match.player2ID,
+            firstName: match.player2FirstName,
+            lastName: match.player2LastName,
+            lastNameFirst: match.player2LastNameFirst,
+            gender: match.player2Gender
+          }
+        ]
+      }
+    ));
+  })
+  .catch((error: any) => {
+    console.log(error);
+  });
+
+  return matches;
+};
+
+export async function GetSinglesMatch(db: SQLiteDatabase, id: string) {
+  const match = await db.getFirstAsync<any>(
+    `${DbQueries.GetSinglesMatches} WHERE sm.id = '${id}'`
+  )
+  .catch((error: any) => {
+    console.log(error);
+  });
+
+  return <Match>{
+    id: match.id,
+    category: match.category,
+    score: match.score.split(",").map((teamScore: string) => teamScore.split("-").map((value: string) => parseInt(value))),
+    datetime: moment(match.datetime, "DD-MM-YYYY").format("DD MMM YYYY"),
+    mode: match.mode,
+    tournament: match.tournamentID,
+    teams: [
+      {
+        id: match.player1ID,
+        firstName: match.player1FirstName,
+        lastName: match.player1LastName,
+        lastNameFirst: match.player1LastNameFirst,
+        gender: match.player1Gender
+      },
+      {
+        id: match.player2ID,
+        firstName: match.player2FirstName,
+        lastName: match.player2LastName,
+        lastNameFirst: match.player2LastNameFirst,
+        gender: match.player2Gender
+      }
+    ]
+  };
+}
+
+export async function GetAllDoublesMatches(db: SQLiteDatabase) {
+  let matches: any = [];
+  
+  await db.getAllAsync(`${DbQueries.GetDoublesMatches} LIMIT 20;`)
+  .then((response: any[]) => {
+    matches = response.map((match) => (
+      <Match>{
+        id: match.id,
+        category: match.category,
+        score: match.score.split(",").map((teamScore: string) => teamScore.split("-").map((value: string) => parseInt(value))),
+        datetime: moment(match.datetime, "DD-MM-YYYY").format("DD MMM YYYY"),
+        mode: match.mode,
+        tournament: match.tournamentID,
+        teams: [
+          {
+            id: match.team1ID,
+            name: match.team1Name,
+            category: match.category,
+            players: [
+              {
+                id: match.team1Player1ID,
+                firstName: match.team1Player1FirstName,
+                lastName: match.team1Player1LastName,
+                lastNameFirst: match.team1Player1LastNameFirst,
+                gender: match.team1Player1Gender
+              },
+              {
+                id: match.team1Player2ID,
+                firstName: match.team1Player2FirstName,
+                lastName: match.team1Player2LastName,
+                lastNameFirst: match.team1Player2LastNameFirst,
+                gender: match.team1Player2Gender
+              }
+            ]
+          },
+          {
+            id: match.team2ID,
+            name: match.team2Name,
+            category: match.category,
+            players: [
+              {
+                id: match.team2Player1ID,
+                firstName: match.team2Player1FirstName,
+                lastName: match.team2Player1LastName,
+                lastNameFirst: match.team2Player1LastNameFirst,
+                gender: match.team2Player1Gender
+              },
+              {
+                id: match.team2Player2ID,
+                firstName: match.team2Player2FirstName,
+                lastName: match.team2Player2LastName,
+                lastNameFirst: match.team2Player2LastNameFirst,
+                gender: match.team2Player2Gender
+              }
+            ]
+          }
+        ]
+      }
+    ));
+  })
+  .catch((error: any) => {
+    console.log(error);
+  });
+
+  return matches;
+};
+
+export async function GetDoublesMatch(db: SQLiteDatabase, id: string) {
+  const match = await db.getFirstAsync<any>(`
+    ${DbQueries.GetDoublesMatches} WHERE dm.id = '${id}'
+  `).catch((error: any) => {
+    console.log(error);
+  });
+
+  return <Match>{
+    id: match.id,
+    category: match.category,
+    score: match.score.split(",").map((teamScore: string) => teamScore.split("-").map((value: string) => parseInt(value))),
+    datetime: moment(match.datetime, "DD-MM-YYYY").format("DD MMM YYYY"),
+    mode: match.mode,
+    tournament: match.tournamentID,
+    teams: [
+      {
+        id: match.team1ID,
+        name: match.team1Name,
+        category: match.category,
+        players: [
+          {
+            id: match.team1Player1ID,
+            firstName: match.team1Player1FirstName,
+            lastName: match.team1Player1LastName,
+            lastNameFirst: match.team1Player1LastNameFirst,
+            gender: match.team1Player1Gender
+          },
+          {
+            id: match.team1Player2ID,
+            firstName: match.team1Player2FirstName,
+            lastName: match.team1Player2LastName,
+            lastNameFirst: match.team1Player2LastNameFirst,
+            gender: match.team1Player2Gender
+          }
+        ]
+      },
+      {
+        id: match.team2ID,
+        name: match.team2Name,
+        category: match.category,
+        players: [
+          {
+            id: match.team2Player1ID,
+            firstName: match.team2Player1FirstName,
+            lastName: match.team2Player1LastName,
+            lastNameFirst: match.team2Player1LastNameFirst,
+            gender: match.team2Player1Gender
+          },
+          {
+            id: match.team2Player2ID,
+            firstName: match.team2Player2FirstName,
+            lastName: match.team2Player2LastName,
+            lastNameFirst: match.team2Player2LastNameFirst,
+            gender: match.team2Player2Gender
+          }
+        ]
+      }
+    ]
+  } ?? undefined
+}
+
+async function GenerateId(db: SQLiteDatabase, table: string) {
+  const lastResult = await db.getFirstAsync<Player>(
+    `SELECT * FROM ${table} LIMIT 1 OFFSET CAST((SELECT COUNT(*) FROM ${table}) AS INT) - 1;`
+  )
+  .catch((error: any) => {
+    console.log(error);
+  });
+
+  if(lastResult) {
+    const id = parseInt(lastResult.id.substring(1)) + 1;
+    return `${table === "teams" ? "t" : "p"}${id.toString()}`;
+  }
+
+  return "";
+}

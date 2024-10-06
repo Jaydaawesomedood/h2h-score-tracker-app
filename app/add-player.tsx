@@ -1,0 +1,90 @@
+import PrimaryButton from "@/components/buttons/PrimaryButton";
+import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
+import { ThemedView } from "@/components/ThemedView";
+import { Containers } from "@/constants/styles/Containers";
+import { Text } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { useContext, useEffect, useState } from "react";
+import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
+import { DbContext } from "./_layout";
+import { InsertPlayer } from "@/utils/database/database";
+import { showErrorToast, showMessageToast } from "@/utils/toast.util";
+import { ToastMessages } from "@/constants/messages/Toast";
+import PlayerForm from "@/components/forms/PlayerForm";
+
+export default function AddPlayerScreen() {
+  // Context
+  const db = useContext(DbContext);
+
+  // Styling
+  const screenStyle = Containers.screen;
+  const inputLabelStyle = Text.inputLabel;
+
+  // Colors
+  const color = useThemeColor('primary');
+
+  // State variables - UI
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [addDisabled, setAddDisabled] = useState<boolean>(true);
+  
+  // State variables - Data
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [lastNameFirst, setLastNameFirst] = useState<boolean>(false);
+  const [gender, setGender] = useState<string>("");
+
+  // Input functionalities
+  const onAdd = async () => {
+    if (db) {
+      await InsertPlayer(db, [firstName.trim(), lastName.trim(), lastNameFirst ? 1 : 0, gender])
+      .then(() => {
+        showMessageToast(ToastMessages.AddPlayerSuccess);
+        clearFields();
+      })
+      .catch(() => {
+        showErrorToast();
+      });
+    }
+    else {
+      showErrorToast();
+    }
+  };
+  
+  const hideKeyboard = () => { Keyboard.dismiss(); };
+  const closeDropdown = () => { setIsDropdownOpen(false); };
+
+  const clearFields = () => {
+    setFirstName("");
+    setLastName("");
+    setLastNameFirst(false);
+    setGender("");
+  };
+
+  // useEffect
+  useEffect(() => {
+    setAddDisabled(firstName === "" || gender === "");
+  }, [firstName, gender]);
+
+  return (
+    <TouchableWithoutFeedback onPress={() => { hideKeyboard(); closeDropdown(); }}>
+      <ThemedView style={screenStyle}>
+        <ScreenTitleWithBack title="Add Player" />
+        <PlayerForm
+          firstName={firstName}
+          setFirstName={setFirstName}
+          lastName={lastName}
+          setLastName={setLastName}
+          lastNameFirst={lastNameFirst}
+          setLastNameFirst={setLastNameFirst}
+          gender={gender}
+          setGender={setGender}
+          isDropdownOpen={isDropdownOpen}
+          setIsDropdownOpen={setIsDropdownOpen}
+          onDropdownClose={closeDropdown}
+          onKeyboardClose={hideKeyboard}
+        />
+        <PrimaryButton title="Add" onPress={onAdd} disabled={addDisabled} />
+      </ThemedView>
+    </TouchableWithoutFeedback>
+  );
+}
