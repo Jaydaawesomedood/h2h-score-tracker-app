@@ -1,9 +1,9 @@
 import { ThemedText } from "@/components/ThemedText";
 import { useContext } from "react";
 import { Button, Dimensions, View } from "react-native";
-import { DbContext } from "../_layout";
 import { GetAllDoublesMatches, GetAllTeams } from "@/utils/database/database";
 import * as FileSystem from 'expo-file-system';
+import { DbContext } from "@/utils/context";
 
 export default function ProfileScreen() {
   // const db = useSQLiteContext();
@@ -113,7 +113,8 @@ export default function ProfileScreen() {
     // allRows.map((row) => { row.players.forEach(player => console.log(player))})
     const allRows = await GetAllDoublesMatches(db!);
     // allRows.map((row: any[]) => { row.forEach(match => console.log(match))})
-    allRows.forEach((row: any) => {row.teams.forEach((team: any) => console.log(team.players))});
+    allRows.forEach((row: any) => {console.log(row.id)});
+    // allRows.forEach((row: any) => {row.teams.forEach((team: any) => console.log(team.players))});
     // console.log(allRows);
   }
 

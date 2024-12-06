@@ -1,12 +1,12 @@
 import { Text } from "@/constants/styles/Text";
 import { ThemedText } from "../ThemedText";
-import { View } from "react-native";
+import { View, ViewProps } from "react-native";
 import { Containers } from "@/constants/styles/Containers";
 import SecondaryButton from "../buttons/SecondaryButton";
 import { ComponentProps } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 
-export type ScreenTitleProps = {
+export type ScreenTitleProps = ViewProps & {
   title: string;
   actionBtn?: {
     title: string;
@@ -16,7 +16,7 @@ export type ScreenTitleProps = {
   } | undefined;
 };
 
-export default function ScreenTitle({ title, actionBtn }: ScreenTitleProps) {
+export default function ScreenTitle({ title, actionBtn, style }: ScreenTitleProps) {
   // Container-related
   const containerStyle = Containers.title;
 
@@ -24,7 +24,7 @@ export default function ScreenTitle({ title, actionBtn }: ScreenTitleProps) {
   const titleStyle = Text.screenTitle;
 
   return (
-    <View style={containerStyle}>
+    <View style={[containerStyle, style]}>
       <ThemedText style={titleStyle}>{title}</ThemedText>
       {
         actionBtn ?

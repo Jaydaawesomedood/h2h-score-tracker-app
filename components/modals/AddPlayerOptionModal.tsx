@@ -29,12 +29,12 @@ export default function AddPlayerOptionModal({ isOpen, onClose }: ModalProps) {
 
   const onAddPlayer = () => {
     onClose();
-    router.push("/add-player"); 
+    router.push("/(add)/add-player"); 
   };
 
   const onAddTeam = () => {
     onClose();
-    router.push("/add-team");
+    router.push("/(add)/add-team");
   };
 
   return (
@@ -45,11 +45,11 @@ export default function AddPlayerOptionModal({ isOpen, onClose }: ModalProps) {
             <ThemedText style={Text.screenTitle}>Add</ThemedText>
             <SecondaryButton title="Close" onPress={onClose} />
           </View>
-          <ThemedView>
+          <View>
             {/* TODO - Segregare colors */}
             <Option icon="user" title="Add Player" subtitle="Add an individual player" onPress={onAddPlayer} style={{ backgroundColor: "#5d6f99" }} />
             <Option icon="users" title="Add Team" subtitle="Add a team by grouping players together" onPress={onAddTeam} style={{ marginTop: 16, backgroundColor: "#99895d" }} />
-          </ThemedView>
+          </View>
         </ThemedView>
       </View>
     </Modal>

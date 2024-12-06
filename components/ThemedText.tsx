@@ -1,27 +1,18 @@
 import { Text, type TextProps } from 'react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { forwardRef, MutableRefObject, Ref } from 'react';
+import { regular } from '@/constants/styles/Text';
 
-export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
-};
+type ThemedTextProps = TextProps & {};
 
-export function ThemedText({
-  style,
-  lightColor,
-  darkColor,
-  ...rest
-}: ThemedTextProps) {
+export const ThemedText = ({ style, ...rest }: ThemedTextProps) => {
   const color = useThemeColor('text');
 
   return (
     <Text
-      style={[
-        { color, fontFamily: "LeagueSpartanRegular" },
-        style,
-      ]}
+      style={[{ color, fontFamily: regular }, style, ]}
       {...rest}
     />
   );
-}
+};

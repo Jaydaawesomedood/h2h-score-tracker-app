@@ -3,19 +3,14 @@ import { Text } from "@/constants/styles/Text";
 import { router } from "expo-router";
 import { View, StyleSheet, ViewStyle } from "react-native";
 import { ThemedText } from "../ThemedText";
-import SecondaryButton from "../buttons/SecondaryButton";
+import SecondaryButton, { SecondaryButtonProps } from "../buttons/SecondaryButton";
 import { ThemedView } from "../ThemedView";
 import { ComponentProps } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 
 export type ScreenTitleWithBackProps = {
   title: string;
-  actionBtn?: {
-    title: string;
-    icon?: ComponentProps<typeof FontAwesome>["name"] | undefined;
-    iconPosition?: "left" | "right" | undefined;
-    onActionBtn: () => void;
-  } | undefined;
+  actionBtn?: SecondaryButtonProps
   style? : ViewStyle;
 };
 
@@ -42,10 +37,7 @@ export default function ScreenTitleWithBack({ title, actionBtn, style }: ScreenT
         {
           actionBtn ?
           <SecondaryButton
-            title={actionBtn.title}
-            icon={actionBtn.icon}
-            iconPosition={actionBtn.iconPosition}
-            onPress={actionBtn.onActionBtn}
+            {...actionBtn}
             style={styles.actionBtn}
           />
           : null

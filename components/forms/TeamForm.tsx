@@ -1,14 +1,15 @@
 import { Dispatch, SetStateAction } from "react";
-import ThemedDropdown from "../ThemedDropdown";
-import ThemedInput from "../ThemedInput";
+import ThemedDropdown from "../inputs/ThemedDropdown";
+import ThemedInput from "../inputs/ThemedInput";
 import { ThemedText } from "../ThemedText";
 import { Categories } from "@/models/Categories.enum";
 import { Text } from "@/constants/styles/Text";
 import { Player } from "@/models/Player";
-import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
+import { TouchableOpacity, View, ViewStyle } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { FontAwesome } from "@expo/vector-icons";
-import { AddTeamPlayer, PlayerListItem } from "@/constants/styles/Containers";
+import { AddTeamPlayer } from "@/constants/styles/Containers";
+import PlayerProfileCard from "../views/players/PlayerProfileCard";
 
 type TeamFormProps = {
   teamName: string;
@@ -59,7 +60,7 @@ export default function TeamForm({
     <>
       <ThemedInput
         value={teamName}
-        setValue={setTeamName}
+        onChangeText={(text: string) => setTeamName(text)}
         placeholder="Enter team name"
         label="Team Name"
         labelStyle={inputLabelStyle}
@@ -89,7 +90,6 @@ export default function TeamForm({
         disabled={addTeamPlayerDisabled}
         onPress={() => { onAddTeamPlayer(1); }}
         player={players[0] ?? undefined}
-        containerStyle={{ marginBottom: 24 }}
       />
       {
         players.length >= 1 ?
@@ -98,7 +98,7 @@ export default function TeamForm({
           disabled={addTeamPlayerDisabled}
           onPress={() => { onAddTeamPlayer(2); }}
           player={players[1] ?? undefined}
-          containerStyle={{ marginBottom: 32 }}
+          containerStyle={{ marginTop: 24 }}
         />
         : null
       }
@@ -117,29 +117,9 @@ function AddTeamPlayerInput({ placeholder, disabled = false, onPress, player, co
             <ThemedText style={[Text.addTeamPlayerInput, { color: "grey" }]}>{placeholder}</ThemedText>
           </View>
           :
-          <View style={[PlayerListItem.itemContainer, { flex: 1, paddingVertical: 0 }]}>
-            <Image
-              source={require('../../assets/images/placeholder-avatar.png')}
-              style={{ borderRadius: 40, height: 40, width: 40 }}
-            />
-            <PlayerName player={player} />
-          </View>
+          <PlayerProfileCard player={player} />
         }
       </ThemedView>
     </TouchableOpacity>
   );
-}
-
-function PlayerName({ player }: PlayerNameProps) {
-  const flexDirection = (player.lastNameFirst) ? "row-reverse" : "row";
-  const justifyContent = (player.lastNameFirst) ? "flex-end" : "flex-start";
-
-  const textStyle = Text.listItem;
-
-  return (
-    <ThemedView style={[{ flexDirection, justifyContent }]}>
-      <ThemedText numberOfLines={1} style={textStyle}>{player.firstName}{player.lastNameFirst ? "" : " "}</ThemedText>
-      <ThemedText numberOfLines={1} style={[textStyle, { fontFamily: "LeagueSpartanBold" }]}>{player.lastName}{player.lastNameFirst ? " " : ""}</ThemedText>
-    </ThemedView>
-  );
-}
+};

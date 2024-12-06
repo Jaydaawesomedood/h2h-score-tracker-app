@@ -5,9 +5,10 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Categories } from "@/models/Categories.enum";
 import { Match } from "@/models/Match";
 import { Player, Team } from "@/models/Player";
-import { getHigherScore } from "@/utils/scores.util";
+import { calculateWinner, getHigherScore } from "@/utils/scores.util";
 import { router } from "expo-router";
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 type MatchSummaryCardProps = {
   match: Match;
@@ -22,18 +23,6 @@ export default function MatchSummaryCard({ match, mode, style }: MatchSummaryCar
   const color = useThemeColor("primary");
 
   const onCardPress = () => { router.push({ pathname: "/(profiles)/match", params: { id: match.id } }); };
-
-  const calculateWinner = () => {
-    let setsWon = [0, 0];
-    
-    match.score.forEach((setScores: Number[]) => {
-      if (setScores[0] > setScores[1]) setsWon[0] += 1;
-      else if (setScores[1] > setScores[0]) setsWon[1] += 1;
-    });
-
-    if (setsWon[1] > setsWon[0]) return match.teams[1].id;
-    else return match.teams[0].id;
-  };
 
   return (
     <TouchableOpacity onPress={onCardPress}>
@@ -53,8 +42,8 @@ export default function MatchSummaryCard({ match, mode, style }: MatchSummaryCar
                         <PlayerName
                           key={`${match.id}-${team.id}-${player.id}`}
                           player={player}
-                          firstNameSettings={{ bold: calculateWinner() === team.id, colorize: calculateWinner() === team.id }}
-                          lastNameSettings={{ bold: calculateWinner() === team.id, colorize: calculateWinner() === team.id }}
+                          firstNameSettings={{ bold: calculateWinner(match) === team.id, colorize: calculateWinner(match) === team.id }}
+                          lastNameSettings={{ bold: calculateWinner(match) === team.id, colorize: calculateWinner(match) === team.id }}
                         />
                       ))
                     }
@@ -81,8 +70,8 @@ export default function MatchSummaryCard({ match, mode, style }: MatchSummaryCar
                   <View style={[styles.playersContainer]}>
                     <PlayerName
                       player={player}
-                      firstNameSettings={{ bold: calculateWinner() === player.id, colorize: calculateWinner() === player.id }}
-                      lastNameSettings={{ bold: calculateWinner() === player.id, colorize: calculateWinner() === player.id }}
+                      firstNameSettings={{ bold: calculateWinner(match) === player.id, colorize: calculateWinner(match) === player.id }}
+                      lastNameSettings={{ bold: calculateWinner(match) === player.id, colorize: calculateWinner(match) === player.id }}
                     />
                   </View>
                   <View style={styles.scoresContainer}>
@@ -103,7 +92,7 @@ export default function MatchSummaryCard({ match, mode, style }: MatchSummaryCar
           }
         </View>
         <View style={[styles.cardFooter, { borderTopColor: footerColor }]}>
-          <ThemedText numberOfLines={1} style={Text.matchSummaryCard.footer}>{match.mode.toLowerCase() === "tournament" ? match.tournament : "Casual Game"}</ThemedText>
+          <ThemedText numberOfLines={1} style={Text.matchSummaryCard.footer}>{match.mode.toLowerCase() === "tournament" ? "Tournament" : "Casual Game"}</ThemedText>
           <ThemedText style={Text.matchSummaryCard.footer}>{match.datetime}</ThemedText>
         </View>
       </View>

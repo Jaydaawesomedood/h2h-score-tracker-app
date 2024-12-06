@@ -10,6 +10,7 @@ function calculateDimension(dimension: "width" | "height", smValue: number, lgVa
   return Dimensions.get('window')[dimension] * (Dimensions.get('window')[dimension] > 900 ? lgValue : smValue);
 }
 
+// TODO - Refactor all these
 export const Containers: { [key: string]: ViewStyle } = {
   screen: {
     flex: 1,
@@ -31,12 +32,6 @@ export const Containers: { [key: string]: ViewStyle } = {
   checkboxContainer: {
     alignItems: 'center',
     flexDirection: 'row'
-  },
-};
-
-export const TopTab: { [key: string]: StyleProp<ViewStyle> } = {
-  topTabList: {
-    flex: 1,
   },
 };
 
@@ -104,6 +99,11 @@ export const Modals: { [key: string]: ViewStyle } = {
     paddingHorizontal: 32,
     position: "absolute",
     width: "100%",
+  },
+  contentFull: {
+    borderRadius: 16,
+    marginHorizontal: 32,
+    paddingHorizontal: 32,
   },
   titleContainer: {
     alignItems: "center",

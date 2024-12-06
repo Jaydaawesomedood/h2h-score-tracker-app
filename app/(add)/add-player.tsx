@@ -6,11 +6,11 @@ import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
-import { DbContext } from "./_layout";
 import { InsertPlayer } from "@/utils/database/database";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import { ToastMessages } from "@/constants/messages/Toast";
 import PlayerForm from "@/components/forms/PlayerForm";
+import { DbContext } from "@/utils/context";
 
 export default function AddPlayerScreen() {
   // Context

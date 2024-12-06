@@ -10,23 +10,25 @@ export type SecondaryButtonProps = {
   icon?: ComponentProps<typeof FontAwesome>["name"];
   iconPosition?: "left" | "right";
   onPress: () => void;
+  disabled?: boolean;
   customColor?: string;
   style?: StyleProp<ViewStyle>;
 };
 
-export default function SecondaryButton({ title, icon, iconPosition, onPress, customColor, style }: SecondaryButtonProps) {  
+export default function SecondaryButton({ title, icon, iconPosition, onPress, customColor, disabled = false, style }: SecondaryButtonProps) {  
   // Styling
   const titleStyle = Text.secondaryBtnTitle;
-  const color = customColor ?? useThemeColor("secondaryBtn");
+  const color = customColor ?? useThemeColor(disabled ? "primaryDisabled" : "secondaryBtn");
   
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[
         styles.button,
-        { flexDirection: iconPosition === "left" ? "row": "row-reverse" },
+        { flexDirection: iconPosition === "left" ? "row": "row-reverse", columnGap: 8 },
         style
       ]}
+      disabled={disabled}
     >
       <FontAwesome name={icon} size={18} color={color} />
       <ThemedText style={[{ color }, titleStyle]}>{title}</ThemedText>

@@ -11,4 +11,13 @@ export interface Match {
   datetime: string;
 };
 
-// (id, team1ID, team2ID, category, score (sets are delimited with , while opponents are delimited with -), datetime)
+export interface MatchLite {
+  id: string;
+  mode: string;
+  category: string;
+  participant1ID: string;
+  participant2ID: string;
+  score: Number[][];
+  tournamentID: string;
+  datetime: string;
+};

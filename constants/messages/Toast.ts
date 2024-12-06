@@ -1,4 +1,4 @@
-export const ToastMessages: { [key: string]: string } = {
+export const ToastMessages = {
   AddPlayerSuccess: "Player added successfully!",
   EditPlayerSuccess: "Player info updated successfully!",
   DeletePlayerSuccess: "Player deleted successfully!",
@@ -7,6 +7,10 @@ export const ToastMessages: { [key: string]: string } = {
   AddTeamSuccess: "Team added successfully!",
   EditTeamSuccess: "Team info updated successfully!",
   DeleteTeamSuccess: "Team deleted successfully!",
+  AddMatchSuccess: "Match added successfully!",
+  EditMatchSuccess: "Match info updated successfully!",
+  DeleteMatchSuccess: "Match deleted successfully!",
+  AddMatchError_SamePlayersInTeams: "Same players in different teams can't be in the same match!",
 
   Error: "Oops! Something wrong happened in the process.",
 };

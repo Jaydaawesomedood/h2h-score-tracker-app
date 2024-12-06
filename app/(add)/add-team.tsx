@@ -1,20 +1,22 @@
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import { ThemedView } from "@/components/ThemedView";
 import { Containers, Modals, PlayerListItem } from "@/constants/styles/Containers";
-import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { FlatList, Image, Keyboard, Modal, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { FlatList, Keyboard, Modal, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Text } from "@/constants/styles/Text";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import { ThemedText } from "@/components/ThemedText";
 import { Player } from "@/models/Player";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
-import { GetAllPlayers, InsertTeam, IsTeamExists } from "@/utils/database/database";
-import { DbContext } from "./_layout";
+import { InsertTeam, IsTeamExists } from "@/utils/database/database";
 import { Genders } from "@/models/Genders.enum";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import { ToastMessages } from "@/constants/messages/Toast";
 import TeamForm from "@/components/forms/TeamForm";
+import { DbContext, TeamPlayersContext } from "@/utils/context";
+import { GetAllPlayers } from "@/utils/repositories/PlayerRepository";
+import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
 
 // TODO - Reorganize this as its duplicating elsewhere
 type PlayersModalProps = {
@@ -34,14 +36,6 @@ export type ListItemProps = {
 export type PlayerNameProps = {
   player: Player;
 }
-
-type Context = {
-  players: Player[],
-  setPlayers: Dispatch<SetStateAction<Player[]>>,
-  setCategory: Dispatch<SetStateAction<string>>
-};
-
-const TeamPlayersContext = createContext<Context>({ players: [], setPlayers: () => {}, setCategory: () => {} });
 
 export default function AddTeamScreen() {
   // Context
@@ -76,18 +70,7 @@ export default function AddTeamScreen() {
 
   const getAllPlayers = async () => {
     if (db) {
-      await GetAllPlayers(db)
-      .then((allPlayersFromDb: Player[]) => {
-        if (allPlayersFromDb && allPlayersFromDb.length > 0) {
-          setAllPlayers([...allPlayersFromDb]);
-        }
-        else {
-          setAllPlayers([]);
-        }
-      })
-      .catch((error: any) => {
-        showErrorToast();
-      });
+      await GetAllPlayers(db, setAllPlayers, showErrorToast);
     }
     else {
       showErrorToast();
@@ -174,7 +157,7 @@ export default function AddTeamScreen() {
             onDropdownClose={closeDropdown}
             onKeyboardClose={hideKeyboard}
           />
-          <PrimaryButton title="Add" onPress={onAddTeam} disabled={addDisabled} />
+          <PrimaryButton title="Add" onPress={onAddTeam} disabled={addDisabled} style={{ marginTop: 32 }} />
         </ThemedView>
       </TouchableWithoutFeedback>
     </TeamPlayersContext.Provider>
@@ -183,10 +166,8 @@ export default function AddTeamScreen() {
 
 
 function PlayersModal({ players, isOpen, onClose, playerNumber }: PlayersModalProps) {
-  // Styling
-  const contentBackgroundColor = useThemeColor("background");
-
   // Colors
+  const contentBackgroundColor = useThemeColor("background");
   const separatorColor = useThemeColor("itemSeparator");
   
   return (
@@ -255,25 +236,7 @@ function ListItem({ item, playerNumber, onCloseModal }: ListItemProps) {
 
   return (
     <TouchableOpacity onPress={onPress} style={containerStyle}>
-      <Image
-        source={require('../assets/images/placeholder-avatar.png')}
-        style={{ borderRadius: 40, height: 40, width: 40 }}
-      />
-      <PlayerName player={item} />
+      <PlayerProfileCard player={item} />
     </TouchableOpacity>
-  );
-}
-
-function PlayerName({ player }: PlayerNameProps) {
-  const flexDirection = (player.lastNameFirst) ? "row-reverse" : "row";
-  const justifyContent = (player.lastNameFirst) ? "flex-end" : "flex-start";
-
-  const textStyle = Text.listItem;
-
-  return (
-    <ThemedView style={[{ flexDirection, justifyContent }]}>
-      <ThemedText numberOfLines={1} style={textStyle}>{player.firstName}{player.lastNameFirst ? "" : " "}</ThemedText>
-      <ThemedText numberOfLines={1} style={[textStyle, { fontFamily: "LeagueSpartanBold" }]}>{player.lastName}{player.lastNameFirst ? " " : ""}</ThemedText>
-    </ThemedView>
   );
 }

@@ -7,12 +7,12 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
-import { DbContext } from "./_layout";
 import { DeletePlayer, UpdatePlayer } from "@/utils/database/database";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import { ToastMessages } from "@/constants/messages/Toast";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import PlayerForm from "@/components/forms/PlayerForm";
+import { DbContext } from "@/utils/context";
 
 export default function EditPlayerModal() {
   // Context

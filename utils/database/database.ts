@@ -1,5 +1,5 @@
 import { DbQueries } from "@/constants/messages/DbQueries";
-import { Match } from "@/models/Match";
+import { Match, MatchLite } from "@/models/Match";
 import { Player, Team } from "@/models/Player";
 import { SQLiteBindParams, SQLiteDatabase } from "expo-sqlite";
 import moment from "moment";
@@ -137,7 +137,7 @@ export async function GetTeam(db: SQLiteDatabase, id: string) {
         gender: team.player2Gender
       }
     ]
-  } ?? undefined;
+  };
 };
 
 export async function IsTeamExists(db: SQLiteDatabase, params: SQLiteBindParams) {
@@ -351,8 +351,84 @@ export async function GetDoublesMatch(db: SQLiteDatabase, id: string) {
         ]
       }
     ]
-  } ?? undefined
-}
+  }
+};
+
+export async function InsertMatch(db: SQLiteDatabase, params: SQLiteBindParams, category: "singles" | "doubles") {
+  const id = await GenerateId(db, 'matches');
+  const matchId = await GenerateId(db, `${category}Matches`);
+
+  if (id !== "") {
+    await db.runAsync(
+      `INSERT INTO matches (id, matchId) VALUES ('${id}', '${matchId}');`
+    )
+    .catch((error: any) => {
+      console.log(error);
+    });
+
+    await db.runAsync(
+      `
+        INSERT INTO ${category}Matches (id, category, participant1ID, participant2ID, score, datetime, mode, tournamentID)
+        VALUES ('${matchId}', ?, ?, ?, ?, ?, ?, NULL);
+      `,
+      params
+    )
+    .catch((error: any) => {
+      console.log(error);
+    });
+  }
+};
+
+export async function UpdateMatch(db: SQLiteDatabase, params: SQLiteBindParams, id: string, category: "singles" | "doubles") {
+  await db.runAsync(
+    `UPDATE ${category}Matches SET mode = ?, datetime = ?, score = ? WHERE id = '${id}'`,
+    params
+  )
+  .catch((error: any) => {
+    console.log(error);
+  });
+};
+
+export async function DeleteMatch(db: SQLiteDatabase, id: string, category: "singles" | "doubles") {
+  await db.runAsync(`DELETE FROM matches WHERE matchId = ?`, id).catch((error: any) => {
+    console.log(error);
+  });
+
+  await db.runAsync(`DELETE FROM ${category}Matches WHERE id = ?`, id).catch((error: any) => {
+    console.log(error);
+  });
+};
+
+export async function GetAllMatchesOfSamePairs(db: SQLiteDatabase, teamIds: string[], category: "singles" | "doubles") {
+  const alias = category === "doubles" ? "dm" : "sm";
+  let matches: any = [];
+
+  await db.getAllAsync(`
+    SELECT *
+    FROM matches AS m
+    INNER JOIN ${category}Matches AS ${alias}
+    ON ${alias}.id = m.matchId
+    WHERE (${alias}.participant1ID = '${teamIds[0]}' AND ${alias}.participant2ID = '${teamIds[1]}') OR (${alias}.participant2ID = '${teamIds[0]}' AND ${alias}.participant1ID = '${teamIds[1]}');
+  `)
+  .then((response: any[]) => {
+    matches = response.map(match => (
+      <MatchLite>{
+        id: match.id,
+        mode: match.mode,
+        category: match.category,
+        participant1ID: match.participant1ID,
+        participant2ID: match.participant2ID,
+        datetime: moment(match.datetime, "DD-MM-YYYY").format("DD MMM YYYY"),
+        score: match.score.split(",").map((teamScore: string) => teamScore.split("-").map((value: string) => parseInt(value)))
+      }
+    ));
+  })
+  .catch((error: any) => {
+    console.log(error);
+  });
+
+  return matches;
+};
 
 async function GenerateId(db: SQLiteDatabase, table: string) {
   const lastResult = await db.getFirstAsync<Player>(
@@ -363,8 +439,30 @@ async function GenerateId(db: SQLiteDatabase, table: string) {
   });
 
   if(lastResult) {
-    const id = parseInt(lastResult.id.substring(1)) + 1;
-    return `${table === "teams" ? "t" : "p"}${id.toString()}`;
+    const id = parseInt(lastResult.id.substring(table === "singlesMatches" || table === "doublesMatches" ? 2 : 1)) + 1;
+    let char;
+
+    switch (table) {
+      case "teams":
+        char = "t";
+        break;
+      case "players":
+        char = "p";
+        break;
+      case "matches":
+        char = "m";
+        break;
+      case "singlesMatches":
+        char = "sm";
+        break;
+      case "doublesMatches":
+        char = "dm";
+        break;
+      case "tournaments":
+        char = "c";
+        break;
+    }
+    return `${char}${id.toString()}`;
   }
 
   return "";

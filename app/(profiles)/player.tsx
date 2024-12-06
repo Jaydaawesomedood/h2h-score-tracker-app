@@ -8,10 +8,11 @@ import { Participant, Player } from "@/models/Player";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Image, ImageBackground, StatusBar, View } from "react-native";
-import { DbContext } from "../_layout";
 import { useIsFocused } from "@react-navigation/native";
 import { GetPlayer } from "@/utils/database/database";
 import { showErrorToast } from "@/utils/toast.util";
+import { DbContext } from "@/utils/context";
+import ThemedBannerView from "@/components/views/ThemedBannerView";
 
 export default function PlayerProfileScreen() {
   const { id } = useLocalSearchParams();
@@ -37,7 +38,7 @@ export default function PlayerProfileScreen() {
     }
   };
 
-  const onEdit = () => { router.push({ pathname: "/edit-player", params: { ...profile, lastNameFirst: Number(profile?.lastNameFirst) } }); };
+  const onEdit = () => { router.push({ pathname: "/(edit)/edit-player", params: { ...profile, lastNameFirst: Number(profile?.lastNameFirst) } }); };
 
   useEffect(() => {
     if (isFocused) {
@@ -62,28 +63,28 @@ export default function PlayerProfileScreen() {
           resizeMode="cover"
           style={[PlayerBanner.bannerContainer]}
         >
-          <ThemedView style={PlayerBanner.innerBannerContainer}>
-            <ThemedView style={PlayerBanner.screenTitleContainer}>
+          <View style={PlayerBanner.innerBannerContainer}>
+            <View style={PlayerBanner.screenTitleContainer}>
               <ScreenTitleWithBack
                 title=""
                 actionBtn={{
                   title: "Edit",
-                  onActionBtn: onEdit
+                  onPress: onEdit
                 }}
                 style={{ backgroundColor: "transparent" }}
               />
-            </ThemedView>
-            <ThemedView style={PlayerBanner.bannerContentContainer}>
+            </View>
+            <View style={PlayerBanner.bannerContentContainer}>
               <Image
                 source={require('../../assets/images/placeholder-avatar.png')}
                 style={{ borderRadius: imageSize, height: imageSize, width: imageSize }}
               />
-              <ThemedView style={[PlayerBanner.titleContainer, { flexDirection }]}>
+              <View style={[PlayerBanner.titleContainer, { flexDirection }]}>
                 <ThemedText numberOfLines={1} style={Text.playerDetailsTitle}>{player.firstName}</ThemedText>
                 <ThemedText numberOfLines={1} style={Text.playerDetailsTitleBold}>{player.lastName}</ThemedText>
-              </ThemedView>
-            </ThemedView>
-          </ThemedView>
+              </View>
+            </View>
+          </View>
         </ImageBackground>
       </>
     );
@@ -94,7 +95,7 @@ export default function PlayerProfileScreen() {
       <StatusBar translucent backgroundColor={"transparent"}/>
       {
         profile ?
-        <ParallaxScrollView headerImage={profile ? renderPlayerBanner() : null}>
+        <ThemedBannerView headerImage={profile ? renderPlayerBanner() : null}>
           <ThemedView>
             <ThemedText>matches</ThemedText>
             <ThemedText>matches</ThemedText>
@@ -104,7 +105,7 @@ export default function PlayerProfileScreen() {
             <ThemedText>matches</ThemedText>
             <ThemedText>matches</ThemedText>
           </ThemedView>
-        </ParallaxScrollView>
+        </ThemedBannerView>
         : null
       }
     </View>

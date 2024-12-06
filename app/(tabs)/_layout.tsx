@@ -7,9 +7,10 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import ActionButton from '@/components/buttons/ActionButton';
 import { Text } from '@/constants/styles/Text';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const activeColor = useThemeColor("tabIconSelected");
   const label = Text.bottomTabLabel;
 
   const tabs = [
@@ -23,7 +24,7 @@ export default function TabLayout() {
     <View style={styles.main}>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+          tabBarActiveTintColor: activeColor,
           headerShown: false,
         }}
       >
@@ -34,7 +35,7 @@ export default function TabLayout() {
               name={name.toLowerCase()}
               options={{
                 title: name,
-                tabBarIcon: ({ color }) => (
+                tabBarIcon: ({ color }: any) => (
                   <TabBarIcon name={icon} color={color} />
                 ),
                 tabBarLabelStyle: { fontFamily: label.fontFamily },

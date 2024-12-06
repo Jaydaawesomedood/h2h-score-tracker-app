@@ -1,17 +1,19 @@
 import { ThemedText } from "@/components/ThemedText";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { DbContext } from "../_layout";
 import { useIsFocused } from "@react-navigation/native";
 import { GetTeam } from "@/utils/database/database";
 import { showErrorToast } from "@/utils/toast.util";
 import { Player, Team } from "@/models/Player";
 import { ImageBackground, Image, View, StatusBar } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
-import { Text } from "@/constants/styles/Text";
+import { large, Text } from "@/constants/styles/Text";
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import { PlayerBanner } from "@/constants/styles/Containers";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { DbContext } from "@/utils/context";
+import ThemedBannerView from "@/components/views/ThemedBannerView";
+import PlayerName from "@/components/text/PlayerName";
 
 export default function TeamProfileScreen() {
   // Context
@@ -24,7 +26,7 @@ export default function TeamProfileScreen() {
 
   // Button actions
   const onEditTeam = () => { router.push({
-    pathname: "/edit-team",
+    pathname: "/(edit)/edit-team",
     params: {
       id: team!.id,
       name: team!.name,
@@ -74,17 +76,17 @@ export default function TeamProfileScreen() {
           resizeMode="cover"
           style={[PlayerBanner.bannerContainer]}
         >
-          <ThemedView style={PlayerBanner.innerBannerContainer}>
-            <ThemedView style={PlayerBanner.screenTitleContainer}>
+          <View style={PlayerBanner.innerBannerContainer}>
+            <View style={PlayerBanner.screenTitleContainer}>
               <ScreenTitleWithBack
                 title=""
                 actionBtn={{
                   title: "Edit",
-                  onActionBtn: onEditTeam
+                  onPress: onEditTeam
                 }}
                 style={{ backgroundColor: "transparent" }}
               />
-            </ThemedView>
+            </View>
             {
               team!.name ? 
               <View style={{ alignSelf: "center", paddingBottom: 24 }}>
@@ -92,7 +94,7 @@ export default function TeamProfileScreen() {
               </View>
               : null
             }
-            <ThemedView style={[PlayerBanner.bannerContentContainer, { justifyContent: "space-around" }]}>
+            <View style={[PlayerBanner.bannerContentContainer, { justifyContent: "space-around" }]}>
               {
                 team!.players.map((player: Player) => (
                   <View key={player.id} style={{ alignItems: "center", minWidth: 150, maxWidth: 150 }}>
@@ -100,15 +102,12 @@ export default function TeamProfileScreen() {
                       source={require('../../assets/images/placeholder-avatar.png')}
                       style={{ borderRadius: imageSize, height: imageSize, width: imageSize, marginBottom: 16 }}
                     />
-                    <View style={{ alignItems: "center", flex: 1,  flexDirection: player.lastNameFirst ? "column-reverse" : "column" }}>
-                      <ThemedText numberOfLines={1} style={Text.teamPlayerDetailsTitle}>{player.firstName}</ThemedText>
-                      <ThemedText numberOfLines={1} style={Text.teamPlayerDetailsTitleBold}>{player.lastName}</ThemedText>
-                    </View>
+                    <PlayerName player={player} isVertical={true} textStyle={{ fontSize: large }} />
                   </View>
                 ))
               }
-            </ThemedView>
-          </ThemedView>
+            </View>
+          </View>
         </ImageBackground>
       </>
     );
@@ -120,7 +119,7 @@ export default function TeamProfileScreen() {
       <StatusBar translucent backgroundColor={"transparent"}/>
       {
         team ?
-        <ParallaxScrollView headerImage={team ? renderTeamBanner() : null}>
+        <ThemedBannerView headerImage={team ? renderTeamBanner() : null}>
           <ThemedView>
             <ThemedText>matches</ThemedText>
             <ThemedText>matches</ThemedText>
@@ -129,8 +128,57 @@ export default function TeamProfileScreen() {
             <ThemedText>matches</ThemedText>
             <ThemedText>matches</ThemedText>
             <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
+            <ThemedText>matches</ThemedText>
           </ThemedView>
-        </ParallaxScrollView>
+        </ThemedBannerView>
         : null
       }
     </View>

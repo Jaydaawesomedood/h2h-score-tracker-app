@@ -8,6 +8,9 @@ const tintColorDark = '#fff';
 const primaryColorDark = "#32a852";
 const primaryColorDisabledDark = "#79a485";
 
+const accentRed = "#d63131";
+const accentBlue = "#3170d6";
+
 export const Colors = {
   light: {
     text: '#11181C',
@@ -27,7 +30,10 @@ export const Colors = {
     itemSeparator: "#666", // TODO - Change this,
     deleteIcon: "#992420",
     cardBody: "#fff", // TODO - Change this
-    cardHeader: "#fff" // TODO - Change this
+    cardHeader: "#fff", // TODO - Change this
+    winningTeamBorder: "#f5e642",
+    accentRed: accentRed,
+    accentBlue: accentBlue,
   },
   dark: {
     text: '#ECEDEE',
@@ -48,5 +54,8 @@ export const Colors = {
     deleteIcon: "#bd2d28",
     cardBody: "#303030",
     cardHeader: "#427a51",
+    winningTeamBorder: "#de9221",
+    accentRed: accentRed,
+    accentBlue: accentBlue,
   },
 };

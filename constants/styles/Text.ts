@@ -14,7 +14,7 @@ export const extraLarge = 40; // Banner headings
 function getDimensionValue() {
   return Platform.OS === 'android' ? 8 : 12;
 };
-
+// TODO - Refactor all these
 export const Text = {
   title: {
     section: {
@@ -46,7 +46,6 @@ export const Text = {
     fontFamily: regular,
     fontSize: medium,
     lineHeight: medium,
-    marginLeft: 6,
   },
   input: {
     borderRadius: 8,

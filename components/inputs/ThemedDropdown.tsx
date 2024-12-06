@@ -1,11 +1,11 @@
-import { Dropdown } from "@/constants/styles/Containers";
+import { BorderDebug, Dropdown } from "@/constants/styles/Containers";
 import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { FontAwesome } from "@expo/vector-icons";
 import { ComponentProps, Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TextStyle, useColorScheme, View, ViewStyle } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { ThemedText } from "./ThemedText";
+import { ThemedText } from "../ThemedText";
 
 export type DropdownItem = {
   label: string;
@@ -21,12 +21,28 @@ export type ThemedDropdownProps = {
   setValue: Dispatch<SetStateAction<string>>;
   disabled?: boolean;
   onPress: () => void;
+  onSelectItem?: () => void;
+  onChangeValue?: () => void;
   label?: string;
   labelStyle?: TextStyle;
   containerStyle?: ViewStyle;
 };
 
-export default function ThemedDropdown({ options, placeholder, isOpen, setIsOpen, value, setValue, disabled = false, onPress, label, labelStyle, containerStyle }: ThemedDropdownProps) {
+export default function ThemedDropdown({
+  options,
+  placeholder,
+  isOpen,
+  setIsOpen,
+  value,
+  setValue,
+  disabled = false,
+  onPress, 
+  onSelectItem,
+  onChangeValue,
+  label,
+  labelStyle,
+  containerStyle
+}: ThemedDropdownProps) {
   // TODO - Revamp this component
 
   // Styling
@@ -47,7 +63,7 @@ export default function ThemedDropdown({ options, placeholder, isOpen, setIsOpen
   }, []);
 
   return (
-    <View style={containerStyle}>
+    <View style={[containerStyle]}>
       <ThemedText style={labelStyle}>{label}</ThemedText>
       <DropDownPicker
         open={isOpen}
@@ -58,6 +74,8 @@ export default function ThemedDropdown({ options, placeholder, isOpen, setIsOpen
         setItems={setItems}
         disabled={disabled}
         onPress={onPress}
+        onSelectItem={onSelectItem}
+        onChangeValue={onChangeValue}
         style={[Dropdown.input, { backgroundColor: inputBackgroundColor }]}
         placeholder={placeholder}
         placeholderStyle={[Dropdown.inputText, { color: inputPlaceholderColor }]}
@@ -74,6 +92,7 @@ export default function ThemedDropdown({ options, placeholder, isOpen, setIsOpen
         }}
         disabledStyle={{ backgroundColor: disabledStyle, opacity: 0.4 }}
         disabledItemLabelStyle={{ color: "#999" }}
+        zIndex={1}
       />
     </View>
   );

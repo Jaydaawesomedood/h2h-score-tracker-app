@@ -1,8 +1,8 @@
 import { View } from "react-native";
-import ThemedInput from "../ThemedInput";
+import ThemedInput from "../inputs/ThemedInput";
 import Checkbox from "expo-checkbox";
 import { ThemedText } from "../ThemedText";
-import ThemedDropdown from "../ThemedDropdown";
+import ThemedDropdown from "../inputs/ThemedDropdown";
 import { Dispatch, SetStateAction } from "react";
 import { Text } from "@/constants/styles/Text";
 import { Containers } from "@/constants/styles/Containers";
@@ -47,7 +47,7 @@ export default function PlayerForm({
       {/* TODO - Add player image here */}
       <ThemedInput
         value={firstName}
-        setValue={setFirstName}
+        onChangeText={(text: string) => setFirstName(text)}
         placeholder="Enter first name"
         label="First Name (Given Name)"
         labelStyle={inputLabelStyle}
@@ -56,7 +56,7 @@ export default function PlayerForm({
       />
       <ThemedInput
         value={lastName}
-        setValue={setLastName}
+        onChangeText={(text: string) => setLastName(text)}
         placeholder="Enter last name"
         label="Last Name (Surname)"
         labelStyle={inputLabelStyle}
