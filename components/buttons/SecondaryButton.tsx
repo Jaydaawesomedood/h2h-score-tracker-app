@@ -1,7 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { ComponentProps } from "react";
-import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
-import { ThemedText } from "../ThemedText";
+import { TouchableOpacity, StyleProp, StyleSheet, ViewStyle } from "react-native";
+import ThemedText from "../ThemedText";
 import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
@@ -26,11 +26,11 @@ export default function SecondaryButton({ title, icon, iconPosition, onPress, cu
       style={[
         styles.button,
         { flexDirection: iconPosition === "left" ? "row": "row-reverse", columnGap: 8 },
-        style
+        style,
       ]}
       disabled={disabled}
     >
-      <FontAwesome name={icon} size={18} color={color} />
+      { icon && <FontAwesome name={icon} size={18} color={color} /> }
       <ThemedText style={[{ color }, titleStyle]}>{title}</ThemedText>
     </TouchableOpacity>
   );

@@ -1,15 +1,16 @@
 import { Dispatch, SetStateAction } from "react";
 import ThemedDropdown from "../inputs/ThemedDropdown";
 import ThemedInput from "../inputs/ThemedInput";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import { Categories } from "@/models/Categories.enum";
 import { Text } from "@/constants/styles/Text";
 import { Player } from "@/models/Player";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
-import { ThemedView } from "../ThemedView";
+import ThemedView from "../ThemedView";
 import { FontAwesome } from "@expo/vector-icons";
 import { AddTeamPlayer } from "@/constants/styles/Containers";
 import PlayerProfileCard from "../views/players/PlayerProfileCard";
+import React from "react";
 
 type TeamFormProps = {
   teamName: string;
@@ -33,10 +34,6 @@ type AddTeamPlayerProps = {
   player?: Player;
   containerStyle?: ViewStyle;
 };
-
-type PlayerNameProps = {
-  player: Player;
-}
 
 export default function TeamForm({
   teamName,
@@ -81,7 +78,6 @@ export default function TeamForm({
         disabled={dropdownDisabled}
         onPress={onKeyboardClose}
         label="Team Category"
-        labelStyle={inputLabelStyle}
         containerStyle={{ marginBottom: 24 }}
       />
       <ThemedText style={[inputLabelStyle, { marginBottom: 24 }]}>Players</ThemedText>

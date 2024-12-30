@@ -1,6 +1,6 @@
 import { ProgressStepper } from "@/components/progress-bar/ProgressStepper";
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import { ThemedView } from "@/components/ThemedView";
+import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
 import { useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback, View } from "react-native";

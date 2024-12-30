@@ -35,15 +35,6 @@ export const Containers: { [key: string]: ViewStyle } = {
   },
 };
 
-export const Dropdown: { [key: string]: ViewStyle & TextStyle } = {
-  input: {
-    borderWidth: 0,
-  },
-  inputText: {
-    paddingHorizontal: 0,
-  },
-};
-
 export const PlayerListItem: { [key: string]: ViewStyle } = {
   itemContainer: {
     alignItems: "center",

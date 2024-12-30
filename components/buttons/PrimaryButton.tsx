@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Text } from "@/constants/styles/Text";
 

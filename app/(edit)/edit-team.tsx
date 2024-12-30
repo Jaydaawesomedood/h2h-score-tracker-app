@@ -1,6 +1,6 @@
 import TeamForm from "@/components/forms/TeamForm";
 import ScreenTitle from "@/components/screens/ScreenTitle";
-import { ThemedView } from "@/components/ThemedView";
+import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
 import { Player } from "@/models/Player";
 import { router, useLocalSearchParams } from "expo-router";
@@ -16,6 +16,7 @@ import { DbContext } from "@/utils/context";
 
 export default function EditTeamScreen() {
   // Context
+  // TODO - Change to profile state, refer to edit player
   const { id, name, category, player1, player2 } = useLocalSearchParams();
   const db = useContext(DbContext);
 

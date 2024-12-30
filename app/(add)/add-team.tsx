@@ -1,11 +1,11 @@
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import { ThemedView } from "@/components/ThemedView";
+import ThemedView from "@/components/ThemedView";
 import { Containers, Modals, PlayerListItem } from "@/constants/styles/Containers";
 import { useContext, useEffect, useState } from "react";
 import { FlatList, Keyboard, Modal, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Text } from "@/constants/styles/Text";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
-import { ThemedText } from "@/components/ThemedText";
+import ThemedText from "@/components/ThemedText";
 import { Player } from "@/models/Player";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
@@ -171,21 +171,23 @@ function PlayersModal({ players, isOpen, onClose, playerNumber }: PlayersModalPr
   const separatorColor = useThemeColor("itemSeparator");
   
   return (
-    <Modal animationType="slide" transparent={true} visible={isOpen} onRequestClose={onClose}>
-      <View style={Modals.backdrop}>
-        <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor, height: "90%" }]}>
-          <View style={Modals.titleContainer}>
-            <ThemedText style={Text.screenTitle}>Add Player</ThemedText>
-            <SecondaryButton title="Close" onPress={onClose} />
-          </View>
-          <FlatList
-            data={players}
-            renderItem={ ({ item, index, separators }) => <ListItem item={item} playerNumber={playerNumber} onCloseModal={onClose} /> }
-            ItemSeparatorComponent={() => <View style={{ width: "100%", height: 0.5, backgroundColor: separatorColor }} />}
-          />
-        </ThemedView>
-      </View>
-    </Modal>
+    <View>
+      <Modal animationType="slide" transparent={true} visible={isOpen} onRequestClose={onClose}>
+        <View style={Modals.backdrop}>
+          <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor, height: "90%" }]}>
+            <View style={Modals.titleContainer}>
+              <ThemedText style={Text.screenTitle}>Add Player</ThemedText>
+              <SecondaryButton title="Close" onPress={onClose} />
+            </View>
+            <FlatList
+              data={players}
+              renderItem={ ({ item, index, separators }) => <ListItem item={item} playerNumber={playerNumber} onCloseModal={onClose} /> }
+              ItemSeparatorComponent={() => <View style={{ width: "100%", height: 0.5, backgroundColor: separatorColor }} />}
+            />
+          </ThemedView>
+        </View>
+      </Modal>
+    </View>
   );
 }
 

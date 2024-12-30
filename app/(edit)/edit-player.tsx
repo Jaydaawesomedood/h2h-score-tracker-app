@@ -1,8 +1,7 @@
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import ScreenTitle from "@/components/screens/ScreenTitle";
-import { ThemedView } from "@/components/ThemedView";
+import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
-import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
@@ -12,26 +11,24 @@ import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import { ToastMessages } from "@/constants/messages/Toast";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import PlayerForm from "@/components/forms/PlayerForm";
-import { DbContext } from "@/utils/context";
+import { DbContext, useProfileStore } from "@/utils/context";
 
 export default function EditPlayerModal() {
   // Context
   const db = useContext(DbContext);
-
-  // Styling
-  const inputLabelStyle = Text.inputLabel;
+  const { profile, setProfile, clearProfile } = useProfileStore();
   
   // Colors
   const deleteBtnColor = useThemeColor("deleteIcon");
 
-  let { id, firstName, lastName, lastNameFirst, gender } = useLocalSearchParams();
+  let { id } = useLocalSearchParams();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const [originalFirstName, setOriginalFirstName] = useState<string>(String(firstName));
-  const [originalLastName, setOriginalLastName] = useState<string>(String(lastName));
-  const [originalLastNameFirst, setOriginalLastNameFirst] = useState<boolean>(Number(lastNameFirst) === 1);
-  const [originalGender, setOriginalGender] = useState<string>(String(gender));
+  const [originalFirstName, setOriginalFirstName] = useState<string>(String(profile.player.firstName));
+  const [originalLastName, setOriginalLastName] = useState<string>(String(profile.player.lastName));
+  const [originalLastNameFirst, setOriginalLastNameFirst] = useState<boolean>(Number(profile.player.lastNameFirst) === 1);
+  const [originalGender, setOriginalGender] = useState<string>(String(profile.player.gender));
   
   const [editFirstName, setEditFirstName] = useState<string>(originalFirstName);
   const [editLastName, setEditLastName] = useState<string>(String(originalLastName));
@@ -47,6 +44,15 @@ export default function EditPlayerModal() {
       await UpdatePlayer(db, [editFirstName.trim(), editLastName.trim(), editLastNameFirst ? 1 : 0, editGender, String(id)])
       .then(() => {
         showMessageToast(ToastMessages.EditPlayerSuccess);
+        setProfile({
+          ...profile,
+          player: {
+            firstName: editFirstName,
+            lastName: editLastName,
+            lastNameFirst: editLastNameFirst,
+            gender: editGender
+          }
+        });
         setOriginalData();
       })
       .catch(() => {
@@ -64,6 +70,7 @@ export default function EditPlayerModal() {
       .then(() => {
         showMessageToast(ToastMessages.DeletePlayerSuccess);
         router.navigate("/(tabs)/players");
+        clearProfile();
       })
       .catch(() => {
         showErrorToast();

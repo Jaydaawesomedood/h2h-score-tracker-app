@@ -2,11 +2,9 @@ import { Containers } from "@/constants/styles/Containers";
 import { Text } from "@/constants/styles/Text";
 import { router } from "expo-router";
 import { View, StyleSheet, ViewStyle } from "react-native";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import SecondaryButton, { SecondaryButtonProps } from "../buttons/SecondaryButton";
-import { ThemedView } from "../ThemedView";
-import { ComponentProps } from "react";
-import { FontAwesome } from "@expo/vector-icons";
+import ThemedView from "../ThemedView";
 
 export type ScreenTitleWithBackProps = {
   title: string;
@@ -25,13 +23,15 @@ export default function ScreenTitleWithBack({ title, actionBtn, style }: ScreenT
 
   return (
     <ThemedView style={[containerStyle, { justifyContent: "center" }, style]}>
-      <SecondaryButton
-        title="Back"
-        icon="chevron-left"
-        iconPosition="left"
-        onPress={onBack}
-        style={styles.backBtn}
-      />
+      <View style={{ flex: 1 }}>
+        <SecondaryButton
+          title="Back"
+          icon="chevron-left"
+          iconPosition="left"
+          onPress={onBack}
+          style={styles.backBtn}
+        />
+      </View>
       <ThemedText style={[titleStyle, styles.title]}>{title}</ThemedText>
       <View style={{ flex: 1 }}>
         {
@@ -49,12 +49,12 @@ export default function ScreenTitleWithBack({ title, actionBtn, style }: ScreenT
 
 const styles = StyleSheet.create({
   backBtn: {
-    flex: 1,
-    justifyContent: "flex-start"
+    // flex: 1,
+    justifyContent: "flex-start",
   },
   title: {
     flex: 2,
-    textAlign: "center"
+    textAlign: "center",
   },
   actionBtn: {
     alignSelf: "flex-end",

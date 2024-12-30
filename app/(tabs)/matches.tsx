@@ -1,7 +1,6 @@
 import ScreenTitle from "@/components/screens/ScreenTitle";
 import ThemedDropdown from "@/components/inputs/ThemedDropdown";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
 import { Text } from "@/constants/styles/Text";
 import { Match } from "@/models/Match";
@@ -11,7 +10,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { showErrorToast } from "@/utils/toast.util";
 import MatchSummaryCard from "@/components/views/matches/MatchSummaryCard";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { DbContext } from "@/utils/context";
 import { GetAllMatches } from "@/utils/repositories/MatchRepository";
 import { ThemedTabView } from "@/components/tab-view/ThemedTabView";
@@ -19,10 +18,8 @@ import { ThemedTabView } from "@/components/tab-view/ThemedTabView";
 export default function MatchesScreen() {
   // Context
   const db = useContext(DbContext);
+  // const isFocused = useNavigation().isFocused();
   const isFocused = useIsFocused();
-
-  // Styling
-  const inputLabelStyle = Text.inputLabel;
 
   // Colors
   const tabBackgroundColor = useThemeColor('background');
@@ -61,9 +58,7 @@ export default function MatchesScreen() {
           setIsOpen={setIsDropdownOpen}
           value={matchCategoryFilter}
           setValue={setMatchCategoryFilter}
-          onPress={() => {}}
           label="Filter By Category"
-          labelStyle={inputLabelStyle}
           containerStyle={{ marginVertical: 16 }}
         />
         {
@@ -89,9 +84,7 @@ export default function MatchesScreen() {
           setIsOpen={setIsDropdownOpen}
           value={matchCategoryFilter}
           setValue={setMatchCategoryFilter}
-          onPress={() => {}}
           label="Filter By Category"
-          labelStyle={inputLabelStyle}
           containerStyle={{ marginVertical: 16 }}
         />
         {
@@ -118,11 +111,11 @@ export default function MatchesScreen() {
           iconPosition: "left",
           onActionBtn: onAddMatch
         }}
-        style={{ paddingHorizontal: 32 }}
+        style={{ paddingHorizontal: 32, marginBottom: 0 }}
       />
-      <View style={{ paddingHorizontal: 32 }}>
+      {/* <View style={{ paddingHorizontal: 32 }}>
         <ThemedText style={[Text.title.section, { marginBottom: 8 }]}>Most Recent</ThemedText>
-      </View>
+      </View> */}
       {
         (recentDoublesMatches.length > 0) &&
         <ThemedTabView

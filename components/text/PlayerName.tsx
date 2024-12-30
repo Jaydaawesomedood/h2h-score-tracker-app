@@ -1,9 +1,8 @@
 import { Player } from "@/models/Player";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import { bold, Text } from "@/constants/styles/Text";
 import { TextStyle, View, ViewStyle } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { BorderDebug } from "@/constants/styles/Containers";
 
 interface NameSettings {
   bold?: boolean; // Specifies whether the text should be in bold
@@ -26,14 +25,12 @@ export default function PlayerName({
   lastNameSettings = { bold: true, colorize: false, truncate: false },
   textStyle,
 }: PlayerNameProps) {
-  const flexDirection = (player.lastNameFirst) ? "row-reverse" : "row";
-  const justifyContent = (player.lastNameFirst) ? "flex-end" : "flex-start";
-  
   const containerStyle: ViewStyle = isVertical ?
   {
     alignItems: "center",
     flex: 1,
     flexDirection: (player.lastNameFirst) ? "column-reverse" : "column",
+    // rowGap: 8,
   } :
   {
     flexDirection: (player.lastNameFirst) ? "row-reverse" : "row",

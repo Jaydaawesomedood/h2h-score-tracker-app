@@ -1,7 +1,7 @@
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import ThemedInput from "@/components/inputs/ThemedInput";
 import PlayerName from "@/components/text/PlayerName";
-import { ThemedText } from "@/components/ThemedText";
+import ThemedText from "@/components/ThemedText";
 import ThemedDivider from "@/components/views/ThemedDivider";
 import { Steps } from "@/constants/Steps";
 import { useThemeColor } from "@/hooks/useThemeColor";

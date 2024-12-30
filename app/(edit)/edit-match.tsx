@@ -2,7 +2,7 @@ import MatchDetailsForm from "@/components/forms/match/MatchDetailsForm";
 import MatchScoreForm from "@/components/forms/match/MatchScoreForm";
 import { ProgressStepper } from "@/components/progress-bar/ProgressStepper";
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import { ThemedView } from "@/components/ThemedView";
+import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
 import { DbContext, EditMatchContext } from "@/utils/context";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
@@ -20,6 +20,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 export default function EditMatchScreen() {
   // Context
   const db = useContext(DbContext);
+  // TODO - Change to profile state, refer to edit player
   const { id, category, mode, datetime } = useLocalSearchParams();
 
   // Colors

@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity, View, ViewProps } from "react-native";
-import { ThemedView } from "../ThemedView";
+import ThemedView from "../ThemedView";
 import { FontAwesome } from "@expo/vector-icons";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import { light, medium } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useContext, useEffect, useRef } from "react";

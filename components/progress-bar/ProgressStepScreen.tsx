@@ -1,6 +1,6 @@
-import { ScrollView, ScrollViewProps, TouchableOpacity, View, ViewProps } from "react-native";
+import { ScrollView, ScrollViewProps, View, ViewProps } from "react-native";
 import SecondaryButton from "../buttons/SecondaryButton";
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 // TODO - Deprecate this component
 type ProgressStepProps = ViewProps & {

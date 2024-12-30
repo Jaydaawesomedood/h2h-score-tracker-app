@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import ThemedInput from "../inputs/ThemedInput";
 import Checkbox from "expo-checkbox";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import ThemedDropdown from "../inputs/ThemedDropdown";
 import { Dispatch, SetStateAction } from "react";
 import { Text } from "@/constants/styles/Text";
@@ -86,7 +86,6 @@ export default function PlayerForm({
         setIsOpen={setIsDropdownOpen}
         onPress={onKeyboardClose}
         label="Gender"
-        labelStyle={inputLabelStyle}
         containerStyle={{ marginBottom: 32 }}
       />
     </>

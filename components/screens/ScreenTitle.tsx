@@ -1,5 +1,5 @@
 import { Text } from "@/constants/styles/Text";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import { View, ViewProps } from "react-native";
 import { Containers } from "@/constants/styles/Containers";
 import SecondaryButton from "../buttons/SecondaryButton";

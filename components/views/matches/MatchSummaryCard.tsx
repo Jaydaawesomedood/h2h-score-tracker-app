@@ -1,14 +1,13 @@
 import PlayerName from "@/components/text/PlayerName";
-import { ThemedText } from "@/components/ThemedText";
-import { Text } from "@/constants/styles/Text";
+import ThemedText from "@/components/ThemedText";
+import { bold, Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Categories } from "@/models/Categories.enum";
 import { Match } from "@/models/Match";
 import { Player, Team } from "@/models/Player";
+import { GetCategoryFullName } from "@/utils/common/common.util";
 import { calculateWinner, getHigherScore } from "@/utils/scores.util";
 import { router } from "expo-router";
-import { StyleSheet, View, ViewStyle } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 
 type MatchSummaryCardProps = {
   match: Match;
@@ -28,7 +27,7 @@ export default function MatchSummaryCard({ match, mode, style }: MatchSummaryCar
     <TouchableOpacity onPress={onCardPress}>
       <View style={[styles.cardContainer, { backgroundColor: bodyBackgroundColor }, style]}>
         <View style={[styles.cardHeader, { backgroundColor: headerBackgroundColor }]}>
-          <ThemedText style={Text.matchSummaryCard.header}>{Categories[match.category.toUpperCase() as keyof typeof Categories]}</ThemedText>
+          <ThemedText style={Text.matchSummaryCard.header}>{GetCategoryFullName(match.category)}</ThemedText>
         </View>
         <View style={[styles.cardBody]}>
           {
@@ -53,7 +52,7 @@ export default function MatchSummaryCard({ match, mode, style }: MatchSummaryCar
                       match.score.map((score: Number[], scoreIndex: number) => (
                         <ThemedText
                           key={`${match.id}-${team.id}-${scoreIndex}`}
-                          style={index === getHigherScore(score) ? { color, fontFamily: "LeagueSpartanBold" } : {}}
+                          style={index === getHigherScore(score) ? { color, fontFamily: bold } : {}}
                         >
                             {score[index].toString()}
                         </ThemedText>
@@ -79,7 +78,7 @@ export default function MatchSummaryCard({ match, mode, style }: MatchSummaryCar
                       match.score.map((score: Number[], scoreIndex: number) => (
                         <ThemedText
                           key={`${match.id}-${player.id}-${scoreIndex}`}
-                          style={index === getHigherScore(score) ? { color, fontFamily: "LeagueSpartanBold" } : {}}
+                          style={index === getHigherScore(score) ? { color, fontFamily: bold } : {}}
                         >
                             {score[index].toString()}
                         </ThemedText>

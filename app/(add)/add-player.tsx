@@ -1,6 +1,6 @@
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import { ThemedView } from "@/components/ThemedView";
+import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
 import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -18,10 +18,6 @@ export default function AddPlayerScreen() {
 
   // Styling
   const screenStyle = Containers.screen;
-  const inputLabelStyle = Text.inputLabel;
-
-  // Colors
-  const color = useThemeColor('primary');
 
   // State variables - UI
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

@@ -10,11 +10,17 @@ const primaryColorDisabledDark = "#79a485";
 
 const accentRed = "#d63131";
 const accentBlue = "#3170d6";
+const grey = "#666";
+
+const white = "#FFF";
 
 export const Colors = {
   light: {
     text: '#11181C',
+    textDisabled: '#5b5b5b', // TODO - Change this
     background: '#fff',
+    tabBarBackground: 'rgb(242, 242, 242)',
+    tabBarBorder: "rgb(216, 216, 216)",
     primary: primaryColorDark, // TODO: Change this
     primaryDisabled: primaryColorDisabledDark, // TODO: Change this
     tint: tintColorLight,
@@ -31,13 +37,20 @@ export const Colors = {
     deleteIcon: "#992420",
     cardBody: "#fff", // TODO - Change this
     cardHeader: "#fff", // TODO - Change this
+    // TODO - change all values below
     winningTeamBorder: "#f5e642",
     accentRed: accentRed,
     accentBlue: accentBlue,
+    grey: grey,
+    whiteOpacity: "rgba(0, 0, 0, 0.5)",
+    white: white,
   },
   dark: {
     text: '#ECEDEE',
+    textDisabled: '#5b5b5b',
     background: '#151718',
+    tabBarBackground: 'rgb(18, 18, 18)',
+    tabBarBorder: 'rgb(39, 39, 41)',
     primary: primaryColorDark,
     primaryDisabled: primaryColorDisabledDark,
     tint: tintColorDark,
@@ -57,5 +70,8 @@ export const Colors = {
     winningTeamBorder: "#de9221",
     accentRed: accentRed,
     accentBlue: accentBlue,
+    grey: grey,
+    whiteOpacity: "rgba(255, 255, 255, 0.25)",
+    white: white,
   },
 };

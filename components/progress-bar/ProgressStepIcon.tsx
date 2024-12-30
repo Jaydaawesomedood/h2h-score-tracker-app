@@ -1,5 +1,5 @@
 import { StyleSheet, View, ViewStyle } from "react-native";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 type Props = {

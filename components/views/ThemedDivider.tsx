@@ -1,9 +1,10 @@
 import { StyleSheet, View, ViewProps } from "react-native";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import React from "react";
 
 type Props = ViewProps & {
-  text: string;
+  text?: string;
 };
 
 export default function ThemedDivider({ text, style }: Props) {
@@ -12,8 +13,13 @@ export default function ThemedDivider({ text, style }: Props) {
   return (
     <View style={[styles.versusContainer, style]}>
       <View style={[styles.versusDivider, { backgroundColor: dividerColor }]}></View>
-      <ThemedText style={[styles.versusText]}>{text}</ThemedText>
-      <View style={[styles.versusDivider, { backgroundColor: dividerColor }]}></View>
+      {
+        text &&
+        <>
+          <ThemedText style={[styles.versusText]}>{text}</ThemedText>
+          <View style={[styles.versusDivider, { backgroundColor: dividerColor }]}></View>
+        </>
+      }
     </View>
   );
 };

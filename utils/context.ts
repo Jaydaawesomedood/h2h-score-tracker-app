@@ -2,6 +2,7 @@ import { Player, Team } from "@/models/Player";
 import { createContext, Dispatch, SetStateAction } from "react";
 import * as SQLite from 'expo-sqlite';
 import { Categories } from "@/models/Categories.enum";
+import { create } from "zustand";
 
 type AddTeamContext = {
   players: Player[],
@@ -79,3 +80,16 @@ type StepperContext = {
 };
 
 export const StepperContext = createContext<StepperContext>({ currentStep: 0, setIsNextBtnDisabled: () => {} });
+
+
+interface ProfileStore {
+  profile: any,
+  setProfile: (profile: any) => void,
+  clearProfile: () => void,
+};
+
+export const useProfileStore = create<ProfileStore>((set) => ({
+  profile: {},
+  setProfile: (profile: any) => set({ profile: profile }),
+  clearProfile: () => set({ profile: {} }),
+}));

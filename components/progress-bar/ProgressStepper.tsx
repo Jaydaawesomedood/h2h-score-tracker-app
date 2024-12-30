@@ -5,6 +5,7 @@ import { Fragment, ReactElement, useCallback, useEffect, useRef, useState } from
 import Animated from "react-native-reanimated";
 import SecondaryButton from "../buttons/SecondaryButton";
 import { StepperContext } from "@/utils/context";
+import React from "react";
 
 interface StepperData {
   label: string;

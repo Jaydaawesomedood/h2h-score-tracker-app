@@ -1,11 +1,10 @@
-import { BorderDebug, Dropdown } from "@/constants/styles/Containers";
 import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { FontAwesome } from "@expo/vector-icons";
 import { ComponentProps, Dispatch, SetStateAction, useEffect, useState } from "react";
-import { TextStyle, useColorScheme, View, ViewStyle } from "react-native";
+import { StyleSheet, TextStyle, useColorScheme, View, ViewStyle } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 
 export type DropdownItem = {
   label: string;
@@ -20,7 +19,7 @@ export type ThemedDropdownProps = {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
   disabled?: boolean;
-  onPress: () => void;
+  onPress?: () => void;
   onSelectItem?: () => void;
   onChangeValue?: () => void;
   label?: string;
@@ -36,7 +35,7 @@ export default function ThemedDropdown({
   value,
   setValue,
   disabled = false,
-  onPress, 
+  onPress = () => {}, 
   onSelectItem,
   onChangeValue,
   label,
@@ -64,7 +63,7 @@ export default function ThemedDropdown({
 
   return (
     <View style={[containerStyle]}>
-      <ThemedText style={labelStyle}>{label}</ThemedText>
+      <ThemedText style={[labelStyle, Text.inputLabel]}>{label}</ThemedText>
       <DropDownPicker
         open={isOpen}
         value={value}
@@ -76,12 +75,12 @@ export default function ThemedDropdown({
         onPress={onPress}
         onSelectItem={onSelectItem}
         onChangeValue={onChangeValue}
-        style={[Dropdown.input, { backgroundColor: inputBackgroundColor }]}
+        style={[styles.input, { backgroundColor: inputBackgroundColor }]}
         placeholder={placeholder}
-        placeholderStyle={[Dropdown.inputText, { color: inputPlaceholderColor }]}
+        placeholderStyle={[styles.inputText, { color: inputPlaceholderColor }]}
         textStyle={textStyle}
-        labelStyle={[Dropdown.inputText, { color: textColor }]}
-        dropDownContainerStyle={[Dropdown.input, { backgroundColor: itemSelectedBackgroundColor }]}
+        labelStyle={[styles.inputText, { color: textColor }]}
+        dropDownContainerStyle={[styles.input, { backgroundColor: itemSelectedBackgroundColor }]}
         listParentContainerStyle={{ backgroundColor: menuBackgroundColor }}
         listItemLabelStyle={{ color: textColor }}
         ArrowDownIconComponent={() => (<DropdownIcon icon="chevron-down" />)}
@@ -105,4 +104,13 @@ type DropdownIconProps = {
 function DropdownIcon({ icon }: DropdownIconProps) {
   const color = useThemeColor("text");
   return <FontAwesome name={icon} color={color} size={14} />;
-}
+};
+
+const styles = StyleSheet.create({
+  input: {
+    borderWidth: 0,
+  },
+  inputText: {
+    paddingHorizontal: 0,
+  },
+});

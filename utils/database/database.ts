@@ -27,7 +27,7 @@ export async function GetAllPlayers(db: SQLiteDatabase) {
 };
 
 export async function GetPlayer(db: SQLiteDatabase, id: string) {
-  const player = await db.getFirstAsync<Player>(`SELECT * FROM players WHERE id = '${id}'`).catch((error: any) => {
+  const player = await db.getFirstAsync<Player>(`SELECT * FROM players WHERE id = ?`, id).catch((error: any) => {
     console.log(error);
   });
 
@@ -296,9 +296,9 @@ export async function GetAllDoublesMatches(db: SQLiteDatabase) {
 export async function GetDoublesMatch(db: SQLiteDatabase, id: string) {
   const match = await db.getFirstAsync<any>(`
     ${DbQueries.GetDoublesMatches} WHERE dm.id = '${id}'
-  `).catch((error: any) => {
-    console.log(error);
-  });
+    `).catch((error: any) => {
+      console.log(error);
+    });
 
   return <Match>{
     id: match.id,
@@ -401,7 +401,7 @@ export async function DeleteMatch(db: SQLiteDatabase, id: string, category: "sin
 
 export async function GetAllMatchesOfSamePairs(db: SQLiteDatabase, teamIds: string[], category: "singles" | "doubles") {
   const alias = category === "doubles" ? "dm" : "sm";
-  let matches: any = [];
+  let matches: MatchLite[] = [];
 
   await db.getAllAsync(`
     SELECT *
@@ -427,6 +427,173 @@ export async function GetAllMatchesOfSamePairs(db: SQLiteDatabase, teamIds: stri
     console.log(error);
   });
 
+  return matches;
+};
+
+export async function GetAllMatchesByPlayer(db: SQLiteDatabase, playerId: string) {
+  let matches: Match[] = [];
+
+  await db.getAllAsync(`${DbQueries.GetSinglesMatches} WHERE p1.id = '${playerId}' OR p2.id = '${playerId}'`)
+  .then((response: any[]) => {
+    for (let i = 0; i < response.length; i++) {
+      const match = response[i];
+
+      // TODO - mapping needs to be segregated somewhere
+      matches.push({
+        id: match.id,
+        category: match.category,
+        score: match.score.split(",").map((teamScore: string) => teamScore.split("-").map((value: string) => parseInt(value))),
+        datetime: moment(match.datetime, "DD-MM-YYYY").format("DD MMM YYYY"),
+        mode: match.mode,
+        tournament: match.tournamentID,
+        teams: [
+          {
+            id: match.player1ID,
+            firstName: match.player1FirstName,
+            lastName: match.player1LastName,
+            lastNameFirst: match.player1LastNameFirst,
+            gender: match.player1Gender
+          },
+          {
+            id: match.player2ID,
+            firstName: match.player2FirstName,
+            lastName: match.player2LastName,
+            lastNameFirst: match.player2LastNameFirst,
+            gender: match.player2Gender
+          }
+        ]
+      });
+    }
+  })
+  .catch((error: any) => console.log(error));
+
+  await db.getAllAsync(`${DbQueries.GetDoublesMatches} WHERE (t1p1.id = '${playerId}' OR t1p2.id = '${playerId}' OR t2p1.id = '${playerId}' OR t2p2.id = '${playerId}')`)
+  .then((response: any[]) => {
+    for (let i = 0; i < response.length; i++) {
+      const match = response[i];
+
+      matches.push({
+        id: match.id,
+        category: match.category,
+        score: match.score.split(",").map((teamScore: string) => teamScore.split("-").map((value: string) => parseInt(value))),
+        datetime: moment(match.datetime, "DD-MM-YYYY").format("DD MMM YYYY"),
+        mode: match.mode,
+        tournament: match.tournamentID,
+        teams: [
+          {
+            id: match.team1ID,
+            name: match.team1Name,
+            category: match.category,
+            players: [
+              {
+                id: match.team1Player1ID,
+                firstName: match.team1Player1FirstName,
+                lastName: match.team1Player1LastName,
+                lastNameFirst: match.team1Player1LastNameFirst,
+                gender: match.team1Player1Gender
+              },
+              {
+                id: match.team1Player2ID,
+                firstName: match.team1Player2FirstName,
+                lastName: match.team1Player2LastName,
+                lastNameFirst: match.team1Player2LastNameFirst,
+                gender: match.team1Player2Gender
+              }
+            ]
+          },
+          {
+            id: match.team2ID,
+            name: match.team2Name,
+            category: match.category,
+            players: [
+              {
+                id: match.team2Player1ID,
+                firstName: match.team2Player1FirstName,
+                lastName: match.team2Player1LastName,
+                lastNameFirst: match.team2Player1LastNameFirst,
+                gender: match.team2Player1Gender
+              },
+              {
+                id: match.team2Player2ID,
+                firstName: match.team2Player2FirstName,
+                lastName: match.team2Player2LastName,
+                lastNameFirst: match.team2Player2LastNameFirst,
+                gender: match.team2Player2Gender
+              }
+            ]
+          }
+        ]
+      });
+    }
+  })
+  .catch((error: any) => console.log(error));
+  return matches;
+};
+
+export async function GetAllMatchesByTeam(db: SQLiteDatabase, teamId: string) {
+  let matches: Match[] = [];
+
+  await db.getAllAsync(`${DbQueries.GetDoublesMatches} WHERE (team1ID = '${teamId}' OR team2ID = '${teamId}')`)
+  .then((response: any[]) => {
+    for (let i = 0; i < response.length; i++) {
+      const match = response[i];
+
+      // TODO - Put mapping code into separate function
+      matches.push({
+        id: match.id,
+        category: match.category,
+        score: match.score.split(",").map((teamScore: string) => teamScore.split("-").map((value: string) => parseInt(value))),
+        datetime: moment(match.datetime, "DD-MM-YYYY").format("DD MMM YYYY"),
+        mode: match.mode,
+        tournament: match.tournamentID,
+        teams: [
+          {
+            id: match.team1ID,
+            name: match.team1Name,
+            category: match.category,
+            players: [
+              {
+                id: match.team1Player1ID,
+                firstName: match.team1Player1FirstName,
+                lastName: match.team1Player1LastName,
+                lastNameFirst: match.team1Player1LastNameFirst,
+                gender: match.team1Player1Gender
+              },
+              {
+                id: match.team1Player2ID,
+                firstName: match.team1Player2FirstName,
+                lastName: match.team1Player2LastName,
+                lastNameFirst: match.team1Player2LastNameFirst,
+                gender: match.team1Player2Gender
+              }
+            ]
+          },
+          {
+            id: match.team2ID,
+            name: match.team2Name,
+            category: match.category,
+            players: [
+              {
+                id: match.team2Player1ID,
+                firstName: match.team2Player1FirstName,
+                lastName: match.team2Player1LastName,
+                lastNameFirst: match.team2Player1LastNameFirst,
+                gender: match.team2Player1Gender
+              },
+              {
+                id: match.team2Player2ID,
+                firstName: match.team2Player2FirstName,
+                lastName: match.team2Player2LastName,
+                lastNameFirst: match.team2Player2LastNameFirst,
+                gender: match.team2Player2Gender
+              }
+            ]
+          }
+        ]
+      });
+    }
+  })
+  .catch((error: any) => console.log(error));
   return matches;
 };
 

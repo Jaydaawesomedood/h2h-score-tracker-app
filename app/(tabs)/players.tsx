@@ -1,13 +1,11 @@
 import ScreenTitle from "@/components/screens/ScreenTitle";
-import { ThemedView } from "@/components/ThemedView";
+import ThemedView from "@/components/ThemedView";
 import { Containers, PlayerListItem } from "@/constants/styles/Containers";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Player, Team } from "@/models/Player";
-import { useIsFocused } from "@react-navigation/native";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity, View } from "react-native";
 import AddPlayerOptionModal from "@/components/modals/AddPlayerOptionModal";
 import { showErrorToast } from "@/utils/toast.util";
 import { DbContext } from "@/utils/context";
@@ -15,6 +13,7 @@ import { GetAllPlayersAndTeams } from "@/utils/repositories/PlayerRepository";
 import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
 import TeamProfileCard from "@/components/views/players/TeamProfileCard";
 import { ThemedTabView } from "@/components/tab-view/ThemedTabView";
+import { useIsFocused } from "@react-navigation/native";
 
 export type ListProps = {
   data: any[]; // TODO - type restrict this
@@ -33,6 +32,7 @@ export default function PlayersScreen() {
   const tabBackgroundColor = useThemeColor('background');
 
   const db = useContext(DbContext);
+  // const isFocused = useNavigation().isFocused();
   const isFocused = useIsFocused();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -64,7 +64,7 @@ export default function PlayersScreen() {
   };
 
   useEffect(() => {
-    if (isFocused) getAllPlayersAndTeams();
+    if (isFocused) { getAllPlayersAndTeams(); }
   }, [isFocused]);
 
   return (
@@ -78,7 +78,7 @@ export default function PlayersScreen() {
           iconPosition: "left",
           onActionBtn: onAdd
         }}
-        style={{ paddingHorizontal: 32 }}
+        style={{ paddingHorizontal: 32, marginBottom: 0 }}
       />
       {
         (players.length > 0) &&

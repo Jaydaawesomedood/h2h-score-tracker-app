@@ -1,9 +1,10 @@
-import { ThemedText } from "@/components/ThemedText";
+import ThemedText from "@/components/ThemedText";
 import { useContext } from "react";
 import { Button, Dimensions, View } from "react-native";
 import { GetAllDoublesMatches, GetAllTeams } from "@/utils/database/database";
 import * as FileSystem from 'expo-file-system';
 import { DbContext } from "@/utils/context";
+import ThemedView from "@/components/ThemedView";
 
 export default function ProfileScreen() {
   // const db = useSQLiteContext();
@@ -130,7 +131,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={{padding: 32}}>
+    <ThemedView style={{flex: 1, padding: 32}}>
       <ThemedText>{Dimensions.get('window').width}</ThemedText>
       <ThemedText>{Dimensions.get('window').height}</ThemedText>
       <ThemedText>{FileSystem.documentDirectory}</ThemedText>
@@ -139,6 +140,6 @@ export default function ProfileScreen() {
       <Button onPress={getData} title="Get Data" />
       <View style={{ marginVertical: 8 }}/>
       <Button onPress={deleteTable} title="Delete Table" color={"red"} />
-    </View>
+    </ThemedView>
   );
 }

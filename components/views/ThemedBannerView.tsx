@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, View } from "react-native";
-import { ThemedView } from "../ThemedView";
+import ThemedView from "../ThemedView";
 import { PropsWithChildren } from "react";
 import { BorderDebug } from "@/constants/styles/Containers";
 

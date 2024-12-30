@@ -8,8 +8,11 @@ import { View, StyleSheet, Dimensions } from 'react-native';
 import ActionButton from '@/components/buttons/ActionButton';
 import { Text } from '@/constants/styles/Text';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function TabLayout() {
+  const backgroundColor = useThemeColor("tabBarBackground");
+  const borderColor = useThemeColor("tabBarBorder");
   const activeColor = useThemeColor("tabIconSelected");
   const label = Text.bottomTabLabel;
 
@@ -23,9 +26,11 @@ export default function TabLayout() {
   return (
     <View style={styles.main}>
       <Tabs
+
         screenOptions={{
           tabBarActiveTintColor: activeColor,
           headerShown: false,
+          tabBarStyle: { backgroundColor, borderColor }
         }}
       >
         {

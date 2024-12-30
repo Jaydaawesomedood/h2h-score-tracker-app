@@ -1,4 +1,4 @@
-import { ThemedText } from "@/components/ThemedText";
+import ThemedText from "@/components/ThemedText";
 import { bold, extraSmall, large, light, medium, regular } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { StyleSheet, TextStyle, View } from "react-native";
@@ -14,6 +14,7 @@ type Props = {
   textStyle?: TextStyle;
 };
 
+// TODO - Deprecate component
 export default function MatchDetailsCounterCard({
   title,
   h2h,

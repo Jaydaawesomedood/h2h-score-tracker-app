@@ -116,7 +116,7 @@ function TabIndicator({ measurements, scrollX, screenWidth }: TabIndicatorProps)
     <Animated.View
       style={[
         tabStyles.indicator,
-        { left: 0, backgroundColor },
+        { backgroundColor },
         indicatorStyle
       ]} 
     />

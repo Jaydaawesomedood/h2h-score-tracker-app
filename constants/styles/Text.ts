@@ -8,6 +8,7 @@ export const extraSmall = 12; // Very extra information (e.g., card footers)
 export const small = 14; // Alert messages
 export const medium = 16; // Regular content, inputs, secondary buttons
 export const large = 20; // Primary buttons
+export const mainContent = 26; // Important content
 export const title = 32; // Screen titles
 export const extraLarge = 40; // Banner headings
 

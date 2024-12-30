@@ -1,13 +1,12 @@
 import { AddMatchContext } from "@/utils/context";
 import { useContext } from "react";
 import { FlatList, Modal, TouchableOpacity, View } from "react-native";
-import { ThemedView } from "../ThemedView";
+import ThemedView from "../ThemedView";
 import { Modals, PlayerListItem } from "@/constants/styles/Containers";
-import { ThemedText } from "../ThemedText";
+import ThemedText from "../ThemedText";
 import SecondaryButton from "../buttons/SecondaryButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Text } from "@/constants/styles/Text";
-import PlayerName from "../text/PlayerName";
 import { Player, Team } from "@/models/Player";
 import { Categories } from "@/models/Categories.enum";
 import { Genders } from "@/models/Genders.enum";
@@ -39,21 +38,23 @@ export default function SelectPlayerModal({
   const separatorColor = useThemeColor("itemSeparator");  
 
   return (
-    <Modal animationType="slide" transparent={true} visible={isOpen} onRequestClose={onClose}>
-      <View style={Modals.backdrop}>
-        <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor, height: "90%" }]}>
-          <View style={Modals.titleContainer}>
-            <ThemedText style={Text.screenTitle}>Add {category === "doubles" ? 'Team' : 'Player'}</ThemedText>
-            <SecondaryButton title="Close" onPress={onClose} />
-          </View>
-          <FlatList
-            data={(category === "doubles" ? teamsList : playersList) as any[]}
-            renderItem={ ({ item, index, separators }) => <ListItem item={item} activeIndex={activeIndex} closeModal={onClose} /> }
-            ItemSeparatorComponent={() => <View style={{ width: "100%", height: 0.5, backgroundColor: separatorColor }} />}
-          />
-        </ThemedView>
-      </View>
-    </Modal>
+    <View>
+      <Modal animationType="slide" transparent={true} visible={isOpen} onRequestClose={onClose}>
+        <View style={Modals.backdrop}>
+          <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor, height: "90%" }]}>
+            <View style={Modals.titleContainer}>
+              <ThemedText style={Text.screenTitle}>Add {category === "doubles" ? 'Team' : 'Player'}</ThemedText>
+              <SecondaryButton title="Close" onPress={onClose} />
+            </View>
+            <FlatList
+              data={(category === "doubles" ? teamsList : playersList) as any[]}
+              renderItem={ ({ item, index, separators }) => <ListItem item={item} activeIndex={activeIndex} closeModal={onClose} /> }
+              ItemSeparatorComponent={() => <View style={{ width: "100%", height: 0.5, backgroundColor: separatorColor }} />}
+            />
+          </ThemedView>
+        </View>
+      </Modal>
+    </View>
   );
 };
 

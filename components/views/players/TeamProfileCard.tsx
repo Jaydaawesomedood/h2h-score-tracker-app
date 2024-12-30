@@ -1,5 +1,5 @@
 import PlayerName from "@/components/text/PlayerName";
-import { ThemedText } from "@/components/ThemedText";
+import ThemedText from "@/components/ThemedText";
 import { BorderDebug } from "@/constants/styles/Containers";
 import { Text } from "@/constants/styles/Text";
 import { Team } from "@/models/Player";
