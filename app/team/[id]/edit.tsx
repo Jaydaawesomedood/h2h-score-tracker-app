@@ -2,9 +2,8 @@ import TeamForm from "@/components/forms/TeamForm";
 import ScreenTitle from "@/components/screens/ScreenTitle";
 import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
-import { Player } from "@/models/Player";
 import { router, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { DeleteTeam, UpdateTeam } from "@/utils/database/database";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
@@ -12,14 +11,14 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import { ToastMessages } from "@/constants/messages/Toast";
-import { DbContext } from "@/utils/context";
+import { DbContext, useProfileStore } from "@/utils/context";
 
 export default function EditTeamScreen() {
   // Context
-  // TODO - Change to profile state, refer to edit player
-  const { id, name, category, player1, player2 } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
+  const { profile, setProfile, clearProfile } = useProfileStore();
   const db = useContext(DbContext);
-
+  
   // Colors
   const deleteBtnColor = useThemeColor("deleteIcon");
 
@@ -28,8 +27,8 @@ export default function EditTeamScreen() {
   const [editDisabled, setEditDisabled] = useState<boolean>(true);
 
   // State variables
-  const players = [{...JSON.parse(String(player1))}, {...JSON.parse(String(player2))}];
-  const [originalName, setOriginalName] = useState<string>(String(name));
+  const players = profile && profile.team ? [...profile.team.players] : [];
+  const [originalName, setOriginalName] = useState<string>(profile && profile.team ? profile.team.name : "");
   const [editedName, setEditedName] = useState<string>(originalName);
 
   // Navigation
@@ -49,6 +48,13 @@ export default function EditTeamScreen() {
       await UpdateTeam(db, [editedName.trim()], String(id))
       .then(() => {
         showMessageToast(ToastMessages.EditTeamSuccess);
+        setProfile({
+          ...profile,
+          team: {
+            ...profile.team,
+            name: editedName.trim(),
+          }
+        });
         setOriginalData();
       })
       .catch(() => {
@@ -65,6 +71,7 @@ export default function EditTeamScreen() {
       await DeleteTeam(db, String(id))
       .then(() => {
         showMessageToast(ToastMessages.DeleteTeamSuccess);
+        clearProfile();
         router.navigate("/(tabs)/players");
       })
     }
@@ -89,32 +96,37 @@ export default function EditTeamScreen() {
   }, [editedName]);
 
   return (
-    <TouchableWithoutFeedback onPress={() => { hideKeyboard(); closeDropdown(); }}>
-      <ThemedView style={Containers.screen}>
-        <ScreenTitle
-          title="Edit Team"
-          actionBtn={{
-            title: "Close",
-            onActionBtn: onCloseScreen
-          }}
-        />
-        <TeamForm
-          teamName={editedName}
-          setTeamName={setEditedName}
-          category={String(category)}
-          setCategory={() => {}}
-          players={players}
-          onAddTeamPlayer={onSelectAddPlayerBox}
-          isDropdownOpen={isDropdownOpen}
-          setIsDropdownOpen={setIsDropdownOpen}
-          dropdownDisabled={true}
-          addTeamPlayerDisabled={true}
-          onDropdownClose={closeDropdown}
-          onKeyboardClose={hideKeyboard}
-        />
-        <PrimaryButton title="Save Changes" onPress={onUpdate} disabled={editDisabled} style={{ marginTop: 32 }} />
-        <SecondaryButton title="Delete" icon="trash" iconPosition="left" onPress={onDelete} customColor={deleteBtnColor} style={{ alignSelf: "center", marginTop: 24 }} />
-      </ThemedView>
-    </TouchableWithoutFeedback>
+    <Fragment>
+      {
+        profile && profile.team &&
+        <TouchableWithoutFeedback onPress={() => { hideKeyboard(); closeDropdown(); }}>
+          <ThemedView style={Containers.screen}>
+            <ScreenTitle
+              title="Edit Team"
+              actionBtn={{
+                title: "Close",
+                onActionBtn: onCloseScreen
+              }}
+            />
+            <TeamForm
+              teamName={editedName}
+              setTeamName={setEditedName}
+              category={profile.team.category}
+              setCategory={() => {}}
+              players={players}
+              onAddTeamPlayer={onSelectAddPlayerBox}
+              isDropdownOpen={isDropdownOpen}
+              setIsDropdownOpen={setIsDropdownOpen}
+              dropdownDisabled={true}
+              addTeamPlayerDisabled={true}
+              onDropdownClose={closeDropdown}
+              onKeyboardClose={hideKeyboard}
+            />
+            <PrimaryButton title="Save Changes" onPress={onUpdate} disabled={editDisabled} style={{ marginTop: 32 }} />
+            <SecondaryButton title="Delete" icon="trash" iconPosition="left" onPress={onDelete} customColor={deleteBtnColor} style={{ alignSelf: "center", marginTop: 24 }} />
+          </ThemedView>
+        </TouchableWithoutFeedback>
+      }
+    </Fragment>
   );
 };

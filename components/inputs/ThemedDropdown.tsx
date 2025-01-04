@@ -78,10 +78,10 @@ export default function ThemedDropdown({
         style={[styles.input, { backgroundColor: inputBackgroundColor }]}
         placeholder={placeholder}
         placeholderStyle={[styles.inputText, { color: inputPlaceholderColor }]}
-        textStyle={textStyle}
+        textStyle={[textStyle, { paddingVertical: 8 }]}
         labelStyle={[styles.inputText, { color: textColor }]}
         dropDownContainerStyle={[styles.input, { backgroundColor: itemSelectedBackgroundColor }]}
-        listParentContainerStyle={{ backgroundColor: menuBackgroundColor }}
+        listParentContainerStyle={{ backgroundColor: menuBackgroundColor, paddingVertical: 0 }}
         listItemLabelStyle={{ color: textColor }}
         ArrowDownIconComponent={() => (<DropdownIcon icon="chevron-down" />)}
         ArrowUpIconComponent={() => (<DropdownIcon icon="chevron-up" />)}

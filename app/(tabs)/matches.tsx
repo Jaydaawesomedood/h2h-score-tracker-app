@@ -2,15 +2,14 @@ import ScreenTitle from "@/components/screens/ScreenTitle";
 import ThemedDropdown from "@/components/inputs/ThemedDropdown";
 import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
-import { Text } from "@/constants/styles/Text";
 import { Match } from "@/models/Match";
 import { useContext, useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { showErrorToast } from "@/utils/toast.util";
 import MatchSummaryCard from "@/components/views/matches/MatchSummaryCard";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { router, useNavigation } from "expo-router";
+import { Href, router } from "expo-router";
 import { DbContext } from "@/utils/context";
 import { GetAllMatches } from "@/utils/repositories/MatchRepository";
 import { ThemedTabView } from "@/components/tab-view/ThemedTabView";
@@ -33,7 +32,8 @@ export default function MatchesScreen() {
   const [recentDoublesMatches, setRecentDoublesMatches] = useState<Match[]>([]);
 
   // Navigation
-  const onAddMatch = () => { router.push("/(add)/add-match"); };
+  // const onAddMatch = () => { router.push("/(add)/add-match"); };
+  const onAddMatch = () => { router.push("match/add" as Href); };
 
   const getAllMatches = async () => {
     if (db) {

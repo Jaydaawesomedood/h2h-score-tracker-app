@@ -3,8 +3,8 @@ import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
 import { PlayerBanner } from "@/constants/styles/Containers";
 import { bold, extraSmall, large, light, mainContent, medium, regular, Text } from "@/constants/styles/Text";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Href, router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React, { Dispatch, Fragment, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Image, ImageBackground, StatusBar, View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { GetAllMatchesByPlayer, GetPlayer } from "@/utils/database/database";
 import { showErrorToast } from "@/utils/toast.util";
@@ -147,20 +147,20 @@ export default function PlayerProfileScreen() {
   }, [profile.matches, partner, h2hTabDuration]);
 
   const onEdit = () => {
-    router.push({
-      pathname: "/(edit)/edit-player",
-      params: { id }
-    });
+    router.push(`player/${id}/edit` as Href);
   };
 
   useEffect(() => {
     if (opponent) setH2hTabDuration("all time");
   }, [opponent]);
 
-  useEffect(() => {
-    getPlayer();
-    return clearProfile;
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (Object.keys(profile).length === 0) getPlayer();
+    }, [])
+  );
+
+  useEffect(() => clearProfile, []);
 
   const renderPlayerBanner = useCallback(() => {
     const player = profile?.player;
@@ -169,7 +169,7 @@ export default function PlayerProfileScreen() {
 
     return (
       <ImageBackground
-        source={require('../../assets/images/placeholder-banner-2.jpg')}
+        source={require('../../../assets/images/placeholder-banner-2.jpg')}
         resizeMode="cover"
         style={[PlayerBanner.bannerContainer]}
       >
@@ -186,7 +186,7 @@ export default function PlayerProfileScreen() {
           </View>
           <View style={PlayerBanner.bannerContentContainer}>
             <Image
-              source={require('../../assets/images/placeholder-avatar.png')}
+              source={require('../../../assets/images/placeholder-avatar.png')}
               style={{ borderRadius: imageSize, height: imageSize, width: imageSize }}
             />
             <View style={[PlayerBanner.titleContainer, { flexDirection }]}>
@@ -234,7 +234,7 @@ export default function PlayerProfileScreen() {
       />
     );
   };
-
+  
   return (
     <View style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor={"transparent"}/>
@@ -384,86 +384,92 @@ function StatsTab({
           labelStyle={Text.inputLabel}
         />
         <DurationTab duration={duration} setDuration={setDuration} />
-        <View>
-          <ThemedText style={[text.section, { marginTop: 0, marginBottom: 8 }]}>MATCHES</ThemedText>
-          {
-            stats && stats.games && stats.games.total > 0 &&
-            <View style={{ rowGap: 16, borderWidth: 2, borderColor: grey, borderRadius: 8, padding: 24 }}>
-              <View style={{ paddingBottom: 16 }}>
-                <ThemedBarPercentageView values={[stats.games.won, stats.games.total - stats.games.won]} subtitle={["Won", "Lost"]} />
-              </View>
-              {/* TODO - Loop this */}
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Total Games</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{stats.games.total}</ThemedText>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Win Rate</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{`${GetWinRate(stats.games.total, stats.games.won)}%`}</ThemedText>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Total Sets Won</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{stats.games.sets}</ThemedText>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Casual Games</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{stats.games.casualGames}</ThemedText>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Tournaments</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{stats.games.tournaments}</ThemedText>
-              </View>
-            </View>
-          }
-        </View>
         {
-          !["ms", "ws"].includes(dropdownValue) &&
-          <View>
-            <ThemedText style={[text.section]}>PARTNERS</ThemedText>
+          stats && stats.games && stats.games.total > 0 ?
+          <Fragment>
             <View>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 8 }}>
-                <View style={{ flexBasis: "65%" }}>
-                  <ThemedText>Partner</ThemedText>
+              <ThemedText style={[text.section, { marginTop: 0, marginBottom: 8 }]}>MATCHES</ThemedText>
+                <View style={{ rowGap: 16, borderWidth: 2, borderColor: grey, borderRadius: 8, padding: 24 }}>
+                  <View style={{ paddingBottom: 16 }}>
+                    <ThemedBarPercentageView values={[stats.games.won, stats.games.total - stats.games.won]} subtitle={["Won", "Lost"]} />
+                  </View>
+                  {/* TODO - Loop this */}
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <ThemedText>Total Games</ThemedText>
+                    <ThemedText style={{ fontFamily: bold }}>{stats.games.total}</ThemedText>
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <ThemedText>Win Rate</ThemedText>
+                    <ThemedText style={{ fontFamily: bold }}>{`${GetWinRate(stats.games.total, stats.games.won)}%`}</ThemedText>
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <ThemedText>Total Sets Won</ThemedText>
+                    <ThemedText style={{ fontFamily: bold }}>{stats.games.sets}</ThemedText>
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <ThemedText>Casual Games</ThemedText>
+                    <ThemedText style={{ fontFamily: bold }}>{stats.games.casualGames}</ThemedText>
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <ThemedText>Tournaments</ThemedText>
+                    <ThemedText style={{ fontFamily: bold }}>{stats.games.tournaments}</ThemedText>
+                  </View>
                 </View>
-                <View style={{ flexDirection: "row", flexBasis: "35%", justifyContent: "space-evenly" }}>
-                  <ThemedText>G</ThemedText>
-                  <ThemedText>W</ThemedText>
-                  <ThemedText>WR</ThemedText>
-                </View>
-              </View>
-              <View style={{ width: "100%", height: 2, backgroundColor: grey }} />
-              <View style={{ rowGap: 8 }}>
-                {
-                  stats && stats.partners && stats.partners.slice(0, 3).map((stat: StatsByPartner, index: number) => (
-                    <View key={`player-stats-partner-${index}`} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 8 }}>
-                      <View style={{ flexDirection: "row", alignItems: "center", columnGap: 4 }}>
-                        <View style={{ flexBasis: "5%" }}>
-                          <ThemedText>{index + 1}</ThemedText>
-                        </View>
-                        <View style={{ flexBasis: "60%", overflow: "hidden" }}>
-                          <PlayerProfileCard player={stat.partner} />
-                        </View>
-                      </View>
-                      <View style={{ flexBasis: "35%", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center" }}>
-                        <ThemedText>{stat.totalGames}</ThemedText>
-                        <ThemedText>{stat.gamesWon}</ThemedText>
-                        <ThemedText>{stat.winRate}</ThemedText>
-                      </View>
-                    </View>
-                  ))
-                }
-              </View>
             </View>
             {
-              stats && stats.partners && stats.partners.length > 3 &&
-              <View style={{ marginTop: 8, paddingVertical: 8, alignItems: "center" }}>
-                <SecondaryButton
-                  title="View More"
-                  onPress={() => setIsModalOpen(true)}
-                />
+              !["ms", "ws"].includes(dropdownValue) &&
+              <View>
+                <ThemedText style={[text.section]}>PARTNERS</ThemedText>
+                <View>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 8 }}>
+                    <View style={{ flexBasis: "65%" }}>
+                      <ThemedText>Partner</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: "row", flexBasis: "35%", justifyContent: "space-evenly" }}>
+                      <ThemedText>G</ThemedText>
+                      <ThemedText>W</ThemedText>
+                      <ThemedText>WR</ThemedText>
+                    </View>
+                  </View>
+                  <View style={{ width: "100%", height: 2, backgroundColor: grey }} />
+                  <View style={{ rowGap: 8 }}>
+                    {
+                      stats && stats.partners && stats.partners.slice(0, 3).map((stat: StatsByPartner, index: number) => (
+                        <View key={`player-stats-partner-${index}`} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 8 }}>
+                          <View style={{ flexDirection: "row", alignItems: "center", columnGap: 4 }}>
+                            <View style={{ flexBasis: "5%" }}>
+                              <ThemedText>{index + 1}</ThemedText>
+                            </View>
+                            <View style={{ flexBasis: "60%", overflow: "hidden" }}>
+                              <PlayerProfileCard player={stat.partner} />
+                            </View>
+                          </View>
+                          <View style={{ flexBasis: "35%", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center" }}>
+                            <ThemedText>{stat.totalGames}</ThemedText>
+                            <ThemedText>{stat.gamesWon}</ThemedText>
+                            <ThemedText>{stat.winRate}</ThemedText>
+                          </View>
+                        </View>
+                      ))
+                    }
+                  </View>
+                </View>
+                {
+                  stats && stats.partners && stats.partners.length > 3 &&
+                  <View style={{ marginTop: 8, paddingVertical: 8, alignItems: "center" }}>
+                    <SecondaryButton
+                      title="View More"
+                      onPress={() => setIsModalOpen(true)}
+                    />
+                  </View>
+                }
               </View>
             }
-          </View>
+          </Fragment>
+          :
+          <ThemedView style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <ThemedText style={{ fontFamily: light, fontSize: medium }}>No data available</ThemedText>
+          </ThemedView>
         }
       </View>
     </TouchableWithoutFeedback>

@@ -2,13 +2,9 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import ActionButton from '@/components/buttons/ActionButton';
 import { Text } from '@/constants/styles/Text';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import { NavigationContainer } from '@react-navigation/native';
 
 export default function TabLayout() {
   const backgroundColor = useThemeColor("tabBarBackground");
@@ -17,16 +13,15 @@ export default function TabLayout() {
   const label = Text.bottomTabLabel;
 
   const tabs = [
-    { name: "Profile", icon: "user", tabBarShowLabel: true },
-    { name: "Matches", icon: "ranking-star", tabBarShowLabel: true },
-    { name: "Players", icon: "people-group", tabBarShowLabel: true },
-    { name: "Settings", icon: "gear", tabBarShowLabel: true },
+    { page: "index", name: "Profile", icon: "user", tabBarShowLabel: true },
+    { page: "matches", name: "Matches", icon: "ranking-star", tabBarShowLabel: true },
+    { page: "players", name: "Players", icon: "people-group", tabBarShowLabel: true },
+    { page: "settings", name: "Settings", icon: "gear", tabBarShowLabel: true },
   ];
 
   return (
     <View style={styles.main}>
       <Tabs
-
         screenOptions={{
           tabBarActiveTintColor: activeColor,
           headerShown: false,
@@ -34,10 +29,10 @@ export default function TabLayout() {
         }}
       >
         {
-          tabs.map(({ name, icon, ...otherProps }) => (
+          tabs.map(({ page, name, icon, ...otherProps }) => (
             <Tabs.Screen
               key={name.toLowerCase()}
-              name={name.toLowerCase()}
+              name={page}
               options={{
                 title: name,
                 tabBarIcon: ({ color }: any) => (

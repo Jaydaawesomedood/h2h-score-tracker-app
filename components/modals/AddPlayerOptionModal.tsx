@@ -5,7 +5,7 @@ import { AddOption, Modals } from "@/constants/styles/Containers";
 import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { FontAwesome } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { Href, router } from "expo-router";
 import { ComponentProps } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 
@@ -29,12 +29,12 @@ export default function AddPlayerOptionModal({ isOpen, onClose }: ModalProps) {
 
   const onAddPlayer = () => {
     onClose();
-    router.push("/(add)/add-player"); 
+    router.push("player/add" as Href); 
   };
 
   const onAddTeam = () => {
     onClose();
-    router.push("/(add)/add-team");
+    router.push("team/add" as Href);
   };
 
   return (

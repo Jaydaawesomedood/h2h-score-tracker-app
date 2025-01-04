@@ -4,13 +4,13 @@ import { ProgressStepper } from "@/components/progress-bar/ProgressStepper";
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
-import { DbContext, EditMatchContext } from "@/utils/context";
+import { DbContext, EditMatchContext, useProfileStore } from "@/utils/context";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import { router, useLocalSearchParams } from "expo-router";
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
-import * as DbClient from "../../utils/database/database";
+import * as DbClient from "../../../utils/database/database";
 import { Match } from "@/models/Match";
 import { GetMatch } from "@/utils/repositories/MatchRepository";
 import { Player, Team } from "@/models/Player";
@@ -21,7 +21,8 @@ export default function EditMatchScreen() {
   // Context
   const db = useContext(DbContext);
   // TODO - Change to profile state, refer to edit player
-  const { id, category, mode, datetime } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
+  const { profile, setProfile, clearProfile } = useProfileStore();
 
   // Colors
   const deleteBtnColor = useThemeColor("deleteIcon");
@@ -32,11 +33,9 @@ export default function EditMatchScreen() {
   const [match, setMatch] = useState<Match>();
   const [isMatchSettingDropdownOpen, setIsMatchSettingDropdownOpen] = useState<boolean>(false);
   
-  const [matchSetting, setMatchSetting] = useState<string>(mode as string);
-  const [matchDate, setMatchDate] = useState(moment(datetime as string, "DD MMM YYYY").format("YYYY-MM-DD").toString());
-  const [matchScore, setMatchScore] = useState<Number[][]>([]);
-
-  const [nextBtnDisabled, setNextBtnDisabled] = useState<boolean>(true);
+  const [matchSetting, setMatchSetting] = useState<string>(profile.match.mode);
+  const [matchDate, setMatchDate] = useState(moment(profile.match.datetime, "DD MMM YYYY").format("YYYY-MM-DD").toString());
+  const [matchScore, setMatchScore] = useState<Number[][]>([...profile.match.score]);
 
   const onPrevious = () => { setCurrentStep(currentStep === 0 ? 0 : currentStep - 1); };
   const onNext = () => { setCurrentStep(currentStep + 1); };
@@ -47,7 +46,7 @@ export default function EditMatchScreen() {
         db, 
         [matchSetting.toLowerCase(), moment(matchDate).format("DD-MM-YYYY").toString(), matchScore.map((set: Number[]) => set.join("-")).join(",")],
         id as string,
-        (category as string).toLowerCase().endsWith("d") ? "doubles" : "singles")
+        (profile.match.category as string).toLowerCase().endsWith("d") ? "doubles" : "singles")
       .then(() => {
         showMessageToast(ToastMessages.EditMatchSuccess);
         router.back();
@@ -64,6 +63,7 @@ export default function EditMatchScreen() {
       await DbClient.DeleteMatch(db, id as string, getCategory())
       .then(() => {
         showMessageToast(ToastMessages.DeleteMatchSuccess);
+        clearProfile();
         router.replace("/matches");
       })
       .catch(() => showErrorToast());
@@ -101,29 +101,29 @@ export default function EditMatchScreen() {
   };
 
   const getCategory = () => {
-    return (category as string).endsWith("d") ? "doubles" : "singles";
+    return (profile.match.category as string).endsWith("d") ? "doubles" : "singles";
   };
   
-  useEffect(() => {
-    getMatch();
-  }, []);
+  // useEffect(() => {
+  //   getMatch();
+  // }, []);
 
   // TODO - Revisit context & this section
-  useEffect(() => {
-    if (match) {
-      setMatchSetting(match.mode.toLowerCase());
-      setMatchDate(moment(match.datetime, "DD MMM YYYY").format("YYYY-MM-DD").toString());
-      setMatchScore([...match.score]);
-    }
-  }, [match]);
+  // useEffect(() => {
+  //   if (match) {
+  //     setMatchSetting(profile.match.mode.toLowerCase());
+  //     setMatchDate(moment(profile.match.datetime, "DD MMM YYYY").format("YYYY-MM-DD").toString());
+  //     setMatchScore([...profile.match.score]);
+  //   }
+  // }, [match]);
 
   return (
     <EditMatchContext.Provider value={{
       setting: matchSetting,
       date: matchDate,
       score: matchScore,
-      category: match?.category.toLowerCase().endsWith("d") ? "doubles" : "singles",
-      teams: match?.category.toLowerCase().endsWith("d") ? match?.teams as Team[] : match?.teams as Player[],
+      category: profile.match.category.toLowerCase().endsWith("d") ? "doubles" : "singles",
+      teams: profile.match.category.toLowerCase().endsWith("d") ? profile.match.teams as Team[] : profile.match.teams as Player[],
       setSetting: setMatchSetting,
       setDate: setMatchDate,
       setScore: setMatchScore,
