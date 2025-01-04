@@ -54,7 +54,7 @@ export const Text = {
     fontSize: medium,
     lineHeight: medium,
     paddingHorizontal: 8,
-    paddingVertical: getDimensionValue(),
+    paddingVertical: 16,
   },
   inputLabel: {
     fontFamily: regular,

@@ -156,6 +156,7 @@ export function ThemedTabView({ tabs }: Props) {
   );
 
   return (
+    // View is needed to wrap around the Animated.FlatList, or Touchables will not work for screens out of bounds
     <View style={{ flex: 1 }}>
       <Tabs
         tabs={tabs.map(tab => tab.label)}
@@ -163,19 +164,21 @@ export function ThemedTabView({ tabs }: Props) {
         screenWidth={screenWidth}
         onTabPress={onTabPress}
       />
-      <Animated.FlatList
-        ref={tabViewRef}
-        data={tabs.map(tab => tab.screen)}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled
-        bounces={false}
-        onScroll={scrollHandler as any}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={{ width: screenWidth }}>{item}</View>
-        )}
-      />
+      <View style={{ flex: 1 }}>
+        <Animated.FlatList
+          ref={tabViewRef}
+          data={tabs.map(tab => tab.screen)}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          bounces={false}
+          onScroll={scrollHandler as any}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View style={{ width: screenWidth }}>{item}</View>
+          )}
+        />
+      </View>
     </View>
   );
 };

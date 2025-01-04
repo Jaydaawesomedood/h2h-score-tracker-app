@@ -3,7 +3,7 @@ import ThemedView from "@/components/ThemedView";
 import { Containers, PlayerListItem } from "@/constants/styles/Containers";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Player, Team } from "@/models/Player";
-import { router, useNavigation } from "expo-router";
+import { Href, router, useNavigation } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import AddPlayerOptionModal from "@/components/modals/AddPlayerOptionModal";
@@ -112,10 +112,7 @@ function ListItem({ item, type }: ListItemProps) {
   const containerStyle = PlayerListItem.itemContainer;
 
   const onPress = () => {
-    router.push({
-      pathname: (item.id.startsWith("t")) ? "/(profiles)/team" : "/(profiles)/player",
-      params: { id: item.id }
-    });
+    router.push(`${(item.id.startsWith("t")) ? 'team' : 'player'}/${item.id}` as Href);
   };
 
   return (

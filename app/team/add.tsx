@@ -40,6 +40,7 @@ export type PlayerNameProps = {
 export default function AddTeamScreen() {
   // Context
   const db = useContext(DbContext);
+  // TODO - useprofilestore
   
   // State variables - UI
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

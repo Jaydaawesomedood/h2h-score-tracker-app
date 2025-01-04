@@ -1,5 +1,5 @@
 import ThemedText from "@/components/ThemedText";
-import { router, useLocalSearchParams } from "expo-router";
+import { Href, router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Dispatch, Fragment, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GetAllMatchesByTeam, GetTeam } from "@/utils/database/database";
 import { showErrorToast } from "@/utils/toast.util";
@@ -35,16 +35,7 @@ export default function TeamProfileScreen() {
   const [opponent, setOpponent] = useState<Team | undefined>();
 
   // Button actions
-  const onEditTeam = () => { router.push({
-    pathname: "/(edit)/edit-team",
-    params: {
-      id: profile!.id,
-      name: profile!.name,
-      category: profile!.category,
-      player1: JSON.stringify(profile!.players[0]),
-      player2: JSON.stringify(profile!.players[1]),
-    } // TODO - send id only
-  })};
+  const onEditTeam = () => { router.push(`team/${id}/edit` as Href)};
 
   // DB actions
   const getTeam = async () => {
@@ -116,19 +107,23 @@ export default function TeamProfileScreen() {
   );
 
   // useEffect
-  useEffect(() => {
-    if (db) getTeam();
-    else showErrorToast();
-    
-    return clearProfile;
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (Object.keys(profile).length === 0) {
+        if (db) getTeam();
+        else showErrorToast();
+      }
+    }, [])
+  );
+
+  useEffect(() => clearProfile, []);
 
   const renderTeamBanner = useCallback(() => {
     const imageSize: number = 72;
 
     return (
       <ImageBackground
-        source={require('../../assets/images/placeholder-banner-1.jpg')}
+        source={require('../../../assets/images/placeholder-banner-1.jpg')}
         resizeMode="cover"
         style={[PlayerBanner.bannerContainer]}
       >
@@ -155,7 +150,7 @@ export default function TeamProfileScreen() {
                 // TODO - Change this to PlayerProfileCard
                 <View key={player.id} style={{ alignItems: "center", minWidth: 150, maxWidth: 150 }}>
                   <Image
-                    source={require('../../assets/images/placeholder-avatar.png')}
+                    source={require('../../../assets/images/placeholder-avatar.png')}
                     style={{ borderRadius: imageSize, height: imageSize, width: imageSize, marginBottom: 16 }}
                   />
                   <PlayerName player={player} isVertical={true} textStyle={{ fontSize: large }} />
@@ -217,43 +212,51 @@ function StatsTab({
 
   return (
     <View style={styles.tabScreen}>
-    {
-      stats && stats.games && stats.games.total > 0 &&
       <Fragment>
         <DurationTab duration={duration} setDuration={setDuration} />
-        <View>
-          <ThemedText style={[text.section, { marginTop: 0, marginBottom: 8 }]}>MATCHES</ThemedText>
-            <View style={{ rowGap: 16, borderWidth: 2, borderColor: grey, borderRadius: 8, padding: 24 }}>
-              <View style={{ paddingBottom: 16 }}>
-                <ThemedBarPercentageView values={[stats.games.won, stats.games.total - stats.games.won]} subtitle={["Won", "Lost"]} />
-              </View>
-              {/* TODO - Loop this */}
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Total Games</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{stats.games.total}</ThemedText>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Win Rate</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{`${GetWinRate(stats.games.total, stats.games.won)}%`}</ThemedText>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Total Sets Won</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{stats.games.sets}</ThemedText>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Casual Games</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{stats.games.casualGames}</ThemedText>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ThemedText>Tournaments</ThemedText>
-                <ThemedText style={{ fontFamily: bold }}>{stats.games.tournaments}</ThemedText>
-              </View>
+        {
+          stats && stats.games && stats.games.total > 0 ?
+          <Fragment>
+            <View>
+              <ThemedText style={[text.section, { marginTop: 0, marginBottom: 8 }]}>MATCHES</ThemedText>
+                <Fragment>
+                  <View style={{ rowGap: 16, borderWidth: 2, borderColor: grey, borderRadius: 8, padding: 24 }}>
+                    <View style={{ paddingBottom: 16 }}>
+                      <ThemedBarPercentageView values={[stats.games.won, stats.games.total - stats.games.won]} subtitle={["Won", "Lost"]} />
+                    </View>
+                    {/* TODO - Loop this */}
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                      <ThemedText>Total Games</ThemedText>
+                      <ThemedText style={{ fontFamily: bold }}>{stats.games.total}</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                      <ThemedText>Win Rate</ThemedText>
+                      <ThemedText style={{ fontFamily: bold }}>{`${GetWinRate(stats.games.total, stats.games.won)}%`}</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                      <ThemedText>Total Sets Won</ThemedText>
+                      <ThemedText style={{ fontFamily: bold }}>{stats.games.sets}</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                      <ThemedText>Casual Games</ThemedText>
+                      <ThemedText style={{ fontFamily: bold }}>{stats.games.casualGames}</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                      <ThemedText>Tournaments</ThemedText>
+                      <ThemedText style={{ fontFamily: bold }}>{stats.games.tournaments}</ThemedText>
+                    </View>
+                  </View>
+                </Fragment>
             </View>
-        </View>
-        <ThemedText style={text.section}>RECENT MATCH</ThemedText>
-        <MatchSummaryCard match={recentMatch} mode="doubles" />
+            <ThemedText style={text.section}>RECENT MATCH</ThemedText>
+            <MatchSummaryCard match={recentMatch} mode="doubles" />
+          </Fragment>
+          :
+          <ThemedView style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <ThemedText style={{ fontFamily: light, fontSize: medium }}>No data available</ThemedText>
+          </ThemedView>
+        }
       </Fragment>
-    }
     </View>
   );
 };

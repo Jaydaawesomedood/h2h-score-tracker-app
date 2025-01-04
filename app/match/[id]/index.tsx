@@ -2,8 +2,8 @@ import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
 import { PlayerBanner } from "@/constants/styles/Containers";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useContext, useEffect, useMemo } from "react";
+import { Href, router, useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { ImageBackground, Image, StatusBar, View, StyleSheet } from "react-native";
 import { showErrorToast } from "@/utils/toast.util";
 import { GetAllMatchesByPlayer, GetAllMatchesByTeam, GetAllMatchesOfSamePairs, GetDoublesMatch, GetSinglesMatch } from "@/utils/database/database";
@@ -96,30 +96,14 @@ export default function MatchProfileScreen() {
   // Button actions
   const onEditMatch = () => {
     if (profile) {
-      router.push({
-        pathname: "/(edit)/edit-match",
-        params: {
-          id: profile.match!.id,
-          category: profile.match!.category,
-          mode: profile.match!.mode,
-          datetime: profile.match!.datetime
-        } // TODO - Send id only
-      });
+      router.push(`match/${id}/edit` as Href);
     }
   };
-
-  // useEffect
-  useEffect(() => {
-    if (db) GetMatch(String(id).startsWith("dm") ? "doubles" : "singles");
-    else showErrorToast();
-
-    return clearProfile;
-  }, []);
   
   const renderMatchBanner = () => {
     return (
       <ImageBackground
-        source={require('../../assets/images/placeholder-banner-1.jpg')}
+        source={require('../../../assets/images/placeholder-banner-1.jpg')}
         resizeMode="cover"
         style={[PlayerBanner.bannerContainer]}
       >
@@ -295,6 +279,16 @@ export default function MatchProfileScreen() {
     );
   };
 
+  // useEffect
+  useFocusEffect(
+    useCallback(() => {
+      if (db) GetMatch(String(id).startsWith("dm") ? "doubles" : "singles");
+      else showErrorToast();
+    }, [])
+  );
+
+  useEffect(() => clearProfile, []);
+  
   return (
     <View style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor={"transparent"}/>
@@ -314,7 +308,7 @@ export default function MatchProfileScreen() {
               ]}
             />
         </ThemedBannerView>
-        }
+      }
     </View>
   );
 };
@@ -343,7 +337,7 @@ function PlayerProfile({ player, isWinner }: PlayerProfileProps) {
         width: imageSize,
       }}>
         <Image
-          source={require('../../assets/images/placeholder-avatar.png')}
+          source={require('../../../assets/images/placeholder-avatar.png')}
           style={{ height: "100%", width: "100%" }}
         />
       </View>
