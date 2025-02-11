@@ -13,8 +13,8 @@ export default function TabLayout() {
   const label = Text.bottomTabLabel;
 
   const tabs = [
-    { page: "index", name: "Profile", icon: "user", tabBarShowLabel: true },
-    { page: "matches", name: "Matches", icon: "ranking-star", tabBarShowLabel: true },
+    // { page: "index", name: "Profile", icon: "user", tabBarShowLabel: true },
+    { page: "index", name: "Matches", icon: "ranking-star", tabBarShowLabel: true },
     { page: "players", name: "Players", icon: "people-group", tabBarShowLabel: true },
     { page: "settings", name: "Settings", icon: "gear", tabBarShowLabel: true },
   ];
@@ -52,9 +52,6 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    // borderColor: 'red',
-    // borderWidth: 1,
-    // borderStyle: 'solid'
   },
   view: {
     backgroundColor: "#32a852",

@@ -5,8 +5,8 @@ import { Match } from "@/models/Match";
 
 const GetAllMatches = async (
   db: SQLiteDatabase,
-  setSinglesMatches: Dispatch<SetStateAction<Match[]>>,
-  setDoublesMatches: Dispatch<SetStateAction<Match[]>>,
+  setSinglesMatches: (matches: Match[]) => void,
+  setDoublesMatches: (matches: Match[]) => void,
   error: () => void
 ) => {
   await DbClient.GetAllSinglesMatches(db)
@@ -36,6 +36,24 @@ const GetAllMatches = async (
   });
 };
 
+async function GetAllMatchesV2(
+  db: SQLiteDatabase,
+  setSinglesMatches: (matches: Match[]) => void,
+  setDoublesMatches: (matches: Match[]) => void,
+  error: () => void,
+) {
+  try {
+    const allSinglesMatches = await DbClient.GetAllSinglesMatches(db);
+    const allDoublesMatches = await DbClient.GetAllDoublesMatches(db);
+
+    setSinglesMatches(allSinglesMatches.length > 0 ? [...allSinglesMatches] : []);
+    setDoublesMatches(allDoublesMatches.length > 0 ? [...allDoublesMatches] : []);
+  }
+  catch (err: any) {
+    error();
+  }
+}
+
 const GetMatch = async (
   db: SQLiteDatabase,
   category: "singles" | "doubles",
@@ -60,4 +78,4 @@ const GetMatch = async (
   }
 };
 
-export { GetAllMatches, GetMatch };
+export { GetAllMatches, GetMatch, GetAllMatchesV2 };

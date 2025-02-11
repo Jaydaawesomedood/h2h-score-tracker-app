@@ -1,13 +1,15 @@
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
-import { AddOption, Modals } from "@/constants/styles/Containers";
+import { AddOption, BorderDebug, Modals } from "@/constants/styles/Containers";
 import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useThemeStore } from "@/utils/context";
 import { FontAwesome } from "@expo/vector-icons";
 import { Href, router } from "expo-router";
 import { ComponentProps } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
+import Animated, { SlideInDown, SlideInUp, SlideOutDown } from "react-native-reanimated";
 
 // TODO - Reorganize this as its duplicating elsewhere
 type ModalProps = {
@@ -26,6 +28,8 @@ type OptionProps = {
 export default function AddPlayerOptionModal({ isOpen, onClose }: ModalProps) {
   // Styling
   const contentBackgroundColor = useThemeColor("background");
+  const addPlayerBackgroundColor = useThemeColor("addPlayerBackground");
+  const addTeamBackgroundColor = useThemeColor("addTeamBackground");
 
   const onAddPlayer = () => {
     onClose();
@@ -39,17 +43,16 @@ export default function AddPlayerOptionModal({ isOpen, onClose }: ModalProps) {
 
   return (
     <View>
-      <Modal animationType="slide" transparent={true} visible={isOpen} onRequestClose={onClose} style={{ zIndex: 20 }}>
+      <Modal animationType="none" transparent={true} visible={isOpen} onRequestClose={onClose}>
         <View style={[styles.modal]}>
           <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor }]}>
             <View style={Modals.titleContainer}>
               <ThemedText style={Text.screenTitle}>Add</ThemedText>
               <SecondaryButton title="Close" onPress={onClose} />
             </View>
-            <View>
-              {/* TODO - Segregare colors */}
-              <Option icon="user" title="Add Player" subtitle="Add an individual player" onPress={onAddPlayer} style={{ backgroundColor: "#5d6f99" }} />
-              <Option icon="users" title="Add Team" subtitle="Add a team by grouping players together" onPress={onAddTeam} style={{ marginTop: 16, backgroundColor: "#99895d" }} />
+            <View style={{ rowGap: 16 }}>
+              <Option icon="user" title="Add Player" subtitle="Add an individual player" onPress={onAddPlayer} style={{ backgroundColor: addPlayerBackgroundColor }} />
+              <Option icon="users" title="Add Team" subtitle="Add a team by grouping players together" onPress={onAddTeam} style={{ backgroundColor: addTeamBackgroundColor }} />
             </View>
           </ThemedView>
         </View>
@@ -60,14 +63,17 @@ export default function AddPlayerOptionModal({ isOpen, onClose }: ModalProps) {
 
 
 function Option({ icon, title, subtitle, onPress, style }: OptionProps) {
+  const { isLightMode } = useThemeStore();
+  const textColor = useThemeColor(isLightMode ? "textFlipped" : "text");
+
   return (
     <TouchableOpacity onPress={onPress} style={[AddOption.container, style]}>
       <View style={AddOption.iconContainer}>
         <FontAwesome name={icon} size={32} color={"white"}></FontAwesome>
       </View>
       <View style={AddOption.textContainer}>
-        <ThemedText numberOfLines={1} style={Text.primaryBtnTitle}>{title}</ThemedText>
-        <ThemedText numberOfLines={1} style={Text.message}>{subtitle}</ThemedText>
+        <ThemedText numberOfLines={1} style={[Text.primaryBtnTitle, { color: textColor }]}>{title}</ThemedText>
+        <ThemedText numberOfLines={1} style={[Text.message, { color: textColor }]}>{subtitle}</ThemedText>
       </View>
     </TouchableOpacity>
   );
@@ -78,8 +84,11 @@ const styles = StyleSheet.create({
     // position: "absolute",
     // top: 0,
     // left: 0,
+    // width: "100%",
+    // height: "100%",
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
+    // ...BorderDebug,
     // zIndex: 10,
   },
 });

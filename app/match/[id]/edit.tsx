@@ -4,7 +4,7 @@ import { ProgressStepper } from "@/components/progress-bar/ProgressStepper";
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
-import { DbContext, EditMatchContext, useProfileStore } from "@/utils/context";
+import { DbContext, EditMatchContext, useDataStore, useProfileStore } from "@/utils/context";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import { router, useLocalSearchParams } from "expo-router";
 import moment from "moment";
@@ -12,7 +12,7 @@ import { useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
 import * as DbClient from "../../../utils/database/database";
 import { Match } from "@/models/Match";
-import { GetMatch } from "@/utils/repositories/MatchRepository";
+import { GetAllMatchesV2, GetMatch } from "@/utils/repositories/MatchRepository";
 import { Player, Team } from "@/models/Player";
 import { ToastMessages } from "@/constants/messages/Toast";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -22,7 +22,8 @@ export default function EditMatchScreen() {
   const db = useContext(DbContext);
   // TODO - Change to profile state, refer to edit player
   const { id } = useLocalSearchParams();
-  const { profile, setProfile, clearProfile } = useProfileStore();
+  const { profile, clearProfile } = useProfileStore();
+  const { setSinglesMatches, setDoublesMatches } = useDataStore();
 
   // Colors
   const deleteBtnColor = useThemeColor("deleteIcon");
@@ -47,8 +48,12 @@ export default function EditMatchScreen() {
         [matchSetting.toLowerCase(), moment(matchDate).format("DD-MM-YYYY").toString(), matchScore.map((set: Number[]) => set.join("-")).join(",")],
         id as string,
         (profile.match.category as string).toLowerCase().endsWith("d") ? "doubles" : "singles")
-      .then(() => {
+      .then(async () => {
         showMessageToast(ToastMessages.EditMatchSuccess);
+
+        // After updating match details, update store
+        await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
+
         router.back();
       })
       .catch(() => showErrorToast());
@@ -61,9 +66,13 @@ export default function EditMatchScreen() {
   const onDelete = async () => {
     if (db) {
       await DbClient.DeleteMatch(db, id as string, getCategory())
-      .then(() => {
+      .then(async () => {
         showMessageToast(ToastMessages.DeleteMatchSuccess);
         clearProfile();
+
+        // After updating match details, update store
+        await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
+
         router.replace("/matches");
       })
       .catch(() => showErrorToast());

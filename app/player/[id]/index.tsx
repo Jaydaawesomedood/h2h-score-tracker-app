@@ -1,21 +1,21 @@
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
-import { PlayerBanner } from "@/constants/styles/Containers";
+import { BorderDebug, PlayerBanner } from "@/constants/styles/Containers";
 import { bold, extraSmall, large, light, mainContent, medium, regular, Text } from "@/constants/styles/Text";
 import { Href, router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { Dispatch, Fragment, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Image, ImageBackground, StatusBar, View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { GetAllMatchesByPlayer, GetPlayer } from "@/utils/database/database";
 import { showErrorToast } from "@/utils/toast.util";
-import { DbContext, useProfileStore } from "@/utils/context";
+import { DbContext, useProfileStore, useThemeStore } from "@/utils/context";
 import ThemedBannerView from "@/components/views/ThemedBannerView";
-import { ThemedTabView } from "@/components/tab-view/ThemedTabView";
+import ThemedTabView from "@/components/tab-view/ThemedTabView";
 import ThemedDropdown from "@/components/inputs/ThemedDropdown";
 import { GetPlayerStatsByCategory, GetPlayerOverallStats, GetPlayerStatsByPartner, GetH2HStatsById, GetToughestOpponentsByH2H } from "@/utils/scores.util";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { PlayerMatchSummary, Stats, StatsByCategory, StatsByPartner } from "@/models/Stats";
-import { GetCategoryFullName, GetUniqueCategoriesFromAllMatches, GetWinRate, SortMatchesByDate } from "@/utils/common/common.util";
+import { GetWinRate, SortMatchesByDate } from "@/utils/common/common.util";
 import MatchSummaryCard from "@/components/views/matches/MatchSummaryCard";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import { ThemedBarPercentageView } from "@/components/views/ThemedBarPercentageView";
@@ -25,10 +25,12 @@ import { Match } from "@/models/Match";
 import H2HPicker from "@/components/inputs/H2HPicker";
 import { Player, Team } from "@/models/Player";
 import { DurationTab } from "@/components/inputs/DurationTabPicker";
+import { GetUniqueCategoriesFromMatches, GetCategoryFullName } from "@/utils/categories.util";
 
 export default function PlayerProfileScreen() {
   const { id } = useLocalSearchParams();
   const { profile, setProfile, clearProfile } = useProfileStore();
+  const { isLightMode } = useThemeStore();
 
   const db = useContext(DbContext);
 
@@ -72,7 +74,7 @@ export default function PlayerProfileScreen() {
         won: 0,
         winRate: ""
       },
-      categories: GetUniqueCategoriesFromAllMatches(profile?.matches).map((category: string) => {
+      categories: GetUniqueCategoriesFromMatches(profile?.matches).map((category: string) => {
         return {
           category: category,
           stats: GetPlayerStatsByCategory(category, profile?.matches, id as string),
@@ -108,7 +110,7 @@ export default function PlayerProfileScreen() {
         }
         else if (statsTabDropdownValue === "overall" && statsTabDuration === "this year") {
           // TODO - rethink this implementation
-          const arr = GetUniqueCategoriesFromAllMatches(profile?.matches).map((category: string) => GetPlayerStatsByCategory(category, profile?.matches, id as string, true));
+          const arr = GetUniqueCategoriesFromMatches(profile?.matches).map((category: string) => GetPlayerStatsByCategory(category, profile?.matches, id as string, true));
           total = arr.reduce((accumulator, currentValue) => accumulator + currentValue.total, 0);
           won = arr.reduce((accumulator, currentValue) => accumulator + currentValue.won, 0);
         }
@@ -166,14 +168,15 @@ export default function PlayerProfileScreen() {
     const player = profile?.player;
     const flexDirection = player?.lastNameFirst ? "column-reverse": "column";
     const imageSize: number = 72;
+    const backgroundColor = isLightMode ? "rgba(255, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.85)";
 
     return (
       <ImageBackground
-        source={require('../../../assets/images/placeholder-banner-2.jpg')}
+        source={isLightMode ? require("../../../assets/images/player-banner-light.jpg") : require("../../../assets/images/player-banner-dark.jpg")}
         resizeMode="cover"
         style={[PlayerBanner.bannerContainer]}
       >
-        <View style={PlayerBanner.innerBannerContainer}>
+        <View style={[PlayerBanner.innerBannerContainer, { backgroundColor }]}>
           <View style={PlayerBanner.screenTitleContainer}>
             <ScreenTitleWithBack
               title=""
@@ -215,7 +218,7 @@ export default function PlayerProfileScreen() {
       duration={statsTabDuration}
       setDuration={setStatsTabDuration}
       setIsModalOpen={setIsViewAllPartnersModalOpen}
-      categories={GetUniqueCategoriesFromAllMatches(profile!.matches)}
+      categories={GetUniqueCategoriesFromMatches(profile!.matches)}
       stats={overallStats}
     />
   );
@@ -502,9 +505,19 @@ function H2HTab({
   setDuration,
 }: H2HTabProps) {
   return (
-    <ThemedView style={styles.tabScreen}>
+    <ThemedView
+      style={styles.tabScreen}
+      // TODO - For future implementation of clamping tabview
+      // onLayout={
+      //   (event) => {
+      //     event.target.measure((_x, _y, _width, height, _pageX, pageY) => {
+      //       console.log(pageY, height);
+      //     })
+      //   }
+      // }
+    >
       {
-        stats && stats.partners && stats.partners.length > 0 &&
+        stats &&
         stats.h2h &&
         <H2HPicker
           player={player}
@@ -546,7 +559,7 @@ function H2HTab({
 // TODO - segregate this style somewhere as it is used in multiple places
 const styles = StyleSheet.create({
   tabScreen: {
-    flex: 1,
+    // flex: 1,
     paddingHorizontal: 32,
     paddingVertical: 16,
     rowGap: 16,

@@ -5,8 +5,8 @@ import ThemedText from "../ThemedText";
 import ThemedDropdown from "../inputs/ThemedDropdown";
 import { Dispatch, SetStateAction } from "react";
 import { Text } from "@/constants/styles/Text";
-import { Containers } from "@/constants/styles/Containers";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import React from "react";
 
 type PlayerFormProps = {
   firstName: string;
@@ -63,7 +63,7 @@ export default function PlayerForm({
         containerStyle={{ marginBottom: 12 }}
         onFocus={onDropdownClose}
       />
-      <View style={[Containers.checkboxContainer, { marginBottom: 24 }]}>
+      <View style={[{ flexDirection: "row", alignItems: "center", marginBottom: 24 }]}>
         <Checkbox
           value={lastNameFirst}
           onValueChange={setLastNameFirst}
@@ -77,7 +77,6 @@ export default function PlayerForm({
         value={gender}
         setValue={setGender}
         options={[
-          { label: "Unspecified", value: "unspecified" },
           { label: "Male", value: "male" },
           { label: "Female", value: "female" }
         ]}

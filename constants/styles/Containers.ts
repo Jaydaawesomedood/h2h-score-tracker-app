@@ -1,4 +1,4 @@
-import { Dimensions, StyleProp, TextStyle, ViewStyle } from "react-native";
+import { Dimensions, ViewStyle } from "react-native";
 
 export const BorderDebug: ViewStyle = {
   borderColor: "red",
@@ -11,7 +11,7 @@ function calculateDimension(dimension: "width" | "height", smValue: number, lgVa
 }
 
 // TODO - Refactor all these
-export const Containers: { [key: string]: ViewStyle } = {
+export const Containers = {
   screen: {
     flex: 1,
     paddingHorizontal: 32,
@@ -28,10 +28,6 @@ export const Containers: { [key: string]: ViewStyle } = {
     alignContent: "center",
     flexDirection: "row",
     paddingVertical: 16,
-  },
-  checkboxContainer: {
-    alignItems: 'center',
-    flexDirection: 'row'
   },
 };
 
@@ -55,7 +51,6 @@ export const PlayerBanner: { [key: string]: ViewStyle } = {
   },
   innerBannerContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
     paddingTop: calculateDimension("height", 0.05, 0.07),
   },
   screenTitleContainer: {

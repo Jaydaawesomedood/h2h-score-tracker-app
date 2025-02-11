@@ -4,7 +4,7 @@ import SelectPlayerModal from "@/components/modals/SelectPlayerModal";
 import ThemedText from "@/components/ThemedText";
 import ThemedDivider from "@/components/views/ThemedDivider";
 import { ToastMessages } from "@/constants/messages/Toast";
-import { Steps } from "@/constants/Steps";
+import { Steps } from "@/constants/constants";
 import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Categories } from "@/models/Categories.enum";

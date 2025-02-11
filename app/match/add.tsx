@@ -8,7 +8,7 @@ import MatchDetailsForm from "@/components/forms/match/MatchDetailsForm";
 import moment from "moment";
 import MatchPlayersForm from "@/components/forms/match/MatchPlayersForm";
 import MatchScoreForm from "@/components/forms/match/MatchScoreForm";
-import { AddMatchContext, DbContext } from "@/utils/context";
+import { AddMatchContext, DbContext, useDataStore } from "@/utils/context";
 import { Categories } from "@/models/Categories.enum";
 import { Player, Team } from "@/models/Player";
 import { GetAllPlayersAndTeams } from "@/utils/repositories/PlayerRepository";
@@ -17,11 +17,13 @@ import * as DbClient from "../../utils/database/database";
 import { ToastMessages } from "@/constants/messages/Toast";
 import { router } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
+import { GetAllMatchesV2 } from "@/utils/repositories/MatchRepository";
 
 export default function AddMatchScreen() {
   // Context
   const db = useContext(DbContext);
   const isFocused = useIsFocused();
+  const { setSinglesMatches, setDoublesMatches } = useDataStore();
 
   // useState
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -54,8 +56,11 @@ export default function AddMatchScreen() {
         [matchSubCategory.toLowerCase(), matchTeams[0].id, matchTeams[1].id, matchScore.map((set: Number[]) => set.join("-")).join(","), moment(matchDate).format("DD-MM-YYYY").toString(), matchSetting.toLowerCase()],
         matchCategory
       )
-      .then(() => {
+      .then(async () => {
         showMessageToast(ToastMessages.AddMatchSuccess);
+
+        // After adding match to DB, update store
+        await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
         router.back();
       })
       .catch(() => {

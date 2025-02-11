@@ -1,8 +1,6 @@
-import { Categories } from "@/models/Categories.enum";
 import { Match } from "@/models/Match";
 import moment from "moment";
 
-// MATCHES
 function SortMatchesByDate(matches: Match[], category?: string) {
   matches = category ? matches.filter((match: Match) => match.category === category) : matches;
 
@@ -14,30 +12,11 @@ function SortMatchesByDate(matches: Match[], category?: string) {
   return matches;
 }
 
-function GetWinRate(total: number, won: number) {
-  return total ? ((won / total) * 100).toFixed(1) : "-"
-};
-
-// CATEGORIES
-function GetUniqueCategoriesFromAllMatches(matches: Match[]) {
-  return matches ? 
-  [
-    ...new Set(
-      matches
-      .filter((match: Match) => match.category.toLowerCase() !== Categories.Unspecified.toLowerCase())
-      .map((match: Match) => match.category)
-    )
-  ] as string[]
-  : [];
-};
-
-function GetCategoryFullName(category: string) {
-  return Categories[category.toUpperCase() as keyof typeof Categories];
+function GetWinRate(total: number, value: number) {
+  return total ? ((value / total) * 100).toFixed(1) : "-"
 };
 
 export {
   SortMatchesByDate,
   GetWinRate,
-  GetUniqueCategoriesFromAllMatches,
-  GetCategoryFullName
 };

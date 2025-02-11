@@ -3,17 +3,18 @@ import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
 import { useContext, useEffect, useState } from "react";
-import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { InsertPlayer } from "@/utils/database/database";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import { ToastMessages } from "@/constants/messages/Toast";
 import PlayerForm from "@/components/forms/PlayerForm";
-import { DbContext } from "@/utils/context";
+import { DbContext, useDataStore } from "@/utils/context";
+import { GetAllPlayersV2 } from "@/utils/repositories/PlayerRepository";
 
 export default function AddPlayerScreen() {
   // Context
   const db = useContext(DbContext);
-  // TODO - useProfileStore
+  const { setPlayers } = useDataStore();
 
   // Styling
   const screenStyle = Containers.screen;
@@ -31,14 +32,17 @@ export default function AddPlayerScreen() {
   // Input functionalities
   const onAdd = async () => {
     if (db) {
-      await InsertPlayer(db, [firstName.trim(), lastName.trim(), lastNameFirst ? 1 : 0, gender])
-      .then(() => {
+      try {
+        await InsertPlayer(db, [firstName.trim(), lastName.trim(), lastNameFirst ? 1 : 0, gender]);
         showMessageToast(ToastMessages.AddPlayerSuccess);
         clearFields();
-      })
-      .catch(() => {
+
+        // After adding new player into DB, call GetAllPlayers to update the store
+        await GetAllPlayersV2(db, setPlayers, showErrorToast);
+      }
+      catch (err: any) {
         showErrorToast();
-      });
+      }
     }
     else {
       showErrorToast();

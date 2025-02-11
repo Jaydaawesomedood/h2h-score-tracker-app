@@ -14,8 +14,8 @@ import { Genders } from "@/models/Genders.enum";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import { ToastMessages } from "@/constants/messages/Toast";
 import TeamForm from "@/components/forms/TeamForm";
-import { DbContext, TeamPlayersContext } from "@/utils/context";
-import { GetAllPlayers } from "@/utils/repositories/PlayerRepository";
+import { DbContext, TeamPlayersContext, useDataStore } from "@/utils/context";
+import { GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
 import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
 
 // TODO - Reorganize this as its duplicating elsewhere
@@ -40,7 +40,7 @@ export type PlayerNameProps = {
 export default function AddTeamScreen() {
   // Context
   const db = useContext(DbContext);
-  // TODO - useprofilestore
+  const { players: allPlayers, setTeams } = useDataStore();
   
   // State variables - UI
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -49,7 +49,7 @@ export default function AddTeamScreen() {
   // State variables - Data
   const [teamName, setTeamName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
+
   const [players, setPlayers] = useState<Player[]>([]);
   const [currentPlayerNumber, setCurrentPlayerNumber] = useState<number>(0);
   const [addDisabled, setAddDisabled] = useState<boolean>(true);
@@ -58,7 +58,6 @@ export default function AddTeamScreen() {
   const hideKeyboard = () => { Keyboard.dismiss(); };
   const closeDropdown = () => { setIsDropdownOpen(false); };
 
-  
   const onAddPlayer = () => setIsModalOpen(true);
   const onCloseModal = () => setIsModalOpen(false);
 
@@ -69,20 +68,14 @@ export default function AddTeamScreen() {
     setCurrentPlayerNumber(number);
   };
 
-  const getAllPlayers = async () => {
-    if (db) {
-      await GetAllPlayers(db, setAllPlayers, showErrorToast);
-    }
-    else {
-      showErrorToast();
-    }
-  };
-
   const onAddTeam = async () => {
+    // Ensure that there are 2 players to form a team
     if (db && players.length === 2) {
+      // Check if both players are different people
       if (players[0].id !== players[1].id) {
         let sortedPlayers = [];
         if (category === "xd") {
+          // If the category is mixed doubles, put the male player first, then female player
           if (players[0].gender === Genders.Female && players[1].gender === Genders.Male) {
             sortedPlayers.push(players[1]);
             sortedPlayers.push(players[0]);
@@ -92,23 +85,28 @@ export default function AddTeamScreen() {
           }
         }
         else if (category === "md" || category === "wd") {
+          // If the category is men/women doubles, sort the players alphabetically by last name
           sortedPlayers = players.slice().sort((a: Player, b: Player) => a.lastName.localeCompare(b.lastName));
         }
         else {
           sortedPlayers = [...players];
         }
   
+        // Check if the team exists in DB or not (via same pair of players)
         await IsTeamExists(db, [sortedPlayers[0].id, sortedPlayers[1].id])
         .then(async (IsTeamExists: { response: boolean, id: string }) => {
           if (!IsTeamExists.response) {
-            await InsertTeam(db, [teamName, category, sortedPlayers[0].id, sortedPlayers[1].id])
-            .then(() => {
+            try {
+              await InsertTeam(db, [teamName, category, sortedPlayers[0].id, sortedPlayers[1].id]);
               showMessageToast(ToastMessages.AddTeamSuccess);
               clearFields();
-            })
-            .catch(() => {
+
+              // After adding new team into DB, call GetAllTeams to update the store
+              await GetAllTeamsV2(db, setTeams, showErrorToast);
+            }
+            catch (err: any) {
               showErrorToast();
-            });
+            }
           }
           else {
             showMessageToast(ToastMessages.AddTeamError_TeamExists);
@@ -130,11 +128,6 @@ export default function AddTeamScreen() {
     setCategory("");
     setPlayers([]);
   };
-
-  // useEffect
-  useEffect(() => {
-    if (allPlayers.length === 0) getAllPlayers();
-  }, []);
 
   useEffect(() => {
     setAddDisabled(players.length < 2);

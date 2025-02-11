@@ -11,12 +11,15 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import { ToastMessages } from "@/constants/messages/Toast";
-import { DbContext, useProfileStore } from "@/utils/context";
+import { DbContext, useDataStore, useProfileStore } from "@/utils/context";
+import { GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
+import { GetAllMatchesV2 } from "@/utils/repositories/MatchRepository";
 
 export default function EditTeamScreen() {
   // Context
   const { id } = useLocalSearchParams();
   const { profile, setProfile, clearProfile } = useProfileStore();
+  const { setTeams, setSinglesMatches, setDoublesMatches } = useDataStore();
   const db = useContext(DbContext);
   
   // Colors
@@ -45,8 +48,8 @@ export default function EditTeamScreen() {
 
   const onUpdate = async () => {
     if (db) {
-      await UpdateTeam(db, [editedName.trim()], String(id))
-      .then(() => {
+      try {
+        await UpdateTeam(db, [editedName.trim()], String(id));
         showMessageToast(ToastMessages.EditTeamSuccess);
         setProfile({
           ...profile,
@@ -56,10 +59,14 @@ export default function EditTeamScreen() {
           }
         });
         setOriginalData();
-      })
-      .catch(() => {
+
+        // After updating team info in DB, call GetAllTeams & GetAllMatches to update the store
+        await GetAllTeamsV2(db, setTeams, showErrorToast);
+        await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
+      }
+      catch (err: any) {
         showErrorToast();
-      });
+      }
     }
     else {
       showErrorToast();
@@ -68,12 +75,19 @@ export default function EditTeamScreen() {
 
   const onDelete = async () => {
     if (db) {
-      await DeleteTeam(db, String(id))
-      .then(() => {
+      try {
+        await DeleteTeam(db, String(id));
         showMessageToast(ToastMessages.DeleteTeamSuccess);
         clearProfile();
         router.navigate("/(tabs)/players");
-      })
+
+        // After deleting team from DB, call GetAllTeams & GetAllMatches to update the store
+        await GetAllTeamsV2(db, setTeams, showErrorToast);
+        await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
+      }
+      catch (err: any) {
+        showErrorToast();
+      }
     }
     else {
       showErrorToast();

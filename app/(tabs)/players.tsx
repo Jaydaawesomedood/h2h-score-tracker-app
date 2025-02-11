@@ -1,19 +1,24 @@
 import ScreenTitle from "@/components/screens/ScreenTitle";
 import ThemedView from "@/components/ThemedView";
-import { Containers, PlayerListItem } from "@/constants/styles/Containers";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { Player, Team } from "@/models/Player";
-import { Href, router, useNavigation } from "expo-router";
-import { useContext, useEffect, useState } from "react";
-import { FlatList, TouchableOpacity, View } from "react-native";
 import AddPlayerOptionModal from "@/components/modals/AddPlayerOptionModal";
-import { showErrorToast } from "@/utils/toast.util";
-import { DbContext } from "@/utils/context";
-import { GetAllPlayersAndTeams } from "@/utils/repositories/PlayerRepository";
 import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
 import TeamProfileCard from "@/components/views/players/TeamProfileCard";
-import { ThemedTabView } from "@/components/tab-view/ThemedTabView";
-import { useIsFocused } from "@react-navigation/native";
+import ThemedTabView from "@/components/tab-view/ThemedTabView";
+import ThemedSearchBar from "@/components/inputs/ThemedSearchBar";
+
+import { Containers, PlayerListItem } from "@/constants/styles/Containers";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Href, router } from "expo-router";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Keyboard, ScrollView, TouchableOpacity, View } from "react-native";
+import { useDataStore } from "@/utils/context";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { FilterParticipantsByProperty } from "@/utils/participants.utils";
+import SecondaryButton from "@/components/buttons/SecondaryButton";
+import ThemedText from "@/components/ThemedText";
+import { TextStyles } from "@/constants/styles/Text";
+import ParticipantsAdvancedSearchModal from "@/components/modals/ParticipantsAdvancedSearchModal";
+import { Participants } from "@/models/participants/Participants";
 
 export type ListProps = {
   data: any[]; // TODO - type restrict this
@@ -30,46 +35,91 @@ export type ListItemProps = {
 export default function PlayersScreen() {
   // Top tab navigator
   const tabBackgroundColor = useThemeColor('background');
+  const red = useThemeColor("accentRed");
+  const lightgrey = useThemeColor("lightgrey");
 
-  const db = useContext(DbContext);
-  // const isFocused = useNavigation().isFocused();
-  const isFocused = useIsFocused();
+  // Context
+  const { players, teams } = useDataStore();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
 
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [list, setList] = useState<Participants>({ players, teams });
 
-  const sortByRecent = (arr: any) => { return arr.slice().sort((a: any, b: any) => a.id.localeCompare(b.id)) };
-  const sortByName = (arr: any) => { return arr.slice().sort((a: any, b: any) => a.lastName.localeCompare(b.lastName)) };
-
-  const getAllPlayersAndTeams = async () => {
-    if (db) {
-      await GetAllPlayersAndTeams(db, setPlayers, setTeams, showErrorToast);
-    }
-    else {
-      showErrorToast();
-    }
-  };
+  // Search props & methods
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const displayResetBtn = useRef<boolean>(false);
 
   const onAdd = () => setIsModalOpen(true);
   const onCloseModal = () => setIsModalOpen(false);
 
-  const renderPlayersTab = () => {
-    return <List data={[...players]} type="player" backgroundColor={tabBackgroundColor}/>;
+  // Advanced search props & methods
+  const onAdvancedSearch = () => setIsFilterModalOpen(true);
+  const onCloseAdvSearchModal = () => setIsFilterModalOpen(false);
+  const [advSearchType, setAdvSearchType] = useState<string>("all");
+  const [advSearchGender, setAdvSearchGender] = useState<string>("all");
+  const [advSearchCategory, setAdvSearchCategory] = useState<string>("all");
+
+  const onSearch = () => {
+    if (searchTerm !== "") displayResetBtn.current = true;
+
+    if (players.length > 0 || teams.length > 0) {
+      const filteredResults = FilterParticipantsByProperty({ name: searchTerm.trim() }, { players, teams });
+      setList(filteredResults);
+    }
   };
 
-  const renderTeamsTab = () => {
-    return <List data={[...teams]} type="team" backgroundColor={tabBackgroundColor} />;
+  const onApplyFilters = () => {
+    if (advSearchType === "all") {
+      displayResetBtn.current = false;
+      setList({ players, teams });
+    }
+    else {
+      displayResetBtn.current = true;
+      const filteredResults = FilterParticipantsByProperty({ type: advSearchType, gender: advSearchGender, teamCategory: advSearchCategory }, { players, teams });
+      setList(filteredResults);
+    }
+
+    setIsFilterModalOpen(false);
   };
+
+  const onReset = () => {
+    displayResetBtn.current = false;
+    setSearchTerm("");
+    setAdvSearchType("all");
+    setAdvSearchGender("all");
+    setAdvSearchCategory("all");
+    setList({ players, teams });
+  };
+
+  const playersTab = useMemo(() => {
+    return <List data={[...list.players]} type="player" backgroundColor={tabBackgroundColor}/>;
+  }, [list]);
+  
+  const teamsTab = useMemo(() => {
+    return <List data={[...list.teams]} type="team" backgroundColor={tabBackgroundColor} />;
+  }, [list]);
 
   useEffect(() => {
-    if (isFocused) { getAllPlayersAndTeams(); }
-  }, [isFocused]);
+    if (players.length > 0) {
+      onReset();
+    }
+  }, [players, teams]);
 
   return (
     <ThemedView style={[Containers.screen, { paddingBottom: 0, paddingHorizontal: 0 }]}>
       <AddPlayerOptionModal isOpen={isModalOpen} onClose={onCloseModal} />
+      <ParticipantsAdvancedSearchModal
+        isOpen={isFilterModalOpen}
+        onClose={onCloseAdvSearchModal}
+        type={advSearchType}
+        setType={setAdvSearchType}
+        gender={advSearchGender}
+        setGender={setAdvSearchGender}
+        teamCategory={advSearchCategory}
+        setTeamCategory={setAdvSearchCategory}
+        onApplyFilters={onApplyFilters}
+      />
       <ScreenTitle
         title="Players"
         actionBtn={{
@@ -80,14 +130,68 @@ export default function PlayersScreen() {
         }}
         style={{ paddingHorizontal: 32, marginBottom: 0 }}
       />
+      <View>
+        <View style={{ paddingHorizontal: 32, paddingVertical: 16, flexDirection: "row", alignItems: "center", justifyContent: "space-between", columnGap: 16 }}>
+          <View style={{ flex: 1 }}>
+            <ThemedSearchBar
+              searchTerm={searchTerm}
+              onChangeText={(text: string) => setSearchTerm(text)}
+              onSearch={onSearch}
+              onBlur={() => Keyboard.dismiss()}
+            />
+          </View>
+          <TouchableOpacity onPress={onAdvancedSearch}>
+            <FontAwesome5 name="sliders-h" size={20} color={lightgrey} /> 
+          </TouchableOpacity>
+        </View>
+        {
+          players.length > 0 && displayResetBtn.current &&
+          <View style={{ alignSelf: "center" }}>
+            <SecondaryButton
+              title="Reset All Filters"
+              onPress={onReset}
+              customColor={red}
+            />
+          </View>
+        }
+      </View>
       {
-        (players.length > 0) &&
+        // No filters applied or filters applied and there are both players and teams present
+        (
+          players.length > 0 && 
+          ((list.players.length === players.length && list.teams.length === teams.length) ||
+          (list.players.length > 0 && list.teams.length > 0))
+        ) &&
         <ThemedTabView
           tabs={[
-            { label: "Players", screen: renderPlayersTab() },
-            { label: "Teams", screen: renderTeamsTab() }
+            { label: "Players", screen: playersTab },
+            { label: "Teams", screen: teamsTab }
           ]}
         />
+      }
+      {
+        // filters applied and there are only players
+        (players.length > 0 && (list.players.length !== players.length || list.teams.length !== teams.length) && list.teams.length === 0 && list.players.length > 0) &&
+        <View style={{ flex: 1, marginTop: 16 }}>
+          <View style={{ paddingHorizontal: 32 }}>
+            <ThemedText style={[TextStyles.titles.section]}>Players</ThemedText>
+          </View>
+          <View style={{ flex: 1 }}>
+            {playersTab}
+          </View>
+        </View>
+      }
+      {
+        // filters applied and there are only teams
+        (players.length > 0 && teams.length > 0 && (list.players.length !== players.length || list.teams.length !== teams.length) && list.players.length === 0 && list.teams.length > 0) &&
+        <View style={{ flex: 1, marginTop: 16 }}>
+          <View style={{ paddingHorizontal: 32 }}>
+            <ThemedText style={[TextStyles.titles.section]}>Teams</ThemedText>
+          </View>
+          <View style={{ flex: 1 }}>
+            {teamsTab}
+          </View>
+        </View>
       }
     </ThemedView>
   );
@@ -98,12 +202,16 @@ function List({ data, type }: ListProps) {
   const separatorColor = useThemeColor("itemSeparator");
 
   return (
-    <FlatList
-      data={data}
-      renderItem={ ({ item }) => <ListItem item={item} type={type} /> }
-      ItemSeparatorComponent={() => <View style={{ width: "100%", height: 0.5, backgroundColor: separatorColor }} />}
-      style={[{ flex: 1, paddingHorizontal: 32 }]}
-    />
+    <ScrollView style={{ paddingHorizontal: 32 }}>
+      {
+        data.map((d, index) => (
+          <Fragment key={index}>
+            <ListItem item={d} type={type} />
+            { (index < data.length - 1) && <View style={{ width: "100%", height: 0.5, backgroundColor: separatorColor }} /> }
+          </Fragment>
+        ))
+      }
+    </ScrollView>
   );
 }
 

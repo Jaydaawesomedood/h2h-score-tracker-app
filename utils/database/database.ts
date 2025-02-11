@@ -45,6 +45,27 @@ export async function UpdatePlayer(db: SQLiteDatabase, params: SQLiteBindParams)
 };
 
 export async function DeletePlayer(db: SQLiteDatabase, id: string) {
+  // Get all teams player to be deleted is in
+  const allTeams = await GetAllTeamsByPlayer(db, id);
+  const allTeamsId: string[] = allTeams.map((t: Team) => `\'${t.id}\'`);
+
+  // Get all singles matches where player to be deleted is in
+  const allMatches = await GetAllMatchesByPlayer(db, id);
+  const allSinglesMatches: Match[] = allMatches.slice().filter((m: Match) => m.id.toLowerCase().startsWith("sm"));
+  const allSinglesMatchesId: string[] = allSinglesMatches.map((m: Match) => `\'${m.id}\'`);
+
+  // Get all doubles matches for all teams player to be deleted is in
+  const allDoublesMatches: Match[] = allMatches.slice().filter((m: Match) => m.id.toLowerCase().startsWith("dm"));
+  const allDoublesMatchesId: string[] = allDoublesMatches.map((m: Match) => `\'${m.id}\'`);
+
+  // Delete matches
+  await DeleteMatchesInBulk(db, allSinglesMatchesId.join(", "), "singles");
+  await DeleteMatchesInBulk(db, allDoublesMatchesId.join(", "), "doubles");
+
+  // Delete teams
+  await DeleteTeamsInBulk(db, allTeamsId.join(", "));
+
+  // Delete player
   await db.runAsync(`DELETE FROM players WHERE id = ?`, id).catch((error: any) => {
     console.log(error);
   });
@@ -75,13 +96,58 @@ export async function UpdateTeam(db: SQLiteDatabase, params: SQLiteBindParams, i
 };
 
 export async function DeleteTeam(db: SQLiteDatabase, id: string) {
+  // Get all matches with team to be deleted
+  const allMatches: Match[] = await GetAllMatchesByTeam(db, id);
+  const allDoublesMatches: Match[] = allMatches.slice().filter((m: Match) => m.id.toLowerCase().startsWith("dm"));
+  const allDoublesMatchesId: string[] = allDoublesMatches.map((m: Match) => `\'${m.id}\'`);
+
+  // Delete all matches involving team to be deleted
+  await DeleteMatchesInBulk(db, allDoublesMatchesId.join(", "), "doubles");
+
+  // Delete team from teams table
   await db.runAsync(`DELETE FROM teams WHERE id = ?`, id).catch((error: any) => {
+    console.log(error);
+  });
+};
+
+async function DeleteTeamsInBulk(db: SQLiteDatabase, teamsId: string) {
+  await db.runAsync(`DELETE FROM teams WHERE id IN (${teamsId})`).catch((error: any) => {
     console.log(error);
   });
 };
 
 export async function GetAllTeams(db: SQLiteDatabase) {
   const teams = await db.getAllAsync<any>(DbQueries.GetTeams).catch((error: any) => {
+    console.log(error);
+  });
+
+  return (teams as any[]).map(team => (
+    <Team>{
+      id: team.id,
+      name: team.name,
+      category: team.category,
+      players: [
+        {
+          id: team.player1ID,
+          firstName: team.player1FirstName,
+          lastName: team.player1LastName,
+          lastNameFirst: team.player1LastNameFirst,
+          gender: team.player1Gender
+        },
+        {
+          id: team.player2ID,
+          firstName: team.player2FirstName,
+          lastName: team.player2LastName,
+          lastNameFirst: team.player2LastNameFirst,
+          gender: team.player2Gender
+        }
+      ]
+    })
+  ) ?? [];
+};
+
+async function GetAllTeamsByPlayer(db: SQLiteDatabase, id: string) {
+  const teams = await db.getAllAsync<any>(`${DbQueries.GetTeams} WHERE player1ID = '${id}' OR player2ID = '${id}'`).catch((error: any) => {
     console.log(error);
   });
 
@@ -399,6 +465,16 @@ export async function DeleteMatch(db: SQLiteDatabase, id: string, category: "sin
   });
 };
 
+async function DeleteMatchesInBulk(db: SQLiteDatabase, matchesId: string, category: "singles" | "doubles") {
+  await db.runAsync(`DELETE FROM matches WHERE matchId IN (${matchesId})`).catch((error: any) => {
+    console.log(error);
+  });
+
+  await db.runAsync(`DELETE FROM ${category}Matches WHERE id IN (${matchesId})`).catch((error: any) => {
+    console.log(error);
+  });
+};
+
 export async function GetAllMatchesOfSamePairs(db: SQLiteDatabase, teamIds: string[], category: "singles" | "doubles") {
   const alias = category === "doubles" ? "dm" : "sm";
   let matches: MatchLite[] = [];
@@ -597,6 +673,18 @@ export async function GetAllMatchesByTeam(db: SQLiteDatabase, teamId: string) {
   return matches;
 };
 
+export async function DeleteAllData(db: SQLiteDatabase) {
+  await db.execAsync(`
+    DELETE FROM doublesMatches;
+    DELETE FROM singlesMatches;
+    DELETE FROM matches;
+    DELETE FROM tournaments;
+    DELETE FROM teams;
+    DELETE FROM players WHERE id != 'p1';
+  `)
+  .catch((err: any) => console.log(err));
+};
+
 async function GenerateId(db: SQLiteDatabase, table: string) {
   const lastResult = await db.getFirstAsync<Player>(
     `SELECT * FROM ${table} LIMIT 1 OFFSET CAST((SELECT COUNT(*) FROM ${table}) AS INT) - 1;`
@@ -605,32 +693,36 @@ async function GenerateId(db: SQLiteDatabase, table: string) {
     console.log(error);
   });
 
-  if(lastResult) {
-    const id = parseInt(lastResult.id.substring(table === "singlesMatches" || table === "doublesMatches" ? 2 : 1)) + 1;
-    let char;
+  let id: number;
+  let char;
 
-    switch (table) {
-      case "teams":
-        char = "t";
-        break;
-      case "players":
-        char = "p";
-        break;
-      case "matches":
-        char = "m";
-        break;
-      case "singlesMatches":
-        char = "sm";
-        break;
-      case "doublesMatches":
-        char = "dm";
-        break;
-      case "tournaments":
-        char = "c";
-        break;
-    }
-    return `${char}${id.toString()}`;
+  if(lastResult) {
+    id = parseInt(lastResult.id.substring(table === "singlesMatches" || table === "doublesMatches" ? 2 : 1)) + 1;
+  }
+  else {
+    id = 1;
   }
 
-  return "";
+  switch (table) {
+    case "teams":
+      char = "t";
+      break;
+    case "players":
+      char = "p";
+      break;
+    case "matches":
+      char = "m";
+      break;
+    case "singlesMatches":
+      char = "sm";
+      break;
+    case "doublesMatches":
+      char = "dm";
+      break;
+    case "tournaments":
+      char = "c";
+      break;
+  }
+  
+  return `${char}${id.toString()}`;
 }

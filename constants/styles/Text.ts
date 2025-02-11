@@ -17,7 +17,7 @@ function getDimensionValue() {
 };
 // TODO - Refactor all these
 export const Text = {
-  title: {
+  titles: {
     section: {
       fontFamily: bold,
       fontSize: large,
@@ -112,6 +112,21 @@ export const Text = {
     footer: {
       fontFamily: light,
       fontSize: extraSmall,
+    },
+  },
+};
+
+export const TextStyles = {
+  titles: {
+    section: {
+      fontFamily: bold,
+      fontSize: large,
+      lineHeight: large,
+    },
+    subsection: {
+      fontFamily: bold,
+      fontSize: medium,
+      lineHeight: medium,
     },
   },
 };

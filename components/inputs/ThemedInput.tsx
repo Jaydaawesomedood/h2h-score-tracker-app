@@ -1,6 +1,5 @@
 import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Dispatch, SetStateAction, useState } from "react";
 import { TextInput, TextInputProps, TextStyle, View, ViewStyle } from "react-native";
 import ThemedText from "../ThemedText";
 
@@ -27,8 +26,8 @@ export default function ThemedInput({ placeholder, style, value, onChangeText, l
         onChangeText={onChangeText}
         style={[
           { backgroundColor, color },
+          inputStyle,
           style,
-          inputStyle
         ]}
         { ...props }
       />

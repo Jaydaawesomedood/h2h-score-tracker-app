@@ -4,7 +4,7 @@ import { bold, Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Match } from "@/models/Match";
 import { Player, Team } from "@/models/Player";
-import { GetCategoryFullName } from "@/utils/common/common.util";
+import { GetCategoryFullName } from "@/utils/categories.util";
 import { calculateWinner, getHigherScore } from "@/utils/scores.util";
 import { Link } from "expo-router";
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";

@@ -8,10 +8,10 @@ import { ImageBackground, Image, View, StatusBar, StyleSheet } from "react-nativ
 import { bold, extraSmall, large, light, medium, Text } from "@/constants/styles/Text";
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import { PlayerBanner } from "@/constants/styles/Containers";
-import { DbContext, useProfileStore } from "@/utils/context";
+import { DbContext, useProfileStore, useThemeStore } from "@/utils/context";
 import ThemedBannerView from "@/components/views/ThemedBannerView";
 import PlayerName from "@/components/text/PlayerName";
-import { ThemedTabView } from "@/components/tab-view/ThemedTabView";
+import ThemedTabView from "@/components/tab-view/ThemedTabView";
 import { ThemedBarPercentageView } from "@/components/views/ThemedBarPercentageView";
 import { GetWinRate, SortMatchesByDate } from "@/utils/common/common.util";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -27,6 +27,7 @@ export default function TeamProfileScreen() {
   const { id } = useLocalSearchParams();
   const db = useContext(DbContext);
   const { profile, setProfile, clearProfile } = useProfileStore();
+  const { isLightMode } = useThemeStore();
 
   // State
   const [statsTabDuration, setStatsTabDuration] = useState<string>("all time");
@@ -120,14 +121,15 @@ export default function TeamProfileScreen() {
 
   const renderTeamBanner = useCallback(() => {
     const imageSize: number = 72;
+    const backgroundColor = isLightMode ? "rgba(225, 225, 225, 0.6)" : "rgba(0, 0, 0, 0.85)";
 
     return (
       <ImageBackground
-        source={require('../../../assets/images/placeholder-banner-1.jpg')}
+        source={isLightMode ? require("../../../assets/images/team-banner-light.jpg") : require("../../../assets/images/team-banner-dark.jpg")}
         resizeMode="cover"
         style={[PlayerBanner.bannerContainer]}
       >
-        <View style={PlayerBanner.innerBannerContainer}>
+        <View style={[PlayerBanner.innerBannerContainer, { backgroundColor }]}>
           <View style={PlayerBanner.screenTitleContainer}>
             <ScreenTitleWithBack
               title=""
@@ -317,7 +319,7 @@ function H2HTab({ team, stats, duration, setDuration, opponent, setOpponent }: H
 
 const styles = StyleSheet.create({
   tabScreen: {
-    flex: 1,
+    // flex: 1,
     paddingHorizontal: 32,
     paddingVertical: 16,
     rowGap: 16,

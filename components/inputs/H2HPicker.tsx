@@ -62,7 +62,7 @@ export default function H2HPicker({ player, partners, opponents, partner, setPar
             }
           </View>
           {
-            !opponentOnly &&
+            (partners.length > 0 && !opponentOnly) &&
             <SecondaryButton title="Select Partner" onPress={() => { type.current = "partner"; setIsModalOpen(true); }} style={{ alignSelf: "center" }} />
           }
         </View>

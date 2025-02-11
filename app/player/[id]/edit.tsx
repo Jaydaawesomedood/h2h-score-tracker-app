@@ -5,18 +5,21 @@ import { Containers } from "@/constants/styles/Containers";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { DeletePlayer, UpdatePlayer } from "@/utils/database/database";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import { ToastMessages } from "@/constants/messages/Toast";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import PlayerForm from "@/components/forms/PlayerForm";
-import { DbContext, useProfileStore } from "@/utils/context";
+import { DbContext, useDataStore, useProfileStore } from "@/utils/context";
+import { GetAllPlayersV2, GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
+import { GetAllMatchesV2 } from "@/utils/repositories/MatchRepository";
 
 export default function EditPlayerModal() {
   // Context
   const db = useContext(DbContext);
   const { profile, setProfile, clearProfile } = useProfileStore();
+  const { setPlayers, setTeams, setSinglesMatches, setDoublesMatches } = useDataStore();
   
   // Colors
   const deleteBtnColor = useThemeColor("deleteIcon");
@@ -41,8 +44,8 @@ export default function EditPlayerModal() {
 
   const onUpdate = async () => {
     if (db) {
-      await UpdatePlayer(db, [editFirstName.trim(), editLastName.trim(), editLastNameFirst ? 1 : 0, editGender, String(id)])
-      .then(() => {
+      try {
+        await UpdatePlayer(db, [editFirstName.trim(), editLastName.trim(), editLastNameFirst ? 1 : 0, editGender, String(id)]);
         showMessageToast(ToastMessages.EditPlayerSuccess);
         setProfile({
           ...profile,
@@ -54,10 +57,15 @@ export default function EditPlayerModal() {
           }
         });
         setOriginalData();
-      })
-      .catch(() => {
+
+        // After updating player data in DB, call GetAllPlayers & GetAllTeams to update the store
+        await GetAllPlayersV2(db, setPlayers, showErrorToast);
+        await GetAllTeamsV2(db, setTeams, showErrorToast);
+        await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
+      }
+      catch (err: any) {
         showErrorToast();
-      });
+      }
     }
     else {
       showErrorToast();
@@ -66,15 +74,20 @@ export default function EditPlayerModal() {
 
   const onDelete = async () => {
     if (db) {
-      await DeletePlayer(db, String(id))
-      .then(() => {
+      try {
+        await DeletePlayer(db, String(id));
         showMessageToast(ToastMessages.DeletePlayerSuccess);
         router.navigate("/(tabs)/players");
         clearProfile();
-      })
-      .catch(() => {
+
+        // After deleting player from DB, call GetAllPlayers, GetAllTeams & GetAllMatches to update the store
+        await GetAllPlayersV2(db, setPlayers, showErrorToast);
+        await GetAllTeamsV2(db, setTeams, showErrorToast);
+        await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
+      }
+      catch (err: any) {
         showErrorToast();
-      });
+      }
     }
     else {
       showErrorToast();

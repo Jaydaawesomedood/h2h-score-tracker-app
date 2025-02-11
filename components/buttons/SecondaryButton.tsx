@@ -1,6 +1,6 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { ComponentProps } from "react";
-import { TouchableOpacity, StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { TouchableOpacity, StyleProp, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import ThemedText from "../ThemedText";
 import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -13,9 +13,10 @@ export type SecondaryButtonProps = {
   disabled?: boolean;
   customColor?: string;
   style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
 };
 
-export default function SecondaryButton({ title, icon, iconPosition, onPress, customColor, disabled = false, style }: SecondaryButtonProps) {  
+export default function SecondaryButton({ title, icon, iconPosition, onPress, customColor, disabled = false, style, labelStyle }: SecondaryButtonProps) {  
   // Styling
   const titleStyle = Text.secondaryBtnTitle;
   const color = customColor ?? useThemeColor(disabled ? "primaryDisabled" : "secondaryBtn");
@@ -31,7 +32,7 @@ export default function SecondaryButton({ title, icon, iconPosition, onPress, cu
       disabled={disabled}
     >
       { icon && <FontAwesome name={icon} size={18} color={color} /> }
-      <ThemedText style={[{ color }, titleStyle]}>{title}</ThemedText>
+      { title !== "" && <ThemedText style={[{ color }, titleStyle, labelStyle]}>{title}</ThemedText> }
     </TouchableOpacity>
   );
 }

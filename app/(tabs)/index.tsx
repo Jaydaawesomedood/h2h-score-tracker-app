@@ -1,145 +1,211 @@
-import ThemedText from "@/components/ThemedText";
-import { useContext } from "react";
-import { Button, Dimensions, View } from "react-native";
-import { GetAllDoublesMatches, GetAllTeams } from "@/utils/database/database";
-import * as FileSystem from 'expo-file-system';
-import { DbContext } from "@/utils/context";
+import ScreenTitle from "@/components/screens/ScreenTitle";
 import ThemedView from "@/components/ThemedView";
+import ThemedTabView from "@/components/tab-view/ThemedTabView";
+import MatchSummaryCard from "@/components/views/matches/MatchSummaryCard";
 
-export default function ProfileScreen() {
-  // const db = useSQLiteContext();
-  const db = useContext(DbContext);
-  
-  async function createDB() {
-    await db?.execAsync(`
-      PRAGMA foreign_keys=ON;
+import { Containers } from "@/constants/styles/Containers";
+import { Match } from "@/models/Match";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import { ScrollView, View } from "react-native";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Href, router } from "expo-router";
+import { useDataStore } from "@/utils/context";
+import SecondaryButton from "@/components/buttons/SecondaryButton";
+import MatchAdvancedFilterModal from "@/components/modals/MatchAdvancedFilterModal";
+import { FilterMatches } from "@/utils/repositories/matches.util";
+import ThemedText from "@/components/ThemedText";
+import { light, small, TextStyles } from "@/constants/styles/Text";
+import React from "react";
+import { Matches } from "@/models/matches/Matches";
 
-      CREATE TABLE IF NOT EXISTS players (id VARCHAR(255) PRIMARY KEY NOT NULL, firstName VARCHAR(255), lastName VARCHAR(255) NOT NULL, lastNameFirst BIT DEFAULT 0, gender VARCHAR(255));
-      INSERT INTO players (id, firstName, lastName, lastNameFirst, gender)
-      VALUES
-      ('p1', 'Jason', 'Choo', 0, 'male'),
-      ('p2', 'Bryan', 'Kee', 0, 'male'),
-      ('p3', 'Nyook Ann', 'Thong', 1, 'female'),
-      ('p4', 'Nurul Syfiqah', 'Ishak', 0, 'female'),
-      ('p5', 'Desmond', 'Darviinsamy', 0, 'male'),
-      ('p6', 'Ben Shern', 'Chua', 1, 'male'),
-      ('p7', 'Zhong Ming', 'Tan', 1, 'male'),
-      ('p8', 'Haney', 'Iskandar', 0, 'female'),
-      ('p9', 'Mohammad Hasif', 'Rozak', 0, 'male');
+export default function MatchesScreen() {
+  const { matches } = useDataStore();
 
-      CREATE TABLE IF NOT EXISTS teams (
-        id VARCHAR(255) PRIMARY KEY NOT NULL,
-        name VARCHAR(255),
-        category VARCHAR(20) NOT NULL,
-        player1ID VARCHAR(10) NOT NULL,
-        player2ID VARCHAR(10) NOT NULL,
-        FOREIGN KEY(player1ID) REFERENCES players(id) ON DELETE CASCADE,
-        FOREIGN KEY(player2ID) REFERENCES players(id) ON DELETE CASCADE
-      );
-      INSERT INTO teams (id, name, category, player1ID, player2ID)
-      VALUES
-      ('t1', '', 'md', 'p1', 'p2'),
-      ('t2', '', 'wd', 'p4', 'p8'),
-      ('t3', 'Vulnerability Hunters', 'md', 'p5', 'p9'),
-      ('t4', '', 'xd', 'p1', 'p8'),
-      ('t5', '', 'xd', 'p2', 'p3');
+  // colors
+  const filterBtnColor = useThemeColor("lightgrey");
 
-      CREATE TABLE IF NOT EXISTS tournaments (
-        id VARCHAR(255) PRIMARY KEY NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        startDate TEXT(65535) NOT NULL,
-        endDate TEXT(65535) NOT NULL,
-        venue TEXT(65535) NOT NULL
-      );
+  // State variables
+  const [list, setList] = useState<Matches>(matches);
 
-      INSERT INTO tournaments (id, name, startDate, endDate, venue)
-      VALUES
-      ('c1', 'Dell Cyberlympics 2023', '26-08-2023', '26-08-2023', 'KSL Sports Puchong'),
-      ('c2', 'Dell Cyberleague 2024 - Season 1', '08-06-2024', '08-06-2024', 'Badminton Hall ILSAS, Bangi'),
-      ('c3', 'Dell Cyberleague 2024 - Season 2', '17-08-2024', '18-08-2024', 'Kompleks Kejiranan Presint 11, Putrajaya'),
-      ('c4', 'Dell Cyberleague 2024 - Season 3', '12-10-2024', '13-10-2024', 'Puchong Sports Center');
+  // Filter props & methods
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterMode, setFilterMode] = useState<string>("all");
+  const [filterTimeframe, setFilterTimeframe] = useState<string>("all time");
+  const [sortCriteria, setSortCriteria] = useState<string>("date");
+  const [sortOrder, setSortOrder] = useState<string>("ascending");
 
-      CREATE TABLE IF NOT EXISTS matches (
-        id VARCHAR(255) PRIMARY KEY NOT NULL,
-        matchId VARCHAR(255) NOT NULL
-      );
+  const openFilterModal = () => setIsFilterModalOpen(true);
 
-      INSERT INTO matches (id, matchId)
-      VALUES
-      ('m1', 'sm1'),
-      ('m2', 'dm1'),
-      ('m3', 'sm2'),
-      ('m4', 'sm3');
+  const onApplyFilters = () => {
+    const filteredMatches = FilterMatches(
+      {
+        category: filterCategory,
+        mode: filterMode,
+        timeframe: filterTimeframe,
+        sortOrder
+      },
+      matches
+    );
 
-      CREATE TABLE IF NOT EXISTS singlesMatches (
-        id VARCHAR(255) PRIMARY KEY NOT NULL,
-        category VARCHAR(20) NOT NULL,
-        participant1ID VARCHAR(10) NOT NULL,
-        participant2ID VARCHAR(10) NOT NULL,
-        score TEXT(65535) NOT NULL,
-        datetime TEXT(65535) NOT NULL,
-        mode VARCHAR(20) NOT NULL,
-        tournamentID VARCHAR(30) NULL,
-        FOREIGN KEY(participant1ID) REFERENCES players(id) ON DELETE CASCADE,
-        FOREIGN KEY(participant2ID) REFERENCES players(id) ON DELETE CASCADE,
-        FOREIGN KEY(tournamentID) REFERENCES tournaments(id)
-      );
-      INSERT INTO singlesMatches (id, category, participant1ID, participant2ID, score, datetime, mode, tournamentID)
-      VALUES
-      ('sm1', 'ms', 'p1', 'p2', '13-21,15-21', '02-10-2024', 'casual', NULL),
-      ('sm2', 'ms', 'p1', 'p2', '21-10,19-21,21-10', '02-10-2024', 'casual', NULL),
-      ('sm3', 'ms', 'p1', 'p2', '21-17,21-10', '02-10-2024', 'casual', NULL);
+    setList({...filteredMatches});
+    setIsFilterModalOpen(false);
+  };
 
-      CREATE TABLE IF NOT EXISTS doublesMatches (
-        id VARCHAR(255) PRIMARY KEY NOT NULL,
-        category VARCHAR(20) NOT NULL,
-        participant1ID VARCHAR(10) NOT NULL,
-        participant2ID VARCHAR(10) NOT NULL,
-        score TEXT(65535) NOT NULL,
-        datetime TEXT(65535) NOT NULL,
-        mode VARCHAR(20) NOT NULL,
-        tournamentID VARCHAR(30) NULL,
-        FOREIGN KEY(participant1ID) REFERENCES teams(id) ON DELETE CASCADE,
-        FOREIGN KEY(participant2ID) REFERENCES teams(id) ON DELETE CASCADE,
-        FOREIGN KEY(tournamentID) REFERENCES tournaments(id)
-      );
-      INSERT INTO doublesMatches (id, category, participant1ID, participant2ID, score, datetime, mode, tournamentID)
-      VALUES
-      ('dm1', 'xd', 't4', 't5', '21-23,21-17,21-10', '26-09-2024', 'casual', NULL);
-    `);
-  }
-  
-  async function getData() {
-    // const allRows = await GetAllTeams(db!);
-    // allRows.map((row) => { row.players.forEach(player => console.log(player))})
-    const allRows = await GetAllDoublesMatches(db!);
-    // allRows.map((row: any[]) => { row.forEach(match => console.log(match))})
-    allRows.forEach((row: any) => {console.log(row.id)});
-    // allRows.forEach((row: any) => {row.teams.forEach((team: any) => console.log(team.players))});
-    // console.log(allRows);
-  }
+  const onResetFilters = () => {
+    if (filterCategory !== "all") setFilterCategory("all");
+    if (filterMode !== "all") setFilterMode("all");
+    if (filterTimeframe !== "all time" )setFilterTimeframe("all time");
+    if (sortOrder !== "ascending") setSortOrder("ascending");
 
-  async function deleteTable() {
-    await db?.execAsync(`
-      DROP TABLE IF EXISTS doublesMatches;
-      DROP TABLE IF EXISTS singlesMatches;
-      DROP TABLE IF EXISTS matches;
-      DROP TABLE IF EXISTS tournaments;
-      DROP TABLE IF EXISTS teams;
-      DROP TABLE IF EXISTS players;
-    `);
-  }
+    setList(matches);
+  };
+
+  const filtersApplied = useMemo(() => {
+    let filtersApplied = 0;
+
+    if (filterCategory !== "all") filtersApplied += 1;
+    if (filterMode !== "all") filtersApplied += 1;
+    if (filterTimeframe !== "all time" ) filtersApplied += 1;
+    if (sortOrder !== "ascending") filtersApplied += 1;
+
+    return filtersApplied;
+  }, [filterCategory, filterMode, filterTimeframe, sortOrder]);
+
+  // Navigation
+  const onAddMatch = () => { router.push("match/add" as Href); };
+
+  const singlesMatchesTab = useMemo(() => {
+    return (
+      <MatchesTab matches={list.singles} type="singles" />
+    );
+  }, [list]);
+
+  const doublesMatchesTab = useMemo(() => {
+    return (
+      <MatchesTab matches={list.doubles} type="doubles" />
+    );
+  }, [list]);
+
+  useEffect(() => { setList(matches); }, [matches]);
 
   return (
-    <ThemedView style={{flex: 1, padding: 32}}>
-      <ThemedText>{Dimensions.get('window').width}</ThemedText>
-      <ThemedText>{Dimensions.get('window').height}</ThemedText>
-      <ThemedText>{FileSystem.documentDirectory}</ThemedText>
-      <Button onPress={createDB} title="Create DB" />
-      <View style={{ marginVertical: 8 }}/>
-      <Button onPress={getData} title="Get Data" />
-      <View style={{ marginVertical: 8 }}/>
-      <Button onPress={deleteTable} title="Delete Table" color={"red"} />
+    <ThemedView style={[Containers.screen, { paddingBottom: 0, paddingHorizontal: 0 }]}>
+      <MatchAdvancedFilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onApplyFilters={onApplyFilters}
+        filters={{
+          category: { value: filterCategory, setCategory: setFilterCategory },
+          mode: { value: filterMode, setMode: setFilterMode },
+          timeframe: { value: filterTimeframe, setTimeframe: setFilterTimeframe },
+          sortCriteria: { value: sortCriteria, setSortCriteria },
+          sortOrder: { value: sortOrder, setSortOrder }
+        }}
+      />
+      <ScreenTitle
+        title="Matches"
+        actionBtn={{
+          title: "Add",
+          icon: "plus",
+          iconPosition: "left",
+          onActionBtn: onAddMatch
+        }}
+        style={{ paddingHorizontal: 32, marginBottom: 0 }}
+      />
+      {
+        list.singles.length === 0 && list.doubles.length === 0 ?
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <ThemedText style={{ fontFamily: light }}>No matches recorded yet. Add one now!</ThemedText>
+        </View>
+        :
+        <Fragment>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 32 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+              {
+                filtersApplied > 0 &&
+                  <View style={{ flexDirection: "row", alignItems: "center", columnGap: 8 }}>
+                    <View>
+                      <ThemedText style={{ color: filterBtnColor, fontFamily: light, fontSize: small, lineHeight: small }}>{filtersApplied} filters applied</ThemedText>
+                    </View>
+                    <SecondaryButton
+                      title="Clear"
+                      onPress={onResetFilters}
+                      labelStyle={{ fontSize: small, lineHeight: small }}
+                      />
+                  </View>
+              }
+            </View>
+            <View style={{ paddingTop: 16, paddingBottom: 8, alignItems: "center", justifyContent: "center" }}>
+              <SecondaryButton
+                title="Filter"
+                icon="filter"
+                iconPosition="left"
+                onPress={openFilterModal}
+                style={{ alignSelf: "flex-end" }}
+                customColor={filterBtnColor}
+                />
+            </View>
+          </View>
+          {/* No filters applied or filters applied and both singles & doubles matches are present */}
+          {
+            (
+              (filtersApplied === 0 && (matches.singles.length > 0 || matches.doubles.length > 0)) ||
+              (filtersApplied > 0 && list.singles.length > 0 && list.doubles.length > 0)
+            ) &&
+            <ThemedTabView
+            tabs={[
+              { label: "Singles", screen: singlesMatchesTab },
+              { label: "Doubles", screen: doublesMatchesTab }
+            ]}
+            />
+          }
+          
+          {/* Filters applied and there are only singles matches */}
+          {
+            (filtersApplied > 0 && list.singles.length > 0 && list.doubles.length === 0) &&
+            <View style={{ flex: 1, marginTop: 16 }}>
+              <View style={{ paddingHorizontal: 32 }}>
+                <ThemedText style={[TextStyles.titles.section]}>Singles</ThemedText>
+              </View>
+              <View style={{ flex: 1 }}>
+                {singlesMatchesTab}
+              </View>
+            </View>
+          }
+          {/* Filters applied and there are only doubles matches */}
+          {
+            (filtersApplied > 0 && list.singles.length === 0 && list.doubles.length > 0) &&
+            <View style={{ flex: 1, marginTop: 16 }}>
+              <View style={{ paddingHorizontal: 32 }}>
+                <ThemedText style={[TextStyles.titles.section]}>Doubles</ThemedText>
+              </View>
+              <View style={{ flex: 1 }}>
+                {doublesMatchesTab}
+              </View>
+            </View>
+          }
+        </Fragment>
+      }
     </ThemedView>
   );
-}
+};
+
+type TabProps = {
+  type: "singles" | "doubles";
+  matches: Match[];
+};
+
+function MatchesTab({ type, matches }: TabProps) {
+  const backgroundColor = useThemeColor('background');
+
+  return (
+    <ScrollView style={{ backgroundColor, flex: 1, paddingHorizontal: 32 }}>
+      {
+        matches.map((match: Match) => (
+          <MatchSummaryCard key={match.id} match={match} mode={type} style={{ marginVertical: 16 }}/>
+        ))
+      }
+    </ScrollView>
+  );
+};

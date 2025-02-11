@@ -2,8 +2,8 @@ import { Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { FontAwesome } from "@expo/vector-icons";
 import { ComponentProps, Dispatch, SetStateAction, useEffect, useState } from "react";
-import { StyleSheet, TextStyle, useColorScheme, View, ViewStyle } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
+import { StyleProp, StyleSheet, TextStyle, useColorScheme, View, ViewStyle } from "react-native";
+import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
 import ThemedText from "../ThemedText";
 
 export type DropdownItem = {
@@ -23,8 +23,9 @@ export type ThemedDropdownProps = {
   onSelectItem?: () => void;
   onChangeValue?: () => void;
   label?: string;
-  labelStyle?: TextStyle;
+  labelStyle?: StyleProp<TextStyle>;
   containerStyle?: ViewStyle;
+  maxHeight?: number;
 };
 
 export default function ThemedDropdown({
@@ -40,7 +41,8 @@ export default function ThemedDropdown({
   onChangeValue,
   label,
   labelStyle,
-  containerStyle
+  containerStyle,
+  maxHeight = 150,
 }: ThemedDropdownProps) {
   // TODO - Revamp this component
 
@@ -63,7 +65,7 @@ export default function ThemedDropdown({
 
   return (
     <View style={[containerStyle]}>
-      <ThemedText style={[labelStyle, Text.inputLabel]}>{label}</ThemedText>
+      <ThemedText style={[Text.inputLabel, labelStyle]}>{label}</ThemedText>
       <DropDownPicker
         open={isOpen}
         value={value}
@@ -87,11 +89,12 @@ export default function ThemedDropdown({
         ArrowUpIconComponent={() => (<DropdownIcon icon="chevron-up" />)}
         TickIconComponent={() => (<DropdownIcon icon="check" />)}
         flatListProps={{
-          scrollEnabled: false
+          scrollEnabled: false,
         }}
         disabledStyle={{ backgroundColor: disabledStyle, opacity: 0.4 }}
         disabledItemLabelStyle={{ color: "#999" }}
         zIndex={1}
+        maxHeight={maxHeight}
       />
     </View>
   );

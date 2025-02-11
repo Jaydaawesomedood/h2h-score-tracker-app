@@ -3,10 +3,11 @@ import ThemedInput from "@/components/inputs/ThemedInput";
 import PlayerName from "@/components/text/PlayerName";
 import ThemedText from "@/components/ThemedText";
 import ThemedDivider from "@/components/views/ThemedDivider";
-import { Steps } from "@/constants/Steps";
+import { Steps } from "@/constants/constants";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Player, Team } from "@/models/Player";
 import { AddMatchContext, EditMatchContext, StepperContext } from "@/utils/context";
+import React from "react";
 import { useContext, useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 

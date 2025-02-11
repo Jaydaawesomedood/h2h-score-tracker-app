@@ -3,61 +3,62 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-const tintColorLight = '#0a7ea4';
+const text = {
+  light: "#11181c",
+  dark: "#ecedee"
+};
+
+const tintColorLight = '#2f9e4e';
 const tintColorDark = '#fff';
-const primaryColorDark = "#32a852";
-const primaryColorDisabledDark = "#79a485";
+const primary = "#32a852";
+const primaryDisabled = "#79a485";
 
 const accentRed = "#d63131";
-const accentBlue = "#3170d6";
 const grey = "#666";
 
 const white = "#FFF";
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    textDisabled: '#5b5b5b', // TODO - Change this
-    background: '#fff',
+    text: text.light,
+    textFlipped: text.dark,
+    textDisabled: '#bbb',
+    background: '#ebebeb',
     tabBarBackground: 'rgb(242, 242, 242)',
     tabBarBorder: "rgb(216, 216, 216)",
-    primary: primaryColorDark, // TODO: Change this
-    primaryDisabled: primaryColorDisabledDark, // TODO: Change this
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    primary: primary,
+    primaryDisabled: "#91dba5",
     tabIconSelected: tintColorLight,
-    secondaryBtn: primaryColorDark, // TODO: Change this
-    input: "#888", // TODO: Change this
-    inputPlaceholder: "#a0a0a0", // TODO: Change this
-    dropdownContainer: "#666", // TODO - Change this
-    dropdownContainerDisabled: "#444", // TODO - Change this
-    dropdownItemSelected: "#3b3b3b", // TODO - Change this
-    itemSeparator: "#666", // TODO - Change this,
+    secondaryBtn: primary,
+    input: "#ccc",
+    inputPlaceholder: "#818181",
+    dropdownContainer: "#ddd",
+    dropdownContainerDisabled: "#bbb",
+    dropdownItemSelected: "#b9b9b9",
+    itemSeparator: "#b1b1b1",
     deleteIcon: "#992420",
-    cardBody: "#fff", // TODO - Change this
-    cardHeader: "#fff", // TODO - Change this
+    cardBody: "#dadada",
+    cardHeader: "#6dbf83",
     // TODO - change all values below
     winningTeamBorder: "#f5e642",
     accentRed: accentRed,
-    accentBlue: accentBlue,
     grey: grey,
-    whiteOpacity: "rgba(0, 0, 0, 0.5)",
     white: white,
+    lightgrey: "#8e8e8e",
+    addPlayerBackground: "#2c406e",
+    addTeamBackground: "#693007",
   },
   dark: {
-    text: '#ECEDEE',
+    text: text.dark,
+    textFlipped: text.light,
     textDisabled: '#5b5b5b',
     background: '#151718',
     tabBarBackground: 'rgb(18, 18, 18)',
     tabBarBorder: 'rgb(39, 39, 41)',
-    primary: primaryColorDark,
-    primaryDisabled: primaryColorDisabledDark,
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    primary: primary,
+    primaryDisabled: primaryDisabled,
     tabIconSelected: tintColorDark,
-    secondaryBtn: primaryColorDark,
+    secondaryBtn: primary,
     input: "#303030",
     inputPlaceholder: "#7c7c7c",
     dropdownContainer: "#474747",
@@ -69,9 +70,10 @@ export const Colors = {
     cardHeader: "#427a51",
     winningTeamBorder: "#de9221",
     accentRed: accentRed,
-    accentBlue: accentBlue,
     grey: grey,
-    whiteOpacity: "rgba(255, 255, 255, 0.25)",
     white: white,
+    lightgrey: "#8e8e8e",
+    addPlayerBackground: "#5d6f99",
+    addTeamBackground: "#99895d",
   },
 };

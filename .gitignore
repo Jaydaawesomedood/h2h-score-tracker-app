@@ -13,6 +13,9 @@ web-build/
 package-lock.json
 eas.json
 
+# For future features & development
+others/
+
 # macOS
 .DS_Store
 

@@ -2,24 +2,30 @@ import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import ThemedText from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Text } from "@/constants/styles/Text";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { useThemeStore } from "@/utils/context";
 
 export type PrimaryButtonProps = {
   title: string;
+  icon?: string;
   onPress: () => void;
   disabled?: boolean;
   style?: ViewStyle;
 };
 
-export default function PrimaryButton({ title, onPress, disabled, style }: PrimaryButtonProps) {
+export default function PrimaryButton({ title, icon, onPress, disabled, style }: PrimaryButtonProps) {
   // Styling
+  const { isLightMode } = useThemeStore();
   const backgroundColor = useThemeColor(disabled ? 'primaryDisabled' : 'primary');
+  const textColor = useThemeColor(isLightMode ? "textFlipped" : "text");
 
   // Title-related
   const titleStyle = Text.primaryBtnTitle;
   
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.button, { backgroundColor }, style]} disabled={disabled}>
-      <ThemedText style={titleStyle}>{title}</ThemedText>
+    <TouchableOpacity onPress={onPress} style={[styles.button, { backgroundColor }, icon && { flexDirection: "row", alignItems: "center", justifyContent: "center" }, style]} disabled={disabled}>
+      { icon && <FontAwesome5 name={icon} size={18} color="white" /> }
+      { title !== "" && <ThemedText style={[titleStyle, { color: textColor }]}>{title}</ThemedText> }
     </TouchableOpacity>
   );
 }

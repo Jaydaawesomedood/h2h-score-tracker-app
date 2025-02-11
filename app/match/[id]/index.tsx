@@ -11,13 +11,14 @@ import { Player, Team } from "@/models/Player";
 import { bold, large, light, medium, regular } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { calculateWinner, getH2HLite, getHigherScore, GetPlayerStatsByCategory, GetTeamStats, getTotalPointsByH2H, getTotalScoreByMatch, getTotalSetsByH2HLite, getTotalSetsByMatch } from "@/utils/scores.util";
-import { DbContext, useProfileStore } from "@/utils/context";
+import { DbContext, useProfileStore, useThemeStore } from "@/utils/context";
 import ThemedBannerView from "@/components/views/ThemedBannerView";
-import { ThemedTabView } from "@/components/tab-view/ThemedTabView";
+import ThemedTabView from "@/components/tab-view/ThemedTabView";
 import PlayerName from "@/components/text/PlayerName";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { ThemedBarPercentageView } from "@/components/views/ThemedBarPercentageView";
-import { GetCategoryFullName, GetUniqueCategoriesFromAllMatches, GetWinRate } from "@/utils/common/common.util";
+import { GetWinRate } from "@/utils/common/common.util";
+import { GetUniqueCategoriesFromMatches, GetCategoryFullName } from "@/utils/categories.util";
 
 type PlayerProfileProps = {
   player: Player;
@@ -33,8 +34,8 @@ export default function MatchProfileScreen() {
   // Context
   const { id } = useLocalSearchParams();
   const db = useContext(DbContext);
-
   const { profile, setProfile, clearProfile } = useProfileStore();
+  const { isLightMode } = useThemeStore();
 
   const GetMatch = async (category: "singles" | "doubles") => {
     if (category === "singles") {
@@ -45,11 +46,11 @@ export default function MatchProfileScreen() {
       const allMatchesForPlayer2 = await GetAllMatchesByPlayer(db!, match.teams[1].id);
 
       // Getting the overall win rate for both players
-      const overallStatsForPlayer1 = GetUniqueCategoriesFromAllMatches(allMatchesForPlayer1).map((category: string) => GetPlayerStatsByCategory(category, allMatchesForPlayer1, match.teams[0].id));
+      const overallStatsForPlayer1 = GetUniqueCategoriesFromMatches(allMatchesForPlayer1).map((category: string) => GetPlayerStatsByCategory(category, allMatchesForPlayer1, match.teams[0].id));
       const player1Total = overallStatsForPlayer1.reduce((accumulator, currentValue) => accumulator + currentValue.total, 0);
       const player1Won = overallStatsForPlayer1.reduce((accumulator, currentValue) => accumulator + currentValue.won, 0);
       
-      const overallStatsForPlayer2 = GetUniqueCategoriesFromAllMatches(allMatchesForPlayer2).map((category: string) => GetPlayerStatsByCategory(category, allMatchesForPlayer2, match.teams[1].id));
+      const overallStatsForPlayer2 = GetUniqueCategoriesFromMatches(allMatchesForPlayer2).map((category: string) => GetPlayerStatsByCategory(category, allMatchesForPlayer2, match.teams[1].id));
       const player2Total = overallStatsForPlayer2.reduce((accumulator, currentValue) => accumulator + currentValue.total, 0);
       const player2Won = overallStatsForPlayer2.reduce((accumulator, currentValue) => accumulator + currentValue.won, 0);
 
@@ -101,13 +102,15 @@ export default function MatchProfileScreen() {
   };
   
   const renderMatchBanner = () => {
+    const backgroundColor = isLightMode ? "rgba(230, 230, 230, 0.6)" : "rgba(0, 0, 0, 0.85)";
+
     return (
       <ImageBackground
-        source={require('../../../assets/images/placeholder-banner-1.jpg')}
+        source={isLightMode ? require("../../../assets/images/match-banner-light.jpg") : require("../../../assets/images/match-banner-dark.jpg")}
         resizeMode="cover"
         style={[PlayerBanner.bannerContainer]}
       >
-        <View style={PlayerBanner.innerBannerContainer}>
+        <View style={[PlayerBanner.innerBannerContainer, { backgroundColor }]}>
           <View style={PlayerBanner.screenTitleContainer}>
             <ScreenTitleWithBack
               title=""
@@ -349,7 +352,7 @@ function PlayerProfile({ player, isWinner }: PlayerProfileProps) {
 // TODO - Standardize this somewhere else as styles are common across app
 const styles = StyleSheet.create({
   tabScreen: {
-    flex: 1,
+    // flex: 1,
     paddingHorizontal: 32,
     paddingVertical: 16,
     rowGap: 16,

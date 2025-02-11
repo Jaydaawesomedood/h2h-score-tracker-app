@@ -56,5 +56,67 @@ export const DbQueries = {
     ON p1.id = sm.participant1ID
     LEFT JOIN players AS p2
     ON p2.id = sm.participant2ID
-  `
+  `,
+  CreateAllTables: `
+    PRAGMA foreign_keys=ON;
+
+    CREATE TABLE IF NOT EXISTS players (
+      id VARCHAR(255) PRIMARY KEY NOT NULL,
+      firstName VARCHAR(255),
+      lastName VARCHAR(255) NOT NULL,
+      lastNameFirst BIT DEFAULT 0,
+      gender VARCHAR(255)
+    );
+
+    CREATE TABLE IF NOT EXISTS teams (
+      id VARCHAR(255) PRIMARY KEY NOT NULL,
+      name VARCHAR(255),
+      category VARCHAR(20) NOT NULL,
+      player1ID VARCHAR(10) NOT NULL,
+      player2ID VARCHAR(10) NOT NULL,
+      FOREIGN KEY(player1ID) REFERENCES players(id) ON DELETE CASCADE,
+      FOREIGN KEY(player2ID) REFERENCES players(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS tournaments (
+      id VARCHAR(255) PRIMARY KEY NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      startDate TEXT(65535) NOT NULL,
+      endDate TEXT(65535) NOT NULL,
+      venue TEXT(65535) NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS matches (
+      id VARCHAR(255) PRIMARY KEY NOT NULL,
+      matchId VARCHAR(255) NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS singlesMatches (
+      id VARCHAR(255) PRIMARY KEY NOT NULL,
+      category VARCHAR(20) NOT NULL,
+      participant1ID VARCHAR(10) NOT NULL,
+      participant2ID VARCHAR(10) NOT NULL,
+      score TEXT(65535) NOT NULL,
+      datetime TEXT(65535) NOT NULL,
+      mode VARCHAR(20) NOT NULL,
+      tournamentID VARCHAR(30) NULL,
+      FOREIGN KEY(participant1ID) REFERENCES players(id) ON DELETE CASCADE,
+      FOREIGN KEY(participant2ID) REFERENCES players(id) ON DELETE CASCADE,
+      FOREIGN KEY(tournamentID) REFERENCES tournaments(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS doublesMatches (
+      id VARCHAR(255) PRIMARY KEY NOT NULL,
+      category VARCHAR(20) NOT NULL,
+      participant1ID VARCHAR(10) NOT NULL,
+      participant2ID VARCHAR(10) NOT NULL,
+      score TEXT(65535) NOT NULL,
+      datetime TEXT(65535) NOT NULL,
+      mode VARCHAR(20) NOT NULL,
+      tournamentID VARCHAR(30) NULL,
+      FOREIGN KEY(participant1ID) REFERENCES teams(id) ON DELETE CASCADE,
+      FOREIGN KEY(participant2ID) REFERENCES teams(id) ON DELETE CASCADE,
+      FOREIGN KEY(tournamentID) REFERENCES tournaments(id)
+    );
+  `,
 };

@@ -3,6 +3,7 @@ import Animated, { interpolate, SharedValue, useEvent, useHandler, useSharedValu
 import React, { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { medium, regular } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { BorderDebug } from "@/constants/styles/Containers";
 
 interface Tab {
   label: string;
@@ -123,10 +124,12 @@ function TabIndicator({ measurements, scrollX, screenWidth }: TabIndicatorProps)
   );
 };
 
-export function ThemedTabView({ tabs }: Props) {
+export default function ThemedTabView({ tabs }: Props) {
   const screenWidth = useRef(Dimensions.get("window").width).current;
-  const scrollX = useSharedValue(0);
+  const scrollX = useSharedValue(0); // to indicate tab indicator x value
   const tabViewRef = useRef<FlatList | null>(null);
+
+  const canCallMomentum = useSharedValue(true);
 
   const onTabPress = useCallback((tabIndex: number) => {
     tabViewRef?.current?.scrollToOffset({
@@ -137,6 +140,7 @@ export function ThemedTabView({ tabs }: Props) {
   const handlers = {
     onScroll: (event: ScrollEvent) => {
       'worklet';
+      canCallMomentum.value = true;
       scrollX.value = event.contentOffset.x;
     },
   };
@@ -177,6 +181,19 @@ export function ThemedTabView({ tabs }: Props) {
           renderItem={({ item }) => (
             <View style={{ width: screenWidth }}>{item}</View>
           )}
+          // TODO - For future implementation of clamping tabview
+          // onMomentumScrollEnd={() => {
+          //   if (canCallMomentum.value) console.log('stop'); // we need to clamp the scrollview here
+          //   canCallMomentum.value = false;
+          // }}
+          // onViewableItemsChanged={
+          //   ({changed, viewableItems}) => {
+          //     if (changed.length === viewableItems.length) {
+          //       console.log(viewableItems[0]);
+          //     }
+          //   }
+          // } // Or we can clamp by getting the props value
+          viewabilityConfig={{ minimumViewTime: 200, itemVisiblePercentThreshold: 100 }}
         />
       </View>
     </View>

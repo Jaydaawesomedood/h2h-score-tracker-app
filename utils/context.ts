@@ -3,6 +3,8 @@ import { createContext, Dispatch, SetStateAction } from "react";
 import * as SQLite from 'expo-sqlite';
 import { Categories } from "@/models/Categories.enum";
 import { create } from "zustand";
+import { Match } from "@/models/Match";
+import { Matches } from "@/models/matches/Matches";
 
 type AddTeamContext = {
   players: Player[],
@@ -83,7 +85,7 @@ export const StepperContext = createContext<StepperContext>({ currentStep: 0, se
 
 
 interface ProfileStore {
-  profile: any,
+  profile: any, // could be player, team or match
   setProfile: (profile: any) => void,
   clearProfile: () => void,
 };
@@ -93,3 +95,38 @@ export const useProfileStore = create<ProfileStore>((set) => ({
   setProfile: (profile: any) => set({ profile: profile }),
   clearProfile: () => set({ profile: {} }),
 }));
+
+interface DataStore {
+  players: Player[],
+  teams: Team[],
+  setPlayers: (players: Player[]) => void,
+  setTeams: (teams: Team[]) => void,
+  matches: Matches,
+  setSinglesMatches: (matches: Match[]) => void,
+  setDoublesMatches: (matches: Match[]) => void,
+  clearAllParticipants: () => void,
+  clearAllMatches: () => void;
+};
+
+interface ThemeStore {
+  isLightMode: boolean,
+  setIsLightMode: () => void;
+};
+
+export const useDataStore = create<DataStore>((set, get) => ({
+  players: [],
+  teams: [],
+  setPlayers: (players: Player[]) => set({ players: [...players] }),
+  setTeams: (teams: Team[]) => set({ teams: [...teams] }),
+  matches: { singles: [], doubles: [] },
+  setSinglesMatches: (matches: Match[]) => set({ matches: { ...get().matches, singles: [...matches] } }),
+  setDoublesMatches: (matches: Match[]) => set({ matches: { ...get().matches, doubles: [...matches] } }),
+  clearAllParticipants: () => set({ players: [...get().players.filter(p => p.id === "p1")], teams: [] }),
+  clearAllMatches: () => set({ matches: { singles: [], doubles: [] } }),
+}));
+
+export const useThemeStore = create<ThemeStore>((set, get) => ({
+  isLightMode: false,
+  setIsLightMode: () => set({ isLightMode: !get().isLightMode })
+}))
+

@@ -1,6 +1,6 @@
 import ThemedDatePicker from "@/components/inputs/ThemedDatePicker";
 import ThemedDropdown from "@/components/inputs/ThemedDropdown";
-import { Steps } from "@/constants/Steps";
+import { Steps } from "@/constants/constants";
 import { Text } from "@/constants/styles/Text";
 import { AddMatchContext, EditMatchContext, StepperContext } from "@/utils/context";
 import { useIsFocused } from "@react-navigation/native";
