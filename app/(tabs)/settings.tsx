@@ -1,13 +1,14 @@
 import ScreenTitle from "@/components/screens/ScreenTitle";
 import ThemedView from "@/components/ThemedView";
 import { Containers } from "@/constants/styles/Containers";
-import { medium, regular } from "@/constants/styles/Text";
+import { medium, regular, small } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { DbContext, useDataStore, useThemeStore } from "@/utils/context";
 import { DeleteAllData } from "@/utils/database/database";
 import { showMessageToast } from "@/utils/toast.util";
 import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { openURL } from "expo-linking";
 import { useContext } from "react";
 import { List, Switch } from "react-native-paper";
 
@@ -54,13 +55,32 @@ export default function SettingsScreen() {
           ]}
         />
         <List.Item
-          title="Clear All Data"
-          onPress={clearAllData}
-          left={() => (<FontAwesome5 name="trash-alt" size={18} color={clearAllBtnColor} />)}
+          title={"Submit Feedback"}
+          onPress={() => { openURL("https://forms.gle/Ukv5fp1os26zgVNF9") }}
+          left={() => (<FontAwesome5 name="external-link-alt" size={24} color={textColor} />)}
           titleStyle={[
             textStyle,
-            { color: clearAllBtnColor }
+            { color: textColor }
           ]}
+        />
+        <List.Item
+          title={"Support Me!"}
+          onPress={() => { openURL("https://buymeacoffee.com/pyromancer0826") }}
+          left={() => (<FontAwesome5 name="heart" size={24} color={textColor} />)}
+          titleStyle={[
+            textStyle,
+            { color: textColor }
+          ]}
+        />
+        <List.Item
+          title="Clear All Data"
+          onPress={clearAllData}
+          left={() => (<FontAwesome5 name="trash-alt" size={16} color={clearAllBtnColor} />)}
+          titleStyle={[
+            textStyle,
+            { color: clearAllBtnColor, fontSize: small + 2, lineHeight: small + 4 }
+          ]}
+          style={{ marginTop: 8 }}
         />
       </List.Section>
     </ThemedView>
