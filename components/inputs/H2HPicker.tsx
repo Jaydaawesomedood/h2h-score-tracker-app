@@ -9,8 +9,7 @@ import H2HSelectPlayerModal from "../modals/H2HSelectPlayerModal";
 import { H2HStats, StatsByPartner } from "@/models/Stats";
 import { FontAwesome } from "@expo/vector-icons";
 import ThemedText from "../ThemedText";
-import { bold, light, medium, small } from "@/constants/styles/Text";
-import { BorderDebug } from "@/constants/styles/Containers";
+import { bold, light, medium, small, TextStyles } from "@/constants/styles/Text";
 
 type Props = {
   player: Player;
@@ -123,7 +122,7 @@ export default function H2HPicker({ player, partners, opponents, partner, setPar
             <View style={{ marginTop: 8 }}>
               <View style={{ flexDirection: "row", alignItems: "center", paddingVertical: 8 }}>
                 <ThemedText style={[text.section, { flex: 1 }]}>TOUGHEST OPPONENTS</ThemedText>
-                <ThemedText style={[{ fontFamily: light, fontSize: small, lineHeight: small, marginRight: 18 }]}>W - L</ThemedText>
+                <ThemedText style={[TextStyles.descriptions.small, { marginRight: 18 }]}>W - L</ThemedText>
               </View>
               <View style={{ rowGap: 16 }}>
                 {

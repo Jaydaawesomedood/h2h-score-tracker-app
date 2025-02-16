@@ -1,17 +1,18 @@
 import { AddMatchContext } from "@/utils/context";
-import { useContext } from "react";
-import { FlatList, Modal, TouchableOpacity, View } from "react-native";
+import { useContext, useMemo, useState } from "react";
+import { FlatList, Keyboard, Modal, TouchableOpacity, View } from "react-native";
 import ThemedView from "../ThemedView";
 import { Modals, PlayerListItem } from "@/constants/styles/Containers";
 import ThemedText from "../ThemedText";
 import SecondaryButton from "../buttons/SecondaryButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Text } from "@/constants/styles/Text";
+import { TextStyles } from "@/constants/styles/Text";
 import { Player, Team } from "@/models/Player";
 import { Categories } from "@/models/Categories.enum";
 import { Genders } from "@/models/Genders.enum";
 import PlayerProfileCard from "../views/players/PlayerProfileCard";
 import TeamProfileCard from "../views/players/TeamProfileCard";
+import ThemedSearchBar from "../inputs/ThemedSearchBar";
 
 type ModalProps = {
   isOpen: boolean;
@@ -33,22 +34,67 @@ export default function SelectPlayerModal({
   // Context
   const { category, playersList, teamsList } = useContext(AddMatchContext);
 
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   // Colors
   const contentBackgroundColor = useThemeColor("background");
   const separatorColor = useThemeColor("itemSeparator");  
 
+  const participantsList = useMemo(() => {
+    if (searchTerm !== "") {
+      if (category === "doubles") {
+        return {
+          singles: [],
+          doubles: teamsList.slice().filter((t: Team) => (
+            t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            t.players[0].firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            t.players[0].lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            t.players[1].firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            t.players[1].lastName.toLowerCase().includes(searchTerm.toLowerCase())
+          ))
+        };
+      }
+      else {
+        return {
+          singles: playersList.slice().filter((p: Player) => (
+            p.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+          )),
+          doubles: []
+        };
+      }
+    }
+
+    return { singles: playersList, doubles: teamsList };
+  }, [searchTerm]);
+
+  const closeModal = () => {
+    setSearchTerm("");
+    onClose();
+  };
+  
   return (
     <View>
-      <Modal animationType="slide" transparent={true} visible={isOpen} onRequestClose={onClose}>
+      <Modal animationType="slide" transparent={true} visible={isOpen} onRequestClose={closeModal}>
         <View style={Modals.backdrop}>
           <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor, height: "90%" }]}>
             <View style={Modals.titleContainer}>
-              <ThemedText style={Text.screenTitle}>Add {category === "doubles" ? 'Team' : 'Player'}</ThemedText>
-              <SecondaryButton title="Close" onPress={onClose} />
+              <ThemedText style={TextStyles.titles.screen}>Add {category === "doubles" ? 'Team' : 'Player'}</ThemedText>
+              <SecondaryButton title="Close" onPress={closeModal} />
+            </View>
+            <View>
+              <ThemedSearchBar
+                placeholder={category === "doubles" ? "Search team by team name or player name" : "Search player by name"}
+                searchTerm={searchTerm}
+                onChangeText={(text: string) => { setSearchTerm(text); }}
+                onSearch={() => {}}
+                onBlur={() => Keyboard.dismiss()}
+                autoSearch={true}
+              />
             </View>
             <FlatList
-              data={(category === "doubles" ? teamsList : playersList) as any[]}
-              renderItem={ ({ item, index, separators }) => <ListItem item={item} activeIndex={activeIndex} closeModal={onClose} /> }
+              data={(participantsList[category]) as any[]}
+              renderItem={ ({ item }) => <ListItem item={item} activeIndex={activeIndex} closeModal={closeModal} /> }
               ItemSeparatorComponent={() => <View style={{ width: "100%", height: 0.5, backgroundColor: separatorColor }} />}
             />
           </ThemedView>

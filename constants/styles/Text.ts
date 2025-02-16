@@ -1,5 +1,3 @@
-import { Platform, TextStyle } from "react-native";
-
 export const light = "LeagueSpartanLight";
 export const regular = "LeagueSpartanRegular";
 export const bold = "LeagueSpartanBold";
@@ -12,121 +10,65 @@ export const mainContent = 26; // Important content
 export const title = 32; // Screen titles
 export const extraLarge = 40; // Banner headings
 
-function getDimensionValue() {
-  return Platform.OS === 'android' ? 8 : 12;
+const headerStyle = {
+  fontFamily: bold,
+  fontSize: large,
+  lineHeight: large,
 };
-// TODO - Refactor all these
-export const Text = {
-  titles: {
-    section: {
-      fontFamily: bold,
-      fontSize: large,
-      lineHeight: large,
-    },
-  },
-  bottomTabLabel: {
-    fontFamily: regular
-  },
-  topTabLabel: {
-    fontFamily: regular,
-    fontSize: medium,
-    lineHeight: medium,
-    textTransform: "none",
-  },
-  screenTitle: {
-    fontFamily: bold,
-    fontSize: title,
-    lineHeight: title
-  },
-  primaryBtnTitle: {
-    fontFamily: bold,
-    fontSize: large,
-    lineHeight: large,
-  },
-  secondaryBtnTitle: {
-    fontFamily: regular,
-    fontSize: medium,
-    lineHeight: medium,
-  },
-  input: {
-    borderRadius: 8,
-    fontFamily: regular,
-    fontSize: medium,
-    lineHeight: medium,
-    paddingHorizontal: 8,
-    paddingVertical: 16,
-  },
-  inputLabel: {
-    fontFamily: regular,
-    fontSize: medium,
-    lineHeight: medium,
-    marginBottom: 8,
-  },
-  addTeamPlayerInput: {
-    fontFamily: light,
-    fontSize: medium,
-    lineHeight: medium,
-  },
-  message: {
-    fontFamily: light,
-    fontSize: small,
-    lineHeight: small,
-  },
-  listItem: {
-    fontFamily: regular,
-    fontSize: medium,
-    lineHeight: medium,
-  },
-  listSubtitle: {
-    fontFamily: light,
-    fontSize: small,
-    lineHeight: small,
-  },
-  playerDetailsTitle: {
-    fontFamily: regular,
-    fontSize: title,
-    lineHeight: title,
-    paddingVertical: 4,
-  },
-  playerDetailsTitleBold: {
-    fontFamily: bold,
-    fontSize: extraLarge,
-    lineHeight: extraLarge,
-    paddingVertical: 4,
-  },
-  teamPlayerDetailsTitle: {
-    fontFamily: regular,
-    fontSize: large,
-    // paddingVertical: 4,
-  },
-  teamPlayerDetailsTitleBold: {
-    fontFamily: bold,
-    fontSize: large,
-    // paddingVertical: 4,
-  },
-  matchSummaryCard: {
-    header: {
-      fontFamily: bold,
-      fontSize: medium,
-    },
-    footer: {
-      fontFamily: light,
-      fontSize: extraSmall,
-    },
-  },
+
+const contentStyle = {
+  fontFamily: regular,
+  fontSize: medium,
+  lineHeight: medium,
 };
 
 export const TextStyles = {
   titles: {
-    section: {
+    screen: {
       fontFamily: bold,
-      fontSize: large,
-      lineHeight: large,
+      fontSize: title,
+      lineHeight: title
+    },
+    section: {
+      ...headerStyle,
     },
     subsection: {
       fontFamily: bold,
       fontSize: medium,
       lineHeight: medium,
+    },
+  },
+  descriptions: {
+    small: {
+      fontFamily: light,
+      fontSize: small,
+      lineHeight: small,
+    },
+    medium: {
+      fontFamily: light,
+      fontSize: medium,
+      lineHeight: medium,
+    }
+  },
+  content: {
+    main: {
+      ...contentStyle
+    },
+  },
+  controls: {
+    input: {
+      form: {
+        ...contentStyle
+      },
+      label: {
+        ...contentStyle,
+        marginBottom: 8,
+      },
+    },
+    buttons: {
+      primary: {
+        ...headerStyle
+      },
     },
   },
 };

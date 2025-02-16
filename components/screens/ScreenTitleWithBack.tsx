@@ -1,5 +1,5 @@
 import { Containers } from "@/constants/styles/Containers";
-import { Text } from "@/constants/styles/Text";
+import { TextStyles } from "@/constants/styles/Text";
 import { router } from "expo-router";
 import { View, StyleSheet, ViewStyle } from "react-native";
 import ThemedText from "../ThemedText";
@@ -14,10 +14,10 @@ export type ScreenTitleWithBackProps = {
 
 export default function ScreenTitleWithBack({ title, actionBtn, style }: ScreenTitleWithBackProps) {
   // Container-related
-  const containerStyle = Containers.title;
+  const containerStyle = Containers.title as ViewStyle;
 
   // Title-related
-  const titleStyle = Text.screenTitle;
+  const titleStyle = TextStyles.titles.screen;
 
   const onBack = () => { router.back(); };
 

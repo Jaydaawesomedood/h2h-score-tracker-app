@@ -3,7 +3,6 @@ import Animated, { interpolate, SharedValue, useEvent, useHandler, useSharedValu
 import React, { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { medium, regular } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { BorderDebug } from "@/constants/styles/Containers";
 
 interface Tab {
   label: string;

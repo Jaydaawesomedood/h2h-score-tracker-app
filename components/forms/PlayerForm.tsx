@@ -4,7 +4,7 @@ import Checkbox from "expo-checkbox";
 import ThemedText from "../ThemedText";
 import ThemedDropdown from "../inputs/ThemedDropdown";
 import { Dispatch, SetStateAction } from "react";
-import { Text } from "@/constants/styles/Text";
+import { Text, TextStyles } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import React from "react";
 
@@ -39,7 +39,7 @@ export default function PlayerForm({
 }: PlayerFormProps) {
 
   // Styling
-  const inputLabelStyle = Text.inputLabel;
+  const inputLabelStyle = TextStyles.controls.input.label;
   const color = useThemeColor("primary");
 
   return (
@@ -69,7 +69,7 @@ export default function PlayerForm({
           onValueChange={setLastNameFirst}
           color={lastNameFirst ? color : undefined}
         />
-        <ThemedText style={[Text.message, { paddingLeft: 8 }]}>
+        <ThemedText style={[TextStyles.descriptions.small, { paddingLeft: 8 }]}>
           Name begins with last name (e.g., Chinese names)
         </ThemedText>
       </View>

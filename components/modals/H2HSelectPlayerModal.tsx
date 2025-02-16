@@ -4,7 +4,7 @@ import { Modals, PlayerListItem } from "@/constants/styles/Containers";
 import ThemedText from "../ThemedText";
 import SecondaryButton from "../buttons/SecondaryButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Text } from "@/constants/styles/Text";
+import { TextStyles } from "@/constants/styles/Text";
 import PlayerProfileCard from "../views/players/PlayerProfileCard";
 import TeamProfileCard from "../views/players/TeamProfileCard";
 import { StatsByPartner } from "@/models/Stats";
@@ -57,7 +57,7 @@ export default function SelectPlayerModal({
         <View style={Modals.backdrop}>
           <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor, height: "90%" }]}>
             <View style={Modals.titleContainer}>
-              <ThemedText style={Text.screenTitle}>Select {type.charAt(0).toUpperCase() + type.slice(1)}</ThemedText>
+              <ThemedText style={TextStyles.titles.screen}>Select {type.charAt(0).toUpperCase() + type.slice(1)}</ThemedText>
               <SecondaryButton title="Close" onPress={onClose} />
             </View>
             <FlatList

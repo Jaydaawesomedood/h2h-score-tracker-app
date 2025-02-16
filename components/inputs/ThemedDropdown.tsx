@@ -1,10 +1,11 @@
-import { Text } from "@/constants/styles/Text";
+import { Text, TextStyles } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { FontAwesome } from "@expo/vector-icons";
 import { ComponentProps, Dispatch, SetStateAction, useEffect, useState } from "react";
 import { StyleProp, StyleSheet, TextStyle, useColorScheme, View, ViewStyle } from "react-native";
 import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
 import ThemedText from "../ThemedText";
+import { ContainerStyles } from "@/constants/styles/Containers";
 
 export type DropdownItem = {
   label: string;
@@ -53,7 +54,6 @@ export default function ThemedDropdown({
   const menuBackgroundColor = useThemeColor("dropdownContainer");
   const itemSelectedBackgroundColor = useThemeColor("dropdownItemSelected");
   const disabledStyle = useThemeColor("dropdownContainerDisabled");
-  const textStyle = Text.input;
 
   const theme = useColorScheme() ?? "light";
 
@@ -65,7 +65,7 @@ export default function ThemedDropdown({
 
   return (
     <View style={[containerStyle]}>
-      <ThemedText style={[Text.inputLabel, labelStyle]}>{label}</ThemedText>
+      <ThemedText style={[TextStyles.controls.input.label, labelStyle]}>{label}</ThemedText>
       <DropDownPicker
         open={isOpen}
         value={value}
@@ -80,7 +80,7 @@ export default function ThemedDropdown({
         style={[styles.input, { backgroundColor: inputBackgroundColor }]}
         placeholder={placeholder}
         placeholderStyle={[styles.inputText, { color: inputPlaceholderColor }]}
-        textStyle={[textStyle, { paddingVertical: 8 }]}
+        textStyle={[TextStyles.controls.input.form, ContainerStyles.controls.input, { paddingVertical: 8 }]}
         labelStyle={[styles.inputText, { color: textColor }]}
         dropDownContainerStyle={[styles.input, { backgroundColor: itemSelectedBackgroundColor }]}
         listParentContainerStyle={{ backgroundColor: menuBackgroundColor, paddingVertical: 0 }}

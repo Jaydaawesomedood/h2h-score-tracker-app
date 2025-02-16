@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import ThemedView from "../ThemedView";
 import { Containers } from "@/constants/styles/Containers";
-import { regular, Text, title } from "@/constants/styles/Text";
+import { regular, TextStyles, title } from "@/constants/styles/Text";
 import Checkbox from "expo-checkbox";
 import ThemedInput from "../inputs/ThemedInput";
 import ThemedText from "../ThemedText";
@@ -80,15 +80,15 @@ export default function OnboardingScreen({ setOnboarded }: Props) {
   return (
     <ThemedView style={[Containers.screen, { justifyContent: "center" }]}>
       <View style={[styles.row, { rowGap: 8 }]}>
-        <ThemedText style={[Text.titles.section, { fontSize: title, lineHeight: title }]}>Hello!</ThemedText>
-        <ThemedText style={[Text.message]}>Before using the app, please provide the following details.</ThemedText>
+        <ThemedText style={[TextStyles.titles.section, { fontSize: title, lineHeight: title }]}>Hello!</ThemedText>
+        <ThemedText style={[TextStyles.descriptions.small]}>Before using the app, please provide the following details.</ThemedText>
       </View>
       <ThemedInput
         value={firstName}
         onChangeText={(text: string) => setFirstName(text)}
         placeholder="Enter first name"
         label="Your First Name (Given Name)"
-        labelStyle={Text.inputLabel}
+        labelStyle={TextStyles.controls.input.label}
         containerStyle={styles.row}
       />
       <View style={styles.row}>
@@ -97,7 +97,7 @@ export default function OnboardingScreen({ setOnboarded }: Props) {
           onChangeText={(text: string) => setLastName(text)}
           placeholder="Enter last name"
           label="Your Last Name (Surname)"
-          labelStyle={Text.inputLabel}
+          labelStyle={TextStyles.controls.input.label}
           containerStyle={{ marginBottom: 12 }}
         />
         <View style={[{ flexDirection: "row", alignItems: "center" }]}>
@@ -106,13 +106,13 @@ export default function OnboardingScreen({ setOnboarded }: Props) {
             onValueChange={setLastNameFirst}
             color={lastNameFirst ? primary : undefined}
           />
-          <ThemedText style={[Text.message, { paddingLeft: 8 }]}>
+          <ThemedText style={[TextStyles.descriptions.small, { paddingLeft: 8 }]}>
             Name begins with last name (e.g., Chinese names)
           </ThemedText>
         </View>
       </View>
       <View style={styles.row}>
-        <ThemedText style={Text.inputLabel}>Gender</ThemedText>
+        <ThemedText style={TextStyles.controls.input.label}>Gender</ThemedText>
         <SegmentedButtons
           value={gender}
           onValueChange={setGender}

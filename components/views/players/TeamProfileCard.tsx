@@ -1,7 +1,6 @@
 import PlayerName from "@/components/text/PlayerName";
 import ThemedText from "@/components/ThemedText";
-import { BorderDebug } from "@/constants/styles/Containers";
-import { Text } from "@/constants/styles/Text";
+import { Text, TextStyles } from "@/constants/styles/Text";
 import { Team } from "@/models/Player";
 import React from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
@@ -16,11 +15,11 @@ export default function TeamProfileCard({ team, style }: Props) {
       <View style={[styles.nameContainer]}>
         <View style={[styles.nameSubcontainer]}>
           <PlayerName player={team.players[0]} />
-          <ThemedText style={Text.listItem}> / </ThemedText> 
+          <ThemedText style={TextStyles.content.main}> / </ThemedText> 
           <PlayerName player={team.players[1]} />
         </View>
       </View>
-      { (team.name) ? <ThemedText style={Text.listSubtitle}>{team.name}</ThemedText> : null }
+      { (team.name) ? <ThemedText style={TextStyles.descriptions.small}>{team.name}</ThemedText> : null }
     </View>
   );
 };

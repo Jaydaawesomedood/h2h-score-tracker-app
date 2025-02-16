@@ -1,6 +1,6 @@
 import PlayerName from "@/components/text/PlayerName";
 import ThemedText from "@/components/ThemedText";
-import { bold, Text } from "@/constants/styles/Text";
+import { bold, extraSmall, light, medium } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Match } from "@/models/Match";
 import { Player, Team } from "@/models/Player";
@@ -26,7 +26,7 @@ export default function MatchSummaryCard({ match, mode, style }: MatchSummaryCar
       <TouchableOpacity>
         <View style={[styles.cardContainer, { backgroundColor: bodyBackgroundColor }, style]}>
           <View style={[styles.cardHeader, { backgroundColor: headerBackgroundColor }]}>
-            <ThemedText style={Text.matchSummaryCard.header}>{GetCategoryFullName(match.category)}</ThemedText>
+            <ThemedText style={text.header}>{GetCategoryFullName(match.category)}</ThemedText>
           </View>
           <View style={[styles.cardBody]}>
             {
@@ -90,8 +90,8 @@ export default function MatchSummaryCard({ match, mode, style }: MatchSummaryCar
             }
           </View>
           <View style={[styles.cardFooter, { borderTopColor: footerColor }]}>
-            <ThemedText numberOfLines={1} style={Text.matchSummaryCard.footer}>{match.mode.toLowerCase() === "tournament" ? "Tournament" : "Casual Game"}</ThemedText>
-            <ThemedText style={Text.matchSummaryCard.footer}>{match.datetime}</ThemedText>
+            <ThemedText numberOfLines={1} style={text.footer}>{match.mode.toLowerCase() === "tournament" ? "Tournament" : "Casual Game"}</ThemedText>
+            <ThemedText style={text.footer}>{match.datetime}</ThemedText>
           </View>
         </View>
       </TouchableOpacity>
@@ -133,5 +133,16 @@ const styles = StyleSheet.create({
     columnGap: 16,
     flexDirection: "row",
     justifyContent: "center",
+  },
+});
+
+const text = StyleSheet.create({
+  header: {
+    fontFamily: bold,
+    fontSize: medium,
+  },
+  footer: {
+    fontFamily: light,
+    fontSize: extraSmall,
   },
 });

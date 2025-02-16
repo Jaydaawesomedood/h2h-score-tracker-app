@@ -2,7 +2,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { ComponentProps } from "react";
 import { TouchableOpacity, StyleProp, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import ThemedText from "../ThemedText";
-import { Text } from "@/constants/styles/Text";
+import { medium, regular, Text } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type SecondaryButtonProps = {
@@ -18,28 +18,32 @@ export type SecondaryButtonProps = {
 
 export default function SecondaryButton({ title, icon, iconPosition, onPress, customColor, disabled = false, style, labelStyle }: SecondaryButtonProps) {  
   // Styling
-  const titleStyle = Text.secondaryBtnTitle;
   const color = customColor ?? useThemeColor(disabled ? "primaryDisabled" : "secondaryBtn");
   
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[
-        styles.button,
+        styles.container,
         { flexDirection: iconPosition === "left" ? "row": "row-reverse", columnGap: 8 },
         style,
       ]}
       disabled={disabled}
     >
       { icon && <FontAwesome name={icon} size={18} color={color} /> }
-      { title !== "" && <ThemedText style={[{ color }, titleStyle, labelStyle]}>{title}</ThemedText> }
+      { title !== "" && <ThemedText style={[{ color }, styles.text, labelStyle]}>{title}</ThemedText> }
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  button: {
+  container: {
     alignItems: "center",
     justifyContent: "space-between",
-  }
+  },
+  text: {
+    fontFamily: regular,
+    fontSize: medium,
+    lineHeight: medium,
+  },
 });

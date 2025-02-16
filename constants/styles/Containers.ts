@@ -100,25 +100,6 @@ export const Modals: { [key: string]: ViewStyle } = {
   bodyContainer: {},
 };
 
-export const AddOption: { [key: string]: ViewStyle } = {
-  container: {
-    alignItems: "center",
-    borderRadius: 16,
-    columnGap: 8,
-    flexDirection: "row",
-    paddingVertical: 16,
-  },
-  iconContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: 50,
-  },
-  textContainer: {
-    flex: 1,
-    marginLeft: 8,
-  },
-};
-
 export const AddTeamPlayer: { [key: string]: ViewStyle } = {
   container: {
     // alignItems: "center",
@@ -138,4 +119,14 @@ export const AddTeamPlayer: { [key: string]: ViewStyle } = {
     justifyContent: "center",
 
   },
+};
+
+export const ContainerStyles = {
+  controls: {
+    input: {
+      borderRadius: 8,
+      paddingHorizontal: 8,
+      paddingVertical: 16,
+    }
+  }
 };

@@ -2,6 +2,9 @@ import ScreenTitle from "@/components/screens/ScreenTitle";
 import ThemedView from "@/components/ThemedView";
 import ThemedTabView from "@/components/tab-view/ThemedTabView";
 import MatchSummaryCard from "@/components/views/matches/MatchSummaryCard";
+import SecondaryButton from "@/components/buttons/SecondaryButton";
+import MatchAdvancedFilterModal from "@/components/modals/MatchAdvancedFilterModal";
+import ThemedText from "@/components/ThemedText";
 
 import { Containers } from "@/constants/styles/Containers";
 import { Match } from "@/models/Match";
@@ -10,13 +13,10 @@ import { ScrollView, View } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Href, router } from "expo-router";
 import { useDataStore } from "@/utils/context";
-import SecondaryButton from "@/components/buttons/SecondaryButton";
-import MatchAdvancedFilterModal from "@/components/modals/MatchAdvancedFilterModal";
 import { FilterMatches } from "@/utils/repositories/matches.util";
-import ThemedText from "@/components/ThemedText";
-import { light, small, TextStyles } from "@/constants/styles/Text";
-import React from "react";
+import { light, medium, small, TextStyles } from "@/constants/styles/Text";
 import { Matches } from "@/models/matches/Matches";
+import React from "react";
 
 export default function MatchesScreen() {
   const { matches } = useDataStore();
@@ -116,7 +116,7 @@ export default function MatchesScreen() {
       {
         list.singles.length === 0 && list.doubles.length === 0 ?
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-          <ThemedText style={{ fontFamily: light }}>No matches recorded yet. Add one now!</ThemedText>
+          <ThemedText style={TextStyles.descriptions.medium}>No matches recorded yet. Add one now!</ThemedText>
         </View>
         :
         <Fragment>
@@ -126,7 +126,7 @@ export default function MatchesScreen() {
                 filtersApplied > 0 &&
                   <View style={{ flexDirection: "row", alignItems: "center", columnGap: 8 }}>
                     <View>
-                      <ThemedText style={{ color: filterBtnColor, fontFamily: light, fontSize: small, lineHeight: small }}>{filtersApplied} filters applied</ThemedText>
+                      <ThemedText style={[TextStyles.descriptions.small, { color: filterBtnColor }]}>{filtersApplied} filters applied</ThemedText>
                     </View>
                     <SecondaryButton
                       title="Clear"

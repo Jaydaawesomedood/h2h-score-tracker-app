@@ -3,7 +3,7 @@ import ThemedDropdown from "../inputs/ThemedDropdown";
 import ThemedInput from "../inputs/ThemedInput";
 import ThemedText from "../ThemedText";
 import { Categories } from "@/models/Categories.enum";
-import { Text } from "@/constants/styles/Text";
+import { Text, TextStyles } from "@/constants/styles/Text";
 import { Player } from "@/models/Player";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 import ThemedView from "../ThemedView";
@@ -51,7 +51,7 @@ export default function TeamForm({
 }: TeamFormProps) {
 
   // Styling
-  const inputLabelStyle = Text.inputLabel;
+  const inputLabelStyle = TextStyles.controls.input.label;
 
   return (
     <>
@@ -110,7 +110,7 @@ function AddTeamPlayerInput({ placeholder, disabled = false, onPress, player, co
           !player ?
           <View style={AddTeamPlayer.placeholderContainer}>
             <FontAwesome name="plus-circle" size={28} color={"grey"} />
-            <ThemedText style={[Text.addTeamPlayerInput, { color: "grey" }]}>{placeholder}</ThemedText>
+            <ThemedText style={[TextStyles.descriptions.medium, { color: "grey" }]}>{placeholder}</ThemedText>
           </View>
           :
           <PlayerProfileCard player={player} />

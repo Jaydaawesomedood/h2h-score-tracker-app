@@ -1,5 +1,4 @@
 import PlayerName from "@/components/text/PlayerName";
-import { BorderDebug } from "@/constants/styles/Containers";
 import { medium } from "@/constants/styles/Text";
 import { Player } from "@/models/Player";
 import { Image, StyleSheet, View, ViewProps } from "react-native";
@@ -17,7 +16,7 @@ export default function PlayerProfileCard({ imageSize, player, isVertical = fals
   return (
     <View style={[styles.container, style, !isVertical ? { flexDirection: "row" } : styles.containerVertical]}>
       <Image
-        source={require('../../../assets/images/placeholder-avatar.png')}
+        source={require('../../../assets/images/default-avatar.png')}
         style={{ borderRadius: size, height: size, width: size }}
       />
       <PlayerName player={player} isVertical={isVertical} textStyle={{ paddingVertical: isVertical ? 1 : 0, fontSize: medium }}/>

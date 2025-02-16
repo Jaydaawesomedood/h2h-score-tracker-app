@@ -1,9 +1,9 @@
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedView from "@/components/ThemedView";
 import { Containers, Modals, PlayerListItem } from "@/constants/styles/Containers";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { FlatList, Keyboard, Modal, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { Text } from "@/constants/styles/Text";
+import { TextStyles } from "@/constants/styles/Text";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import ThemedText from "@/components/ThemedText";
 import { Player } from "@/models/Player";
@@ -17,6 +17,7 @@ import TeamForm from "@/components/forms/TeamForm";
 import { DbContext, TeamPlayersContext, useDataStore } from "@/utils/context";
 import { GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
 import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
+import ThemedSearchBar from "@/components/inputs/ThemedSearchBar";
 
 // TODO - Reorganize this as its duplicating elsewhere
 type PlayersModalProps = {
@@ -150,6 +151,7 @@ export default function AddTeamScreen() {
             setIsDropdownOpen={setIsDropdownOpen}
             onDropdownClose={closeDropdown}
             onKeyboardClose={hideKeyboard}
+            dropdownDisabled={true}
           />
           <PrimaryButton title="Add" onPress={onAddTeam} disabled={addDisabled} style={{ marginTop: 32 }} />
         </ThemedView>
@@ -163,19 +165,47 @@ function PlayersModal({ players, isOpen, onClose, playerNumber }: PlayersModalPr
   // Colors
   const contentBackgroundColor = useThemeColor("background");
   const separatorColor = useThemeColor("itemSeparator");
-  
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const playersList = useMemo(() => {
+    if (searchTerm !== "") {
+      return players.slice().filter((p: Player) => (
+        p.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+      ));
+    }
+
+    return players;
+  }, [searchTerm]);
+
+  const closeModal = () => {
+    setSearchTerm("");
+    onClose();
+  };
+
   return (
     <View>
-      <Modal animationType="slide" transparent={true} visible={isOpen} onRequestClose={onClose}>
+      <Modal animationType="slide" transparent={true} visible={isOpen} onRequestClose={closeModal}>
         <View style={Modals.backdrop}>
           <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor, height: "90%" }]}>
             <View style={Modals.titleContainer}>
-              <ThemedText style={Text.screenTitle}>Add Player</ThemedText>
-              <SecondaryButton title="Close" onPress={onClose} />
+              <ThemedText style={TextStyles.titles.screen}>Add Player</ThemedText>
+              <SecondaryButton title="Close" onPress={closeModal} />
+            </View>
+            <View>
+              <ThemedSearchBar
+                placeholder="Search player by name"
+                searchTerm={searchTerm}
+                onChangeText={(text: string) => { setSearchTerm(text); }}
+                onSearch={() => {}}
+                onBlur={() => Keyboard.dismiss()}
+                autoSearch={true}
+              />
             </View>
             <FlatList
-              data={players}
-              renderItem={ ({ item, index, separators }) => <ListItem item={item} playerNumber={playerNumber} onCloseModal={onClose} /> }
+              data={playersList}
+              renderItem={ ({ item }) => <ListItem item={item} playerNumber={playerNumber} onCloseModal={closeModal} /> }
               ItemSeparatorComponent={() => <View style={{ width: "100%", height: 0.5, backgroundColor: separatorColor }} />}
             />
           </ThemedView>

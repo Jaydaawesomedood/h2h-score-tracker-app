@@ -340,7 +340,7 @@ function PlayerProfile({ player, isWinner }: PlayerProfileProps) {
         width: imageSize,
       }}>
         <Image
-          source={require('../../../assets/images/placeholder-avatar.png')}
+          source={require('../../../assets/images/default-avatar.png')}
           style={{ height: "100%", width: "100%" }}
         />
       </View>

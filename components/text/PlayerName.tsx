@@ -1,6 +1,6 @@
 import { Player } from "@/models/Player";
 import ThemedText from "../ThemedText";
-import { bold, Text } from "@/constants/styles/Text";
+import { bold, Text, TextStyles } from "@/constants/styles/Text";
 import { TextStyle, View, ViewStyle } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
@@ -37,7 +37,7 @@ export default function PlayerName({
     justifyContent: (player.lastNameFirst) ? "flex-end" : "flex-start",
   };
 
-  const style = textStyle ?? Text.listItem;
+  const style = textStyle ?? TextStyles.content.main;
 
   const isBold = (settings: NameSettings) => settings.bold ? { fontFamily: bold } : {};
   const isTruncated = (name: string, settings: NameSettings) => settings.truncate ? name.split(" ").map((name: string) => name[0]).join(" ") : name;

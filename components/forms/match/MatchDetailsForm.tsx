@@ -1,7 +1,7 @@
 import ThemedDatePicker from "@/components/inputs/ThemedDatePicker";
 import ThemedDropdown from "@/components/inputs/ThemedDropdown";
 import { Steps } from "@/constants/constants";
-import { Text } from "@/constants/styles/Text";
+import { Text, TextStyles } from "@/constants/styles/Text";
 import { AddMatchContext, EditMatchContext, StepperContext } from "@/utils/context";
 import { useIsFocused } from "@react-navigation/native";
 import { Dispatch, SetStateAction, useContext, useEffect } from "react";
@@ -39,7 +39,7 @@ export default function MatchDetailsForm({
         setValue={setDate}
         onInputPress={() => setIsDropdownOpen(false)}
         label="Date"
-        labelStyle={Text.inputLabel}
+        labelStyle={TextStyles.controls.input.label}
       />
       <ThemedDropdown
         options={[
@@ -54,7 +54,7 @@ export default function MatchDetailsForm({
         onPress={onDropdownPress}
         onSelectItem={() => setIsNextBtnDisabled(false)}
         label="Match Setting"
-        labelStyle={Text.inputLabel}
+        labelStyle={TextStyles.controls.input.label}
       />
     </View>
   );

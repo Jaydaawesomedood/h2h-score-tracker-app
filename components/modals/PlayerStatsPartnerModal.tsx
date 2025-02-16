@@ -3,7 +3,7 @@ import { Modal, ScrollView, StyleSheet, View } from "react-native";
 import ThemedText from "../ThemedText";
 import PlayerProfileCard from "../views/players/PlayerProfileCard";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { bold, medium, Text } from "@/constants/styles/Text";
+import { bold, medium, TextStyles } from "@/constants/styles/Text";
 import ThemedView from "../ThemedView";
 import { Modals } from "@/constants/styles/Containers";
 import SecondaryButton from "../buttons/SecondaryButton";
@@ -25,7 +25,7 @@ export default function PlayerStatsPartnerModal({ isOpen, onClose, partners }: P
           <ThemedView style={[Modals.content, { height: "90%", paddingVertical: 16 } ]}>
             <View>
               <View style={[Modals.titleContainer, { paddingVertical: 8 }]}>
-                <ThemedText style={[Text.screenTitle]}>Partners</ThemedText>
+                <ThemedText style={[TextStyles.titles.screen]}>Partners</ThemedText>
                 <SecondaryButton title="Close" onPress={onClose} />
               </View>
               <View>

@@ -1,4 +1,4 @@
-import { BorderDebug, Modals } from "@/constants/styles/Containers";
+import { Modals } from "@/constants/styles/Containers";
 import { Modal, ScrollView, StyleSheet, View } from "react-native";
 import SecondaryButton from "../buttons/SecondaryButton";
 import ThemedText from "../ThemedText";
@@ -53,7 +53,7 @@ export default function ParticipantsAdvancedSearchModal({ isOpen, onClose, type,
         <View style={[styles.modal]}>
           <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor, height: "50%", paddingBottom: 16, paddingHorizontal: 0 }]}>
             <View style={[Modals.titleContainer, { paddingHorizontal: 32 }]}>
-              <ThemedText style={Text.screenTitle}>Advanced Search</ThemedText>
+              <ThemedText style={TextStyles.titles.screen}>Advanced Search</ThemedText>
               <SecondaryButton title="Close" onPress={onClose} />
             </View>
             <View style={{ flexGrow: 1 }}>

@@ -1,7 +1,8 @@
-import { Text } from "@/constants/styles/Text";
+import { TextStyles } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { TextInput, TextInputProps, TextStyle, View, ViewStyle } from "react-native";
 import ThemedText from "../ThemedText";
+import { ContainerStyles } from "@/constants/styles/Containers";
 
 export type ThemedInputProps = TextInputProps & {
   value: string;
@@ -11,7 +12,6 @@ export type ThemedInputProps = TextInputProps & {
 };
 
 export default function ThemedInput({ placeholder, style, value, onChangeText, label, labelStyle, containerStyle, ...props }: ThemedInputProps) {
-  const inputStyle = Text.input;
   const backgroundColor = useThemeColor('input');
   const placeholderColor = useThemeColor('inputPlaceholder');
   const color = useThemeColor('text');
@@ -26,7 +26,8 @@ export default function ThemedInput({ placeholder, style, value, onChangeText, l
         onChangeText={onChangeText}
         style={[
           { backgroundColor, color },
-          inputStyle,
+          ContainerStyles.controls.input,
+          TextStyles.controls.input.form,
           style,
         ]}
         { ...props }

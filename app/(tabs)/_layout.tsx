@@ -3,19 +3,19 @@ import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { Text } from '@/constants/styles/Text';
+import { regular } from '@/constants/styles/Text';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function TabLayout() {
   const backgroundColor = useThemeColor("tabBarBackground");
   const borderColor = useThemeColor("tabBarBorder");
   const activeColor = useThemeColor("tabIconSelected");
-  const label = Text.bottomTabLabel;
 
   const tabs = [
     // { page: "index", name: "Profile", icon: "user", tabBarShowLabel: true },
     { page: "index", name: "Matches", icon: "ranking-star", tabBarShowLabel: true },
     { page: "players", name: "Players", icon: "people-group", tabBarShowLabel: true },
+    // { page: "stats", name: "Stats", icon: "chart-bar", tabBarShowLabel: true },
     { page: "settings", name: "Settings", icon: "gear", tabBarShowLabel: true },
   ];
 
@@ -38,7 +38,7 @@ export default function TabLayout() {
                 tabBarIcon: ({ color }: any) => (
                   <TabBarIcon name={icon} color={color} />
                 ),
-                tabBarLabelStyle: { fontFamily: label.fontFamily },
+                tabBarLabelStyle: { fontFamily: regular },
                 ...otherProps
               }}
             />

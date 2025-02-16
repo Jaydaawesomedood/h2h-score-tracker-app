@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import ThemedText from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Text } from "@/constants/styles/Text";
+import { TextStyles } from "@/constants/styles/Text";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useThemeStore } from "@/utils/context";
 
@@ -20,7 +20,7 @@ export default function PrimaryButton({ title, icon, onPress, disabled, style }:
   const textColor = useThemeColor(isLightMode ? "textFlipped" : "text");
 
   // Title-related
-  const titleStyle = Text.primaryBtnTitle;
+  const titleStyle = TextStyles.controls.buttons.primary;
   
   return (
     <TouchableOpacity onPress={onPress} style={[styles.button, { backgroundColor }, icon && { flexDirection: "row", alignItems: "center", justifyContent: "center" }, style]} disabled={disabled}>

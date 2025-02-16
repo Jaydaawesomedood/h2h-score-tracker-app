@@ -1,6 +1,6 @@
-import { Text } from "@/constants/styles/Text";
+import { TextStyles } from "@/constants/styles/Text";
 import ThemedText from "../ThemedText";
-import { View, ViewProps } from "react-native";
+import { View, ViewProps, ViewStyle } from "react-native";
 import { Containers } from "@/constants/styles/Containers";
 import SecondaryButton from "../buttons/SecondaryButton";
 import { ComponentProps } from "react";
@@ -18,10 +18,10 @@ export type ScreenTitleProps = ViewProps & {
 
 export default function ScreenTitle({ title, actionBtn, style }: ScreenTitleProps) {
   // Container-related
-  const containerStyle = Containers.title;
+  const containerStyle = Containers.title as ViewStyle;
 
   // Title-related
-  const titleStyle = Text.screenTitle;
+  const titleStyle = TextStyles.titles.screen;
 
   return (
     <View style={[containerStyle, style]}>

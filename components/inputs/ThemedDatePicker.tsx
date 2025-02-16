@@ -3,9 +3,9 @@ import { Modal, TextInput, TextStyle, TouchableOpacity, TouchableWithoutFeedback
 import DateTimePicker from "react-native-ui-datepicker";
 import ThemedText from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { bold, regular, Text } from "@/constants/styles/Text";
+import { bold, regular, Text, TextStyles } from "@/constants/styles/Text";
 import moment from "moment";
-import { Modals } from "@/constants/styles/Containers";
+import { ContainerStyles, Modals } from "@/constants/styles/Containers";
 import ThemedView from "../ThemedView";
 import SecondaryButton from "../buttons/SecondaryButton";
 
@@ -47,7 +47,7 @@ export default function ThemedDatePicker({
           <View style={[Modals.backdrop, { alignItems: "center", flex: 1, justifyContent: "center" }]}>
             <ThemedView style={[Modals.contentFull, { backgroundColor: contentBackgroundColor }]}>
               <View style={Modals.titleContainer}>
-                <ThemedText style={Text.screenTitle}>Date</ThemedText>
+                <ThemedText style={TextStyles.titles.screen}>Date</ThemedText>
                 <SecondaryButton title="Close" onPress={closeModal} />
               </View>
               <DateTimePicker
@@ -82,7 +82,8 @@ export default function ThemedDatePicker({
             editable={false}
             style={[
               { backgroundColor, color },
-              { ...Text.input }
+              ContainerStyles.controls.input,
+              TextStyles.controls.input.form
             ]}
           />
         </TouchableOpacity>

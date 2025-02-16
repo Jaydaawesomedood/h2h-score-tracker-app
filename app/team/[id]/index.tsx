@@ -5,7 +5,7 @@ import { GetAllMatchesByTeam, GetTeam } from "@/utils/database/database";
 import { showErrorToast } from "@/utils/toast.util";
 import { Player, Team } from "@/models/Player";
 import { ImageBackground, Image, View, StatusBar, StyleSheet } from "react-native";
-import { bold, extraSmall, large, light, medium, Text } from "@/constants/styles/Text";
+import { bold, extraSmall, large, light, medium, regular, TextStyles } from "@/constants/styles/Text";
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import { PlayerBanner } from "@/constants/styles/Containers";
 import { DbContext, useProfileStore, useThemeStore } from "@/utils/context";
@@ -143,7 +143,7 @@ export default function TeamProfileScreen() {
           {
             profile.team.name &&
             <View style={{ alignSelf: "center", paddingBottom: 24 }}>
-              <ThemedText style={[Text.teamPlayerDetailsTitle, { marginTop: -16 }]}>{profile.team.name}</ThemedText>
+              <ThemedText style={[text.teamPlayerDetailsTitle, { marginTop: -16 }]}>{profile.team.name}</ThemedText>
             </View>
           }
           <View style={[PlayerBanner.bannerContentContainer, { justifyContent: "space-around" }]}>
@@ -152,7 +152,7 @@ export default function TeamProfileScreen() {
                 // TODO - Change this to PlayerProfileCard
                 <View key={player.id} style={{ alignItems: "center", minWidth: 150, maxWidth: 150 }}>
                   <Image
-                    source={require('../../../assets/images/placeholder-avatar.png')}
+                    source={require('../../../assets/images/default-avatar.png')}
                     style={{ borderRadius: imageSize, height: imageSize, width: imageSize, marginBottom: 16 }}
                   />
                   <PlayerName player={player} isVertical={true} textStyle={{ fontSize: large }} />
@@ -255,7 +255,7 @@ function StatsTab({
           </Fragment>
           :
           <ThemedView style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <ThemedText style={{ fontFamily: light, fontSize: medium }}>No data available</ThemedText>
+            <ThemedText style={TextStyles.descriptions.medium}>No data available</ThemedText>
           </ThemedView>
         }
       </Fragment>
@@ -343,5 +343,9 @@ const text = StyleSheet.create({
   h2hStats: {
     fontSize: medium,
     lineHeight: medium,
+  },
+  teamPlayerDetailsTitle: {
+    fontFamily: regular,
+    fontSize: large,
   },
 });

@@ -5,7 +5,7 @@ import ThemedText from "@/components/ThemedText";
 import ThemedDivider from "@/components/views/ThemedDivider";
 import { ToastMessages } from "@/constants/messages/Toast";
 import { Steps } from "@/constants/constants";
-import { Text } from "@/constants/styles/Text";
+import { Text, TextStyles } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Categories } from "@/models/Categories.enum";
 import { Player, Team } from "@/models/Player";
@@ -104,7 +104,7 @@ export default function MatchPlayersForm({
               onPress={onDropdownPress}
               onChangeValue={() => { teamsRef.current = []; setTeams([]); }}
               label="Category"
-              labelStyle={Text.inputLabel}
+              labelStyle={TextStyles.controls.input.label}
               containerStyle={{ zIndex: 10 }}
             />
             <ThemedDropdown
@@ -122,7 +122,7 @@ export default function MatchPlayersForm({
               containerStyle={{ marginTop: -24 }}
             />
             <View>
-              <ThemedText style={Text.inputLabel}>Team 1</ThemedText>
+              <ThemedText style={TextStyles.controls.input.label}>Team 1</ThemedText>
               <SelectPlayerInput
                 placeholder={`Add ${category === "doubles" ? 'Team' : 'Player'}`}
                 onPress={() => { setIndex(0); setModalOpen(true); }}
@@ -131,7 +131,7 @@ export default function MatchPlayersForm({
             </View>
             <ThemedDivider text="vs" style={{ paddingHorizontal: 32 }} />
             <View>
-              <ThemedText style={[Text.inputLabel, { opacity: teams.length < 1 ? 0.4 : 1 }]}>Team 2</ThemedText>
+              <ThemedText style={[TextStyles.controls.input.label, { opacity: teams.length < 1 ? 0.4 : 1 }]}>Team 2</ThemedText>
               <SelectPlayerInput
                 placeholder={`Add ${category === "doubles" ? 'Team' : 'Player'}`}
                 onPress={() => { setIndex(1); setModalOpen(true); }}
@@ -142,7 +142,7 @@ export default function MatchPlayersForm({
             {
               showAlertMessage ?
               <View>
-                <ThemedText style={[Text.message, { color: alertColor }]}>{ToastMessages.AddMatchError_SamePlayersInTeams}</ThemedText>
+                <ThemedText style={[TextStyles.descriptions.small, { color: alertColor }]}>{ToastMessages.AddMatchError_SamePlayersInTeams}</ThemedText>
               </View>
               : null
             }

@@ -1,8 +1,8 @@
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
-import { BorderDebug, PlayerBanner } from "@/constants/styles/Containers";
-import { bold, extraSmall, large, light, mainContent, medium, regular, Text } from "@/constants/styles/Text";
+import { PlayerBanner } from "@/constants/styles/Containers";
+import { bold, extraLarge, extraSmall, large, light, mainContent, medium, regular, Text, TextStyles, title } from "@/constants/styles/Text";
 import { Href, router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { Dispatch, Fragment, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Image, ImageBackground, StatusBar, View, StyleSheet, TouchableWithoutFeedback } from "react-native";
@@ -189,12 +189,12 @@ export default function PlayerProfileScreen() {
           </View>
           <View style={PlayerBanner.bannerContentContainer}>
             <Image
-              source={require('../../../assets/images/placeholder-avatar.png')}
+              source={require('../../../assets/images/default-avatar.png')}
               style={{ borderRadius: imageSize, height: imageSize, width: imageSize }}
             />
             <View style={[PlayerBanner.titleContainer, { flexDirection }]}>
-              <ThemedText numberOfLines={1} style={Text.playerDetailsTitle}>{player?.firstName}</ThemedText>
-              <ThemedText numberOfLines={1} style={Text.playerDetailsTitleBold}>{player?.lastName}</ThemedText>
+              <ThemedText numberOfLines={1} style={text.playerDetailsTitle}>{player?.firstName}</ThemedText>
+              <ThemedText numberOfLines={1} style={text.playerDetailsTitleBold}>{player?.lastName}</ThemedText>
             </View>
           </View>
         </View>
@@ -384,7 +384,7 @@ function StatsTab({
           value={dropdownValue}
           setValue={setDropdownValue}
           label="Category"
-          labelStyle={Text.inputLabel}
+          labelStyle={TextStyles.controls.input.label}
         />
         <DurationTab duration={duration} setDuration={setDuration} />
         {
@@ -471,7 +471,7 @@ function StatsTab({
           </Fragment>
           :
           <ThemedView style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <ThemedText style={{ fontFamily: light, fontSize: medium }}>No data available</ThemedText>
+            <ThemedText style={TextStyles.descriptions.medium}>No data available</ThemedText>
           </ThemedView>
         }
       </View>
@@ -629,5 +629,17 @@ const text = StyleSheet.create({
   h2hStats: {
     fontSize: medium,
     lineHeight: medium,
+  },
+  playerDetailsTitle: {
+    fontFamily: regular,
+    fontSize: title,
+    lineHeight: title,
+    paddingVertical: 4,
+  },
+  playerDetailsTitleBold: {
+    fontFamily: bold,
+    fontSize: extraLarge,
+    lineHeight: extraLarge,
+    paddingVertical: 4,
   },
 });

@@ -64,7 +64,7 @@ export default function MatchAdvancedFilterModal({ isOpen, onClose, filters, onA
         <View style={[styles.modal]}>
           <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor, height: "70%", paddingBottom: 16, paddingHorizontal: 0 }]}>
             <View style={[Modals.titleContainer, { paddingHorizontal: 32 }]}>
-              <ThemedText style={Text.screenTitle}>Filter Matches</ThemedText>
+              <ThemedText style={TextStyles.titles.screen}>Filter Matches</ThemedText>
               <SecondaryButton title="Close" onPress={onClose} />
             </View>
             <View style={{ flexGrow: 1 }}>

@@ -1,15 +1,14 @@
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
-import { AddOption, BorderDebug, Modals } from "@/constants/styles/Containers";
-import { Text } from "@/constants/styles/Text";
+import { Modals } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useThemeStore } from "@/utils/context";
 import { FontAwesome } from "@expo/vector-icons";
 import { Href, router } from "expo-router";
 import { ComponentProps } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
-import Animated, { SlideInDown, SlideInUp, SlideOutDown } from "react-native-reanimated";
 
 // TODO - Reorganize this as its duplicating elsewhere
 type ModalProps = {
@@ -44,10 +43,10 @@ export default function AddPlayerOptionModal({ isOpen, onClose }: ModalProps) {
   return (
     <View>
       <Modal animationType="none" transparent={true} visible={isOpen} onRequestClose={onClose}>
-        <View style={[styles.modal]}>
+        <View style={[styles.modal.container]}>
           <ThemedView style={[Modals.content, { backgroundColor: contentBackgroundColor }]}>
             <View style={Modals.titleContainer}>
-              <ThemedText style={Text.screenTitle}>Add</ThemedText>
+              <ThemedText style={TextStyles.titles.screen}>Add</ThemedText>
               <SecondaryButton title="Close" onPress={onClose} />
             </View>
             <View style={{ rowGap: 16 }}>
@@ -67,28 +66,41 @@ function Option({ icon, title, subtitle, onPress, style }: OptionProps) {
   const textColor = useThemeColor(isLightMode ? "textFlipped" : "text");
 
   return (
-    <TouchableOpacity onPress={onPress} style={[AddOption.container, style]}>
-      <View style={AddOption.iconContainer}>
+    <TouchableOpacity onPress={onPress} style={[styles.option.container, style]}>
+      <View style={styles.option.iconWrapper}>
         <FontAwesome name={icon} size={32} color={"white"}></FontAwesome>
       </View>
-      <View style={AddOption.textContainer}>
-        <ThemedText numberOfLines={1} style={[Text.primaryBtnTitle, { color: textColor }]}>{title}</ThemedText>
-        <ThemedText numberOfLines={1} style={[Text.message, { color: textColor }]}>{subtitle}</ThemedText>
+      <View style={styles.option.contentWrapper}>
+        <ThemedText numberOfLines={1} style={[TextStyles.controls.buttons.primary, { color: textColor }]}>{title}</ThemedText>
+        <ThemedText numberOfLines={1} style={[TextStyles.descriptions.small, { color: textColor }]}>{subtitle}</ThemedText>
       </View>
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  modal: {
-    // position: "absolute",
-    // top: 0,
-    // left: 0,
-    // width: "100%",
-    // height: "100%",
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    // ...BorderDebug,
-    // zIndex: 10,
-  },
-});
+const styles = {
+  modal: StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+    },
+  }),
+  option: StyleSheet.create({
+    container: {
+      alignItems: "center",
+      borderRadius: 16,
+      columnGap: 8,
+      flexDirection: "row",
+      paddingVertical: 16,
+    },
+    iconWrapper: {
+      alignItems: "center",
+      justifyContent: "center",
+      minWidth: 50,
+    },
+    contentWrapper: {
+      flex: 1,
+      marginLeft: 8,
+    },
+  }),
+};

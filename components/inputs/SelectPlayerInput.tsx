@@ -9,7 +9,6 @@ import { AddMatchContext } from "@/utils/context";
 import { Player, Team } from "@/models/Player";
 import PlayerProfileCard from "../views/players/PlayerProfileCard";
 import TeamProfileCard from "../views/players/TeamProfileCard";
-import { BorderDebug } from "@/constants/styles/Containers";
 
 type Props = ViewProps & {
   placeholder: string; // Placeholder text for the input
