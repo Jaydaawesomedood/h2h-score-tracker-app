@@ -1,9 +1,9 @@
-import PlayerName from "@/components/text/PlayerName";
-import ThemedText from "@/components/ThemedText";
-import { Text, TextStyles } from "@/constants/styles/Text";
-import { Team } from "@/models/Player";
 import React from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
+import ThemedText from "@/components/ThemedText";
+import PlayerName from "@/components/text/PlayerName";
+import { TextStyles } from "@/constants/styles/Text";
+import { Team } from "@/models/Player";
 
 type Props = ViewProps & {
   team: Team;

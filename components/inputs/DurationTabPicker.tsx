@@ -1,7 +1,7 @@
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { Dispatch, SetStateAction } from "react";
 import { StyleSheet, View } from "react-native";
 import SecondaryButton from "../buttons/SecondaryButton";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 type DurationTabProps = {
   duration: string;

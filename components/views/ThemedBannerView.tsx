@@ -1,6 +1,6 @@
+import { PropsWithChildren } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import ThemedView from "../ThemedView";
-import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren<{
   headerImage: any;

@@ -1,21 +1,23 @@
+import { router, useLocalSearchParams } from "expo-router";
+import moment from "moment";
+import { useContext, useState } from "react";
+import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
+
+import ThemedView from "@/components/ThemedView";
 import MatchDetailsForm from "@/components/forms/match/MatchDetailsForm";
 import MatchScoreForm from "@/components/forms/match/MatchScoreForm";
 import { ProgressStepper } from "@/components/progress-bar/ProgressStepper";
 import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import ThemedView from "@/components/ThemedView";
+
+import { ToastMessages } from "@/constants/messages/Toast";
 import { Containers } from "@/constants/styles/Containers";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Match } from "@/models/Match";
+import { Player, Team } from "@/models/Player";
 import { DbContext, EditMatchContext, useDataStore, useProfileStore } from "@/utils/context";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
-import { router, useLocalSearchParams } from "expo-router";
-import moment from "moment";
-import { useContext, useEffect, useState } from "react";
-import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
-import * as DbClient from "../../../utils/database/database";
-import { Match } from "@/models/Match";
+import * as DbClient from "@/utils/database/database";
 import { GetAllMatchesV2, GetMatch } from "@/utils/repositories/MatchRepository";
-import { Player, Team } from "@/models/Player";
-import { ToastMessages } from "@/constants/messages/Toast";
-import { useThemeColor } from "@/hooks/useThemeColor";
 
 export default function EditMatchScreen() {
   // Context
@@ -73,7 +75,7 @@ export default function EditMatchScreen() {
         // After updating match details, update store
         await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
 
-        router.replace("/matches");
+        router.replace("/");
       })
       .catch(() => showErrorToast());
     }

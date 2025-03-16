@@ -1,7 +1,7 @@
-import { Player, Team } from "@/models/Player";
 import { SQLiteDatabase } from "expo-sqlite";
-import * as DbClient from "../database/database";
 import { Dispatch, SetStateAction } from "react";
+import * as DbClient from "../database/database";
+import { Player, Team } from "@/models/Player";
 
 const GetAllPlayers = async (
   db: SQLiteDatabase,

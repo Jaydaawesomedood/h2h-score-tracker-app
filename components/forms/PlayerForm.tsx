@@ -1,12 +1,11 @@
-import { View } from "react-native";
-import ThemedInput from "../inputs/ThemedInput";
 import Checkbox from "expo-checkbox";
+import React, { Dispatch, SetStateAction } from "react";
+import { View } from "react-native";
 import ThemedText from "../ThemedText";
 import ThemedDropdown from "../inputs/ThemedDropdown";
-import { Dispatch, SetStateAction } from "react";
-import { Text, TextStyles } from "@/constants/styles/Text";
+import ThemedInput from "../inputs/ThemedInput";
+import { TextStyles } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import React from "react";
 
 type PlayerFormProps = {
   firstName: string;

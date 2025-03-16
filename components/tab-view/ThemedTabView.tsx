@@ -1,6 +1,6 @@
+import React, { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View, ViewProps } from "react-native";
 import Animated, { interpolate, SharedValue, useEvent, useHandler, useSharedValue, useAnimatedStyle, ScrollEvent } from "react-native-reanimated";
-import React, { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { medium, regular } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 

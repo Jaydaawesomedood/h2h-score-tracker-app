@@ -1,24 +1,26 @@
-import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import ThemedText from "@/components/ThemedText";
-import ThemedView from "@/components/ThemedView";
-import { PlayerBanner } from "@/constants/styles/Containers";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { Href, router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { ImageBackground, Image, StatusBar, View, StyleSheet } from "react-native";
-import { showErrorToast } from "@/utils/toast.util";
-import { GetAllMatchesByPlayer, GetAllMatchesByTeam, GetAllMatchesOfSamePairs, GetDoublesMatch, GetSinglesMatch } from "@/utils/database/database";
-import { Player, Team } from "@/models/Player";
-import { bold, large, light, medium, regular } from "@/constants/styles/Text";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { calculateWinner, getH2HLite, getHigherScore, GetPlayerStatsByCategory, GetTeamStats, getTotalPointsByH2H, getTotalScoreByMatch, getTotalSetsByH2HLite, getTotalSetsByMatch } from "@/utils/scores.util";
-import { DbContext, useProfileStore, useThemeStore } from "@/utils/context";
-import ThemedBannerView from "@/components/views/ThemedBannerView";
+
+import ThemedText from "@/components/ThemedText";
+import ThemedView from "@/components/ThemedView";
+import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedTabView from "@/components/tab-view/ThemedTabView";
 import PlayerName from "@/components/text/PlayerName";
-import { FontAwesome5 } from "@expo/vector-icons";
+import ThemedBannerView from "@/components/views/ThemedBannerView";
 import { ThemedBarPercentageView } from "@/components/views/ThemedBarPercentageView";
-import { GetWinRate } from "@/utils/common/common.util";
+
+import { PlayerBanner } from "@/constants/styles/Containers";
+import { bold, large, light, medium, regular } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Player, Team } from "@/models/Player";
+import { DbContext, useProfileStore, useThemeStore } from "@/utils/context";
 import { GetUniqueCategoriesFromMatches, GetCategoryFullName } from "@/utils/categories.util";
+import { calculateWinner, getH2HLite, getHigherScore, GetPlayerStatsByCategory, GetTeamStats, getTotalPointsByH2H, getTotalScoreByMatch, getTotalSetsByH2HLite, getTotalSetsByMatch } from "@/utils/scores.util";
+import { showErrorToast } from "@/utils/toast.util";
+import { GetWinRate } from "@/utils/common/common.util";
+import { GetAllMatchesByPlayer, GetAllMatchesByTeam, GetAllMatchesOfSamePairs, GetDoublesMatch, GetSinglesMatch } from "@/utils/database/database";
 
 type PlayerProfileProps = {
   player: Player;

@@ -1,8 +1,8 @@
+import { SQLiteBindParams, SQLiteDatabase } from "expo-sqlite";
+import moment from "moment";
 import { DbQueries } from "@/constants/messages/DbQueries";
 import { Match, MatchLite } from "@/models/Match";
 import { Player, Team } from "@/models/Player";
-import { SQLiteBindParams, SQLiteDatabase } from "expo-sqlite";
-import moment from "moment";
 
 export async function InsertPlayer(db: SQLiteDatabase, params: SQLiteBindParams) {
   const id = await GenerateId(db, "players");

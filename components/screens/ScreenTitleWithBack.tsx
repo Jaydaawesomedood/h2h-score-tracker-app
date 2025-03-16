@@ -1,10 +1,10 @@
-import { Containers } from "@/constants/styles/Containers";
-import { TextStyles } from "@/constants/styles/Text";
 import { router } from "expo-router";
 import { View, StyleSheet, ViewStyle } from "react-native";
 import ThemedText from "../ThemedText";
-import SecondaryButton, { SecondaryButtonProps } from "../buttons/SecondaryButton";
 import ThemedView from "../ThemedView";
+import SecondaryButton, { SecondaryButtonProps } from "../buttons/SecondaryButton";
+import { Containers } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
 
 export type ScreenTitleWithBackProps = {
   title: string;

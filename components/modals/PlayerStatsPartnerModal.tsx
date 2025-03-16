@@ -1,12 +1,12 @@
-import { StatsByPartner } from "@/models/Stats";
 import { Modal, ScrollView, StyleSheet, View } from "react-native";
 import ThemedText from "../ThemedText";
-import PlayerProfileCard from "../views/players/PlayerProfileCard";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { bold, medium, TextStyles } from "@/constants/styles/Text";
 import ThemedView from "../ThemedView";
-import { Modals } from "@/constants/styles/Containers";
 import SecondaryButton from "../buttons/SecondaryButton";
+import PlayerProfileCard from "../views/players/PlayerProfileCard";
+import { Modals } from "@/constants/styles/Containers";
+import { bold, medium, TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { StatsByPartner } from "@/models/Stats";
 
 type Props = {
   isOpen: boolean;

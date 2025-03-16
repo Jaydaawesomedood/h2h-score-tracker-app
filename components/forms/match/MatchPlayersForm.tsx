@@ -1,17 +1,17 @@
+import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
+import { ScrollView, View } from "react-native";
+import ThemedText from "@/components/ThemedText";
 import SelectPlayerInput from "@/components/inputs/SelectPlayerInput";
 import ThemedDropdown from "@/components/inputs/ThemedDropdown";
 import SelectPlayerModal from "@/components/modals/SelectPlayerModal";
-import ThemedText from "@/components/ThemedText";
 import ThemedDivider from "@/components/views/ThemedDivider";
-import { ToastMessages } from "@/constants/messages/Toast";
 import { Steps } from "@/constants/constants";
-import { Text, TextStyles } from "@/constants/styles/Text";
+import { ToastMessages } from "@/constants/messages/Toast";
+import { TextStyles } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Categories } from "@/models/Categories.enum";
 import { Player, Team } from "@/models/Player";
 import { AddMatchContext, StepperContext } from "@/utils/context";
-import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
-import { ScrollView, View } from "react-native";
 
 type Props = {
   isDropdownOpen: boolean;

@@ -1,14 +1,14 @@
-import { Modals } from "@/constants/styles/Containers";
+import { Dispatch, SetStateAction } from "react";
 import { Modal, ScrollView, StyleSheet, View } from "react-native";
-import SecondaryButton from "../buttons/SecondaryButton";
+import { SegmentedButtons } from "react-native-paper";
 import ThemedText from "../ThemedText";
 import ThemedView from "../ThemedView";
-import { regular, Text, TextStyles } from "@/constants/styles/Text";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import PrimaryButton from "../buttons/PrimaryButton";
-import { SegmentedButtons } from "react-native-paper";
-import { Dispatch, SetStateAction } from "react";
+import SecondaryButton from "../buttons/SecondaryButton";
 import { AdvancedSearch } from "@/constants/constants";
+import { Modals } from "@/constants/styles/Containers";
+import { regular, TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 type Props = {
   isOpen: boolean;

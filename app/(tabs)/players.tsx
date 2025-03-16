@@ -1,24 +1,25 @@
-import ScreenTitle from "@/components/screens/ScreenTitle";
-import ThemedView from "@/components/ThemedView";
-import AddPlayerOptionModal from "@/components/modals/AddPlayerOptionModal";
-import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
-import TeamProfileCard from "@/components/views/players/TeamProfileCard";
-import ThemedTabView from "@/components/tab-view/ThemedTabView";
-import ThemedSearchBar from "@/components/inputs/ThemedSearchBar";
-
-import { Containers, PlayerListItem } from "@/constants/styles/Containers";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { Href, router } from "expo-router";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Keyboard, ScrollView, TouchableOpacity, View } from "react-native";
-import { useDataStore } from "@/utils/context";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { FilterParticipantsByProperty } from "@/utils/participants.utils";
-import SecondaryButton from "@/components/buttons/SecondaryButton";
+
 import ThemedText from "@/components/ThemedText";
-import { TextStyles } from "@/constants/styles/Text";
+import ThemedView from "@/components/ThemedView";
+import SecondaryButton from "@/components/buttons/SecondaryButton";
+import ThemedSearchBar from "@/components/inputs/ThemedSearchBar";
+import AddPlayerOptionModal from "@/components/modals/AddPlayerOptionModal";
 import ParticipantsAdvancedSearchModal from "@/components/modals/ParticipantsAdvancedSearchModal";
+import ScreenTitle from "@/components/screens/ScreenTitle";
+import ThemedTabView from "@/components/tab-view/ThemedTabView";
+import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
+import TeamProfileCard from "@/components/views/players/TeamProfileCard";
+
+import { Containers, PlayerListItem } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { Participants } from "@/models/participants/Participants";
+import { useDataStore } from "@/utils/context";
+import { FilterParticipantsByProperty } from "@/utils/participants.utils";
 
 export type ListProps = {
   data: any[]; // TODO - type restrict this

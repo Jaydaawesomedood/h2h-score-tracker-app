@@ -1,18 +1,18 @@
-import { AddMatchContext } from "@/utils/context";
 import { useContext, useMemo, useState } from "react";
 import { FlatList, Keyboard, Modal, TouchableOpacity, View } from "react-native";
-import ThemedView from "../ThemedView";
-import { Modals, PlayerListItem } from "@/constants/styles/Containers";
 import ThemedText from "../ThemedText";
+import ThemedView from "../ThemedView";
 import SecondaryButton from "../buttons/SecondaryButton";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { TextStyles } from "@/constants/styles/Text";
-import { Player, Team } from "@/models/Player";
-import { Categories } from "@/models/Categories.enum";
-import { Genders } from "@/models/Genders.enum";
+import ThemedSearchBar from "../inputs/ThemedSearchBar";
 import PlayerProfileCard from "../views/players/PlayerProfileCard";
 import TeamProfileCard from "../views/players/TeamProfileCard";
-import ThemedSearchBar from "../inputs/ThemedSearchBar";
+import { Modals, PlayerListItem } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Categories } from "@/models/Categories.enum";
+import { Genders } from "@/models/Genders.enum";
+import { Player, Team } from "@/models/Player";
+import { AddMatchContext } from "@/utils/context";
 
 type ModalProps = {
   isOpen: boolean;

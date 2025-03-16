@@ -1,21 +1,22 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { DefaultTheme as PaperDefault, MD3DarkTheme } from 'react-native-paper';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
-import 'react-native-reanimated';
 import * as SQLite from 'expo-sqlite';
-import { DbContext, useDataStore, useThemeStore } from '@/utils/context';
+import { useEffect, useState } from 'react';
+import { StatusBar } from 'react-native';
+import 'react-native-reanimated';
+import { DefaultTheme as PaperDefault, MD3DarkTheme, PaperProvider } from 'react-native-paper';
+
 import ThemedView from '@/components/ThemedView';
-import { PaperProvider } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DbQueries } from '@/constants/messages/DbQueries';
 import OnboardingScreen from '@/components/screens/OnboardingScreen';
+
+import { DbQueries } from '@/constants/messages/DbQueries';
+import { DbContext, useDataStore, useThemeStore } from '@/utils/context';
 import { showErrorToast } from '@/utils/toast.util';
 import { GetAllMatches } from '@/utils/repositories/MatchRepository';
 import { GetAllParticipants } from '@/utils/repositories/PlayerRepository';
-import { StatusBar } from 'react-native';
 
 const screenOptions = { headerShown: false };
 

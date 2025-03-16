@@ -1,11 +1,10 @@
+import { Dispatch, SetStateAction, useContext, useEffect } from "react";
+import { View } from "react-native";
 import ThemedDatePicker from "@/components/inputs/ThemedDatePicker";
 import ThemedDropdown from "@/components/inputs/ThemedDropdown";
 import { Steps } from "@/constants/constants";
-import { Text, TextStyles } from "@/constants/styles/Text";
+import { TextStyles } from "@/constants/styles/Text";
 import { AddMatchContext, EditMatchContext, StepperContext } from "@/utils/context";
-import { useIsFocused } from "@react-navigation/native";
-import { Dispatch, SetStateAction, useContext, useEffect } from "react";
-import { View } from "react-native";
 
 type Props = {
   isDropdownOpen: boolean;

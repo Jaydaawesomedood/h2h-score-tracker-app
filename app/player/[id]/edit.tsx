@@ -1,17 +1,19 @@
-import PrimaryButton from "@/components/buttons/PrimaryButton";
-import ScreenTitle from "@/components/screens/ScreenTitle";
-import ThemedView from "@/components/ThemedView";
-import { Containers } from "@/constants/styles/Containers";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { DeletePlayer, UpdatePlayer } from "@/utils/database/database";
-import { showErrorToast, showMessageToast } from "@/utils/toast.util";
-import { ToastMessages } from "@/constants/messages/Toast";
+
+import ThemedView from "@/components/ThemedView";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import PlayerForm from "@/components/forms/PlayerForm";
+import ScreenTitle from "@/components/screens/ScreenTitle";
+
+import { ToastMessages } from "@/constants/messages/Toast";
+import { Containers } from "@/constants/styles/Containers";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { DbContext, useDataStore, useProfileStore } from "@/utils/context";
+import { showErrorToast, showMessageToast } from "@/utils/toast.util";
+import { DeletePlayer, UpdatePlayer } from "@/utils/database/database";
 import { GetAllPlayersV2, GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
 import { GetAllMatchesV2 } from "@/utils/repositories/MatchRepository";
 

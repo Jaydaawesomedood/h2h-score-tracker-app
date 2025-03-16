@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import ThemedText from "../ThemedText";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { light, bold, mainContent, extraSmall } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 type Props = {
   values: number[];

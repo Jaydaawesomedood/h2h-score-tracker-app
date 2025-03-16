@@ -1,16 +1,15 @@
-import { Dispatch, SetStateAction } from "react";
+import { FontAwesome } from "@expo/vector-icons";
+import React, { Dispatch, SetStateAction } from "react";
+import { TouchableOpacity, View, ViewStyle } from "react-native";
+import ThemedText from "../ThemedText";
+import ThemedView from "../ThemedView";
 import ThemedDropdown from "../inputs/ThemedDropdown";
 import ThemedInput from "../inputs/ThemedInput";
-import ThemedText from "../ThemedText";
-import { Categories } from "@/models/Categories.enum";
-import { Text, TextStyles } from "@/constants/styles/Text";
-import { Player } from "@/models/Player";
-import { TouchableOpacity, View, ViewStyle } from "react-native";
-import ThemedView from "../ThemedView";
-import { FontAwesome } from "@expo/vector-icons";
-import { AddTeamPlayer } from "@/constants/styles/Containers";
 import PlayerProfileCard from "../views/players/PlayerProfileCard";
-import React from "react";
+import { AddTeamPlayer } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
+import { Categories } from "@/models/Categories.enum";
+import { Player } from "@/models/Player";
 
 type TeamFormProps = {
   teamName: string;

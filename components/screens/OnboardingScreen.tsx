@@ -1,19 +1,19 @@
+import Checkbox from "expo-checkbox";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { SegmentedButtons } from "react-native-paper";
+import ThemedText from "../ThemedText";
 import ThemedView from "../ThemedView";
+import PrimaryButton from "../buttons/PrimaryButton";
+import ThemedInput from "../inputs/ThemedInput";
 import { Containers } from "@/constants/styles/Containers";
 import { regular, TextStyles, title } from "@/constants/styles/Text";
-import Checkbox from "expo-checkbox";
-import ThemedInput from "../inputs/ThemedInput";
-import ThemedText from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { SegmentedButtons } from "react-native-paper";
-import PrimaryButton from "../buttons/PrimaryButton";
 import { DbContext, useDataStore } from "@/utils/context";
+import { showErrorToast } from "@/utils/toast.util";
 import { InsertPlayer } from "@/utils/database/database";
 import { GetAllPlayersV2 } from "@/utils/repositories/PlayerRepository";
-import { showErrorToast } from "@/utils/toast.util";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Props = {
   setOnboarded: Dispatch<SetStateAction<boolean>>;

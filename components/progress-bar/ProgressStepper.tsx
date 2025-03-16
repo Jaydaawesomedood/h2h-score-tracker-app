@@ -1,11 +1,10 @@
+import React, { Fragment, ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, FlatList, StyleSheet, View, ViewProps } from "react-native";
-import ProgressStepIcon from "./ProgressStepIcon";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { Fragment, ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import Animated from "react-native-reanimated";
+import ProgressStepIcon from "./ProgressStepIcon";
 import SecondaryButton from "../buttons/SecondaryButton";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { StepperContext } from "@/utils/context";
-import React from "react";
 
 interface StepperData {
   label: string;

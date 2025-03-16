@@ -1,11 +1,11 @@
-import { Text, TextStyles } from "@/constants/styles/Text";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { FontAwesome } from "@expo/vector-icons";
 import { ComponentProps, Dispatch, SetStateAction, useEffect, useState } from "react";
 import { StyleProp, StyleSheet, TextStyle, useColorScheme, View, ViewStyle } from "react-native";
-import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
+import DropDownPicker from "react-native-dropdown-picker";
 import ThemedText from "../ThemedText";
 import { ContainerStyles } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type DropdownItem = {
   label: string;

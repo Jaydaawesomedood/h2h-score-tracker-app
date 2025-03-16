@@ -1,24 +1,24 @@
-import ScreenTitle from "@/components/screens/ScreenTitle";
+import { Href, useRouter } from "expo-router";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
+import { ScrollView, View } from "react-native";
+
+import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
-import ThemedTabView from "@/components/tab-view/ThemedTabView";
-import MatchSummaryCard from "@/components/views/matches/MatchSummaryCard";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import MatchAdvancedFilterModal from "@/components/modals/MatchAdvancedFilterModal";
-import ThemedText from "@/components/ThemedText";
+import ScreenTitle from "@/components/screens/ScreenTitle";
+import ThemedTabView from "@/components/tab-view/ThemedTabView";
+import MatchSummaryCard from "@/components/views/matches/MatchSummaryCard";
 
 import { Containers } from "@/constants/styles/Containers";
+import { small, TextStyles } from "@/constants/styles/Text";
+
+// TODO - Move this to matches folder
 import { Match } from "@/models/Match";
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { Button, PermissionsAndroid, Platform, ScrollView, View } from "react-native";
+import { Matches } from "@/models/matches/Matches";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Href, useRouter } from "expo-router";
 import { useDataStore } from "@/utils/context";
 import { FilterMatches } from "@/utils/repositories/matches.util";
-import { small, TextStyles } from "@/constants/styles/Text";
-import { Matches } from "@/models/matches/Matches";
-import React from "react";
-import * as FileSystem from 'expo-file-system';
-import PrimaryButton from "@/components/buttons/PrimaryButton";
 
 export default function MatchesScreen() {
   const { matches } = useDataStore();

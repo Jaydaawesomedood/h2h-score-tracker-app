@@ -1,13 +1,13 @@
+import moment from "moment";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { Modal, TextInput, TextStyle, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
 import DateTimePicker from "react-native-ui-datepicker";
 import ThemedText from "../ThemedText";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { bold, regular, Text, TextStyles } from "@/constants/styles/Text";
-import moment from "moment";
-import { ContainerStyles, Modals } from "@/constants/styles/Containers";
 import ThemedView from "../ThemedView";
 import SecondaryButton from "../buttons/SecondaryButton";
+import { ContainerStyles, Modals } from "@/constants/styles/Containers";
+import { bold, regular, TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 type Props = {
   value: string;

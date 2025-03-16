@@ -1,5 +1,5 @@
-import { Match } from "@/models/Match";
 import moment from "moment";
+import { Match } from "@/models/Match";
 
 function FilterMatches(filters: any, matches: { singles: Match[], doubles: Match[] }) {
   if (filters["category"] && filters["mode"] && filters["timeframe"]) {

@@ -1,14 +1,14 @@
+import { Dispatch, SetStateAction } from "react";
 import { FlatList, Modal, TouchableOpacity, View } from "react-native";
-import ThemedView from "../ThemedView";
-import { Modals, PlayerListItem } from "@/constants/styles/Containers";
 import ThemedText from "../ThemedText";
+import ThemedView from "../ThemedView";
 import SecondaryButton from "../buttons/SecondaryButton";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { TextStyles } from "@/constants/styles/Text";
 import PlayerProfileCard from "../views/players/PlayerProfileCard";
 import TeamProfileCard from "../views/players/TeamProfileCard";
+import { Modals, PlayerListItem } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { StatsByPartner } from "@/models/Stats";
-import { Dispatch, SetStateAction } from "react";
 
 type ModalProps = {
   modal: {

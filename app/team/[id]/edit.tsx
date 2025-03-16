@@ -1,19 +1,21 @@
-import TeamForm from "@/components/forms/TeamForm";
-import ScreenTitle from "@/components/screens/ScreenTitle";
-import ThemedView from "@/components/ThemedView";
-import { Containers } from "@/constants/styles/Containers";
 import { router, useLocalSearchParams } from "expo-router";
 import { Fragment, useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { DeleteTeam, UpdateTeam } from "@/utils/database/database";
-import { showErrorToast, showMessageToast } from "@/utils/toast.util";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import SecondaryButton from "@/components/buttons/SecondaryButton";
+
+import ThemedView from "@/components/ThemedView";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
+import SecondaryButton from "@/components/buttons/SecondaryButton";
+import TeamForm from "@/components/forms/TeamForm";
+import ScreenTitle from "@/components/screens/ScreenTitle";
+
 import { ToastMessages } from "@/constants/messages/Toast";
+import { Containers } from "@/constants/styles/Containers";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { DbContext, useDataStore, useProfileStore } from "@/utils/context";
-import { GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
+import { showErrorToast, showMessageToast } from "@/utils/toast.util";
+import { DeleteTeam, UpdateTeam } from "@/utils/database/database";
 import { GetAllMatchesV2 } from "@/utils/repositories/MatchRepository";
+import { GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
 
 export default function EditTeamScreen() {
   // Context

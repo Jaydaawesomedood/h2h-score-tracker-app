@@ -1,14 +1,16 @@
-import PrimaryButton from "@/components/buttons/PrimaryButton";
-import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import ThemedView from "@/components/ThemedView";
-import { Containers } from "@/constants/styles/Containers";
 import { useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { InsertPlayer } from "@/utils/database/database";
-import { showErrorToast, showMessageToast } from "@/utils/toast.util";
-import { ToastMessages } from "@/constants/messages/Toast";
+
+import ThemedView from "@/components/ThemedView";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
 import PlayerForm from "@/components/forms/PlayerForm";
+import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
+
+import { ToastMessages } from "@/constants/messages/Toast";
+import { Containers } from "@/constants/styles/Containers";
 import { DbContext, useDataStore } from "@/utils/context";
+import { showErrorToast, showMessageToast } from "@/utils/toast.util";
+import { InsertPlayer } from "@/utils/database/database";
 import { GetAllPlayersV2 } from "@/utils/repositories/PlayerRepository";
 
 export default function AddPlayerScreen() {

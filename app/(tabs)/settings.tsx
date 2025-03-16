@@ -1,16 +1,18 @@
-import ScreenTitle from "@/components/screens/ScreenTitle";
-import ThemedView from "@/components/ThemedView";
-import { Containers } from "@/constants/styles/Containers";
-import { medium, regular, small } from "@/constants/styles/Text";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { DbContext, useDataStore, useThemeStore } from "@/utils/context";
-import { DeleteAllData } from "@/utils/database/database";
-import { showMessageToast } from "@/utils/toast.util";
 import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { openURL } from "expo-linking";
 import { useContext } from "react";
 import { List, Switch } from "react-native-paper";
+
+import ScreenTitle from "@/components/screens/ScreenTitle";
+import ThemedView from "@/components/ThemedView";
+
+import { Containers } from "@/constants/styles/Containers";
+import { medium, regular, small } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { DbContext, useDataStore, useThemeStore } from "@/utils/context";
+import { showMessageToast } from "@/utils/toast.util";
+import { DeleteAllData } from "@/utils/database/database";
 
 export default function SettingsScreen() {
   const db = useContext(DbContext);

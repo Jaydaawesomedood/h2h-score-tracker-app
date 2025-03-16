@@ -1,8 +1,8 @@
-import { Player } from "@/models/Player";
-import ThemedText from "../ThemedText";
-import { bold, Text, TextStyles } from "@/constants/styles/Text";
 import { TextStyle, View, ViewStyle } from "react-native";
+import ThemedText from "../ThemedText";
+import { bold, TextStyles } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { Player } from "@/models/Player";
 
 interface NameSettings {
   bold?: boolean; // Specifies whether the text should be in bold

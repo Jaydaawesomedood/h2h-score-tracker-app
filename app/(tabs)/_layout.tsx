@@ -1,11 +1,12 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { StyleSheet } from 'react-native';
+
+import ThemedView from '@/components/ThemedView';
+import TabBarIcon from '@/components/navigation/TabBarIcon';
+
 import { regular } from '@/constants/styles/Text';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import ThemedView from '@/components/ThemedView';
 
 export default function TabLayout() {
   const backgroundColor = useThemeColor("tabBarBackground");

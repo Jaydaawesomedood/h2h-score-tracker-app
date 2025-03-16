@@ -1,31 +1,33 @@
-import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import ThemedText from "@/components/ThemedText";
-import ThemedView from "@/components/ThemedView";
-import { PlayerBanner } from "@/constants/styles/Containers";
-import { bold, extraLarge, extraSmall, large, light, mainContent, medium, regular, TextStyles, title } from "@/constants/styles/Text";
 import { Href, router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { Dispatch, Fragment, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Image, ImageBackground, StatusBar, View, StyleSheet, TouchableWithoutFeedback } from "react-native";
-import { GetAllMatchesByPlayer, GetPlayer } from "@/utils/database/database";
-import { showErrorToast } from "@/utils/toast.util";
-import { DbContext, useProfileStore, useThemeStore } from "@/utils/context";
-import ThemedBannerView from "@/components/views/ThemedBannerView";
-import ThemedTabView from "@/components/tab-view/ThemedTabView";
-import ThemedDropdown from "@/components/inputs/ThemedDropdown";
-import { GetPlayerStatsByCategory, GetPlayerOverallStats, GetPlayerStatsByPartner, GetH2HStatsById, GetToughestOpponentsByH2H } from "@/utils/scores.util";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { PlayerMatchSummary, Stats, StatsByCategory, StatsByPartner } from "@/models/Stats";
-import { GetWinRate, SortMatchesByDate } from "@/utils/common/common.util";
-import MatchSummaryCard from "@/components/views/matches/MatchSummaryCard";
+
+import ThemedText from "@/components/ThemedText";
+import ThemedView from "@/components/ThemedView";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
-import { ThemedBarPercentageView } from "@/components/views/ThemedBarPercentageView";
-import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
-import PlayerStatsPartnerModal from "@/components/modals/PlayerStatsPartnerModal";
-import { Match } from "@/models/Match";
-import H2HPicker from "@/components/inputs/H2HPicker";
-import { Player, Team } from "@/models/Player";
 import { DurationTab } from "@/components/inputs/DurationTabPicker";
+import H2HPicker from "@/components/inputs/H2HPicker";
+import ThemedDropdown from "@/components/inputs/ThemedDropdown";
+import PlayerStatsPartnerModal from "@/components/modals/PlayerStatsPartnerModal";
+import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
+import ThemedTabView from "@/components/tab-view/ThemedTabView";
+import MatchSummaryCard from "@/components/views/matches/MatchSummaryCard";
+import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
+import ThemedBannerView from "@/components/views/ThemedBannerView";
+import { ThemedBarPercentageView } from "@/components/views/ThemedBarPercentageView";
+
+import { PlayerBanner } from "@/constants/styles/Containers";
+import { bold, extraLarge, extraSmall, large, light, mainContent, medium, regular, TextStyles, title } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Match } from "@/models/Match";
+import { Player, Team } from "@/models/Player";
+import { PlayerMatchSummary, Stats, StatsByCategory, StatsByPartner } from "@/models/Stats";
 import { GetUniqueCategoriesFromMatches, GetCategoryFullName } from "@/utils/categories.util";
+import { DbContext, useProfileStore, useThemeStore } from "@/utils/context";
+import { GetPlayerStatsByCategory, GetPlayerOverallStats, GetPlayerStatsByPartner, GetH2HStatsById, GetToughestOpponentsByH2H } from "@/utils/scores.util";
+import { showErrorToast } from "@/utils/toast.util";
+import { GetWinRate, SortMatchesByDate } from "@/utils/common/common.util";
+import { GetAllMatchesByPlayer, GetPlayer } from "@/utils/database/database";
 
 export default function PlayerProfileScreen() {
   const { id } = useLocalSearchParams();

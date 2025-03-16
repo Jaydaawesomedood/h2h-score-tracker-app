@@ -1,23 +1,25 @@
-import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import ThemedView from "@/components/ThemedView";
-import { Containers, Modals, PlayerListItem } from "@/constants/styles/Containers";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { FlatList, Keyboard, Modal, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { TextStyles } from "@/constants/styles/Text";
-import PrimaryButton from "@/components/buttons/PrimaryButton";
+
 import ThemedText from "@/components/ThemedText";
-import { Player } from "@/models/Player";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import ThemedView from "@/components/ThemedView";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
-import { InsertTeam, IsTeamExists } from "@/utils/database/database";
-import { Genders } from "@/models/Genders.enum";
-import { showErrorToast, showMessageToast } from "@/utils/toast.util";
-import { ToastMessages } from "@/constants/messages/Toast";
 import TeamForm from "@/components/forms/TeamForm";
-import { DbContext, TeamPlayersContext, useDataStore } from "@/utils/context";
-import { GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
-import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
 import ThemedSearchBar from "@/components/inputs/ThemedSearchBar";
+import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
+import PlayerProfileCard from "@/components/views/players/PlayerProfileCard";
+
+import { ToastMessages } from "@/constants/messages/Toast";
+import { Containers, Modals, PlayerListItem } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Genders } from "@/models/Genders.enum";
+import { Player } from "@/models/Player";
+import { DbContext, TeamPlayersContext, useDataStore } from "@/utils/context";
+import { showErrorToast, showMessageToast } from "@/utils/toast.util";
+import { InsertTeam, IsTeamExists } from "@/utils/database/database";
+import { GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
 
 // TODO - Reorganize this as its duplicating elsewhere
 type PlayersModalProps = {

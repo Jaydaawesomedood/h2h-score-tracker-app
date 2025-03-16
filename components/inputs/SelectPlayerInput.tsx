@@ -1,14 +1,14 @@
-import { StyleSheet, TouchableOpacity, View, ViewProps } from "react-native";
-import ThemedView from "../ThemedView";
 import { FontAwesome } from "@expo/vector-icons";
-import ThemedText from "../ThemedText";
-import { light, medium } from "@/constants/styles/Text";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { useContext, useEffect, useRef } from "react";
-import { AddMatchContext } from "@/utils/context";
-import { Player, Team } from "@/models/Player";
+import { StyleSheet, TouchableOpacity, View, ViewProps } from "react-native";
+import ThemedText from "../ThemedText";
+import ThemedView from "../ThemedView";
 import PlayerProfileCard from "../views/players/PlayerProfileCard";
 import TeamProfileCard from "../views/players/TeamProfileCard";
+import { light, medium } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Player, Team } from "@/models/Player";
+import { AddMatchContext } from "@/utils/context";
 
 type Props = ViewProps & {
   placeholder: string; // Placeholder text for the input

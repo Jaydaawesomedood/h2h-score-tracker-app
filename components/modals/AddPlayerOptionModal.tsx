@@ -1,14 +1,14 @@
-import SecondaryButton from "@/components/buttons/SecondaryButton";
-import ThemedText from "@/components/ThemedText";
-import ThemedView from "@/components/ThemedView";
-import { Modals } from "@/constants/styles/Containers";
-import { TextStyles } from "@/constants/styles/Text";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { useThemeStore } from "@/utils/context";
 import { FontAwesome } from "@expo/vector-icons";
 import { Href, router } from "expo-router";
 import { ComponentProps } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
+import ThemedText from "@/components/ThemedText";
+import ThemedView from "@/components/ThemedView";
+import SecondaryButton from "@/components/buttons/SecondaryButton";
+import { Modals } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { useThemeStore } from "@/utils/context";
 
 // TODO - Reorganize this as its duplicating elsewhere
 type ModalProps = {

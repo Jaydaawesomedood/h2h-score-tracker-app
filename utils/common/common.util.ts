@@ -1,5 +1,5 @@
-import { Match } from "@/models/Match";
 import moment from "moment";
+import { Match } from "@/models/Match";
 
 function SortMatchesByDate(matches: Match[], category?: string) {
   matches = category ? matches.filter((match: Match) => match.category === category) : matches;

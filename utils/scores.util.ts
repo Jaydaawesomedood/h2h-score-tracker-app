@@ -1,8 +1,8 @@
+import moment from "moment";
+import { GetWinRate } from "./common/common.util";
 import { Match, MatchLite } from "@/models/Match";
 import { Player, Team } from "@/models/Player";
-import { GetWinRate } from "./common/common.util";
 import { H2HStats, StatsByPartner } from "@/models/Stats";
-import moment from "moment";
 
 export function getHigherScore(scores: Number[]) {
   if (scores[1] > scores[0]) return 1;

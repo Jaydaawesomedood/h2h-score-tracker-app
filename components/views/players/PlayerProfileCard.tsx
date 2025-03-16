@@ -1,7 +1,7 @@
+import { Image, StyleSheet, View, ViewProps } from "react-native";
 import PlayerName from "@/components/text/PlayerName";
 import { medium } from "@/constants/styles/Text";
 import { Player } from "@/models/Player";
-import { Image, StyleSheet, View, ViewProps } from "react-native";
 
 type Props = ViewProps & {
   player: Player;

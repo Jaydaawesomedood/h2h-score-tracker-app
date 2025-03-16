@@ -1,9 +1,9 @@
-import { Player, Team } from "@/models/Player";
-import { createContext, Dispatch, SetStateAction } from "react";
 import * as SQLite from 'expo-sqlite';
-import { Categories } from "@/models/Categories.enum";
+import { createContext, Dispatch, SetStateAction } from "react";
 import { create } from "zustand";
+import { Categories } from "@/models/Categories.enum";
 import { Match } from "@/models/Match";
+import { Player, Team } from "@/models/Player";
 import { Matches } from "@/models/matches/Matches";
 
 type AddTeamContext = {

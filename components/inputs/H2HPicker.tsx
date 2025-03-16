@@ -1,15 +1,15 @@
+import { FontAwesome } from "@expo/vector-icons";
 import React, { Dispatch, Fragment, SetStateAction, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import ThemedText from "../ThemedText";
 import SecondaryButton from "../buttons/SecondaryButton";
-import PlayerProfileCard from "../views/players/PlayerProfileCard";
+import H2HSelectPlayerModal from "../modals/H2HSelectPlayerModal";
 import ThemedDivider from "../views/ThemedDivider";
+import PlayerProfileCard from "../views/players/PlayerProfileCard";
+import { bold, medium, TextStyles } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Player, Team } from "@/models/Player";
-import H2HSelectPlayerModal from "../modals/H2HSelectPlayerModal";
 import { H2HStats, StatsByPartner } from "@/models/Stats";
-import { FontAwesome } from "@expo/vector-icons";
-import ThemedText from "../ThemedText";
-import { bold, light, medium, small, TextStyles } from "@/constants/styles/Text";
 
 type Props = {
   player: Player;

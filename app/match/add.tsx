@@ -1,21 +1,23 @@
-import { ProgressStepper } from "@/components/progress-bar/ProgressStepper";
-import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-import ThemedView from "@/components/ThemedView";
-import { Containers } from "@/constants/styles/Containers";
+import { router } from "expo-router";
+import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
+
+import ThemedView from "@/components/ThemedView";
 import MatchDetailsForm from "@/components/forms/match/MatchDetailsForm";
-import moment from "moment";
 import MatchPlayersForm from "@/components/forms/match/MatchPlayersForm";
 import MatchScoreForm from "@/components/forms/match/MatchScoreForm";
-import { AddMatchContext, DbContext, useDataStore } from "@/utils/context";
+import { ProgressStepper } from "@/components/progress-bar/ProgressStepper";
+import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
+
+import { Containers } from "@/constants/styles/Containers";
+import { ToastMessages } from "@/constants/messages/Toast";
 import { Categories } from "@/models/Categories.enum";
 import { Player, Team } from "@/models/Player";
-import { GetAllPlayersAndTeams } from "@/utils/repositories/PlayerRepository";
+import { AddMatchContext, DbContext, useDataStore } from "@/utils/context";
 import { showErrorToast, showMessageToast } from "@/utils/toast.util";
-import * as DbClient from "../../utils/database/database";
-import { ToastMessages } from "@/constants/messages/Toast";
-import { router } from "expo-router";
+import * as DbClient from "@/utils/database/database";
+import { GetAllPlayersAndTeams } from "@/utils/repositories/PlayerRepository";
 import { GetAllMatchesV2 } from "@/utils/repositories/MatchRepository";
 
 export default function AddMatchScreen() {

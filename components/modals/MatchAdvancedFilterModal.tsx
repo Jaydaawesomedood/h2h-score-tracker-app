@@ -1,15 +1,15 @@
-import { Modals } from "@/constants/styles/Containers";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Modal, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
-import SecondaryButton from "../buttons/SecondaryButton";
+import { Button, SegmentedButtons } from "react-native-paper";
 import ThemedText from "../ThemedText";
 import ThemedView from "../ThemedView";
-import { extraSmall, regular, Text, TextStyles } from "@/constants/styles/Text";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import PrimaryButton from "../buttons/PrimaryButton";
-import { Button, SegmentedButtons } from "react-native-paper";
-import { Dispatch, SetStateAction, useState } from "react";
-import { AdvancedSearch } from "@/constants/constants";
+import SecondaryButton from "../buttons/SecondaryButton";
 import ThemedDropdown from "../inputs/ThemedDropdown";
+import { AdvancedSearch } from "@/constants/constants";
+import { Modals } from "@/constants/styles/Containers";
+import { extraSmall, regular, TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { GetCategoryFullName } from "@/utils/categories.util";
 
 type Props = {

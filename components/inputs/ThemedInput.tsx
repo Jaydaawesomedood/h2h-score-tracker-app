@@ -1,8 +1,8 @@
-import { TextStyles } from "@/constants/styles/Text";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { TextInput, TextInputProps, TextStyle, View, ViewStyle } from "react-native";
 import ThemedText from "../ThemedText";
 import { ContainerStyles } from "@/constants/styles/Containers";
+import { TextStyles } from "@/constants/styles/Text";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type ThemedInputProps = TextInputProps & {
   value: string;
