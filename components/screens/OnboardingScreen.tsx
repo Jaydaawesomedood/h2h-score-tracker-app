@@ -56,12 +56,12 @@ export default function OnboardingScreen({ setOnboarded }: Props) {
       try {
         await InsertPlayer(db, [firstName.trim(), lastName.trim(), lastNameFirst ? 1 : 0, gender]);
 
+        // After adding new player into DB, call GetAllPlayers to update the store
+        await GetAllPlayersV2(db, setPlayers, showErrorToast);
+        
         // Set onboarded flag to true
         await AsyncStorage.setItem('onboarded', 'true');
         setOnboarded(true);
-
-        // After adding new player into DB, call GetAllPlayers to update the store
-        await GetAllPlayersV2(db, setPlayers, showErrorToast);
       }
       catch (err: any) {
         showErrorToast();

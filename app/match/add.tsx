@@ -16,13 +16,11 @@ import { showErrorToast, showMessageToast } from "@/utils/toast.util";
 import * as DbClient from "../../utils/database/database";
 import { ToastMessages } from "@/constants/messages/Toast";
 import { router } from "expo-router";
-import { useIsFocused } from "@react-navigation/native";
 import { GetAllMatchesV2 } from "@/utils/repositories/MatchRepository";
 
 export default function AddMatchScreen() {
   // Context
   const db = useContext(DbContext);
-  const isFocused = useIsFocused();
   const { setSinglesMatches, setDoublesMatches } = useDataStore();
 
   // useState
@@ -84,7 +82,7 @@ export default function AddMatchScreen() {
     if (players.length === 0 || teams.length === 0) getAllPlayersAndTeams();
   }, []);
 
-  useEffect(() => { clearFields(); }, [isFocused]);
+  useEffect(() => { clearFields(); }, []);
 
   const clearFields = () => {
     setMatchSetting("");

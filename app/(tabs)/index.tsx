@@ -9,17 +9,20 @@ import ThemedText from "@/components/ThemedText";
 import { Containers } from "@/constants/styles/Containers";
 import { Match } from "@/models/Match";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Button, PermissionsAndroid, Platform, ScrollView, View } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Href, router } from "expo-router";
+import { Href, useRouter } from "expo-router";
 import { useDataStore } from "@/utils/context";
 import { FilterMatches } from "@/utils/repositories/matches.util";
-import { light, medium, small, TextStyles } from "@/constants/styles/Text";
+import { small, TextStyles } from "@/constants/styles/Text";
 import { Matches } from "@/models/matches/Matches";
 import React from "react";
+import * as FileSystem from 'expo-file-system';
+import PrimaryButton from "@/components/buttons/PrimaryButton";
 
 export default function MatchesScreen() {
   const { matches } = useDataStore();
+  const router = useRouter();
 
   // colors
   const filterBtnColor = useThemeColor("lightgrey");

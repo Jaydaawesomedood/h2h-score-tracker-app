@@ -2,7 +2,7 @@ import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
 import { PlayerBanner } from "@/constants/styles/Containers";
-import { bold, extraLarge, extraSmall, large, light, mainContent, medium, regular, Text, TextStyles, title } from "@/constants/styles/Text";
+import { bold, extraLarge, extraSmall, large, light, mainContent, medium, regular, TextStyles, title } from "@/constants/styles/Text";
 import { Href, router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { Dispatch, Fragment, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Image, ImageBackground, StatusBar, View, StyleSheet, TouchableWithoutFeedback } from "react-native";
@@ -239,7 +239,7 @@ export default function PlayerProfileScreen() {
   };
   
   return (
-    <View style={{ flex: 1 }}>
+    <ThemedView style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor={"transparent"}/>
       {
         profile.player && overallStats && overallStats.partners &&
@@ -263,7 +263,7 @@ export default function PlayerProfileScreen() {
           </ThemedBannerView>
         </>
       }
-    </View>
+    </ThemedView>
   );
 };
 

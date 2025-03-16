@@ -2,7 +2,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { ComponentProps } from "react";
 import { TouchableOpacity, StyleProp, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import ThemedText from "../ThemedText";
-import { medium, regular, Text } from "@/constants/styles/Text";
+import { medium, regular } from "@/constants/styles/Text";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type SecondaryButtonProps = {

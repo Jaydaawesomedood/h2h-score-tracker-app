@@ -2,7 +2,7 @@ import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
 import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
 import { PlayerBanner } from "@/constants/styles/Containers";
-import { Href, router, useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
+import { Href, router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { ImageBackground, Image, StatusBar, View, StyleSheet } from "react-native";
 import { showErrorToast } from "@/utils/toast.util";
@@ -293,7 +293,7 @@ export default function MatchProfileScreen() {
   useEffect(() => clearProfile, []);
   
   return (
-    <View style={{ flex: 1 }}>
+    <ThemedView style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor={"transparent"}/>
       {
         profile && profile.match &&
@@ -312,7 +312,7 @@ export default function MatchProfileScreen() {
             />
         </ThemedBannerView>
       }
-    </View>
+    </ThemedView>
   );
 };
 

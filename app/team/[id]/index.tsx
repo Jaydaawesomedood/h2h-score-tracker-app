@@ -166,7 +166,7 @@ export default function TeamProfileScreen() {
   }, [profile.team]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <ThemedView style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor={"transparent"}/>
       {
         profile && profile.team && profile.matches &&
@@ -192,7 +192,7 @@ export default function TeamProfileScreen() {
           </ThemedView>
         </ThemedBannerView>
       }
-    </View>
+    </ThemedView>
   );
 };
 

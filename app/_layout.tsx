@@ -1,4 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme as PaperDefault, MD3DarkTheme } from 'react-native-paper';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -14,6 +15,7 @@ import OnboardingScreen from '@/components/screens/OnboardingScreen';
 import { showErrorToast } from '@/utils/toast.util';
 import { GetAllMatches } from '@/utils/repositories/MatchRepository';
 import { GetAllParticipants } from '@/utils/repositories/PlayerRepository';
+import { StatusBar } from 'react-native';
 
 const screenOptions = { headerShown: false };
 
@@ -121,12 +123,13 @@ export default function RootLayout() {
 
   return (
     // View is needed to wrap the entire stack or a white flicker will happen between navigation (due to OS color wrongly setup)
-    <ThemedView style={{ flex: 1 }}> 
+    <ThemedView style={{ flex: 1 }}>
+      <StatusBar translucent backgroundColor={"transparent"}/>
       <ThemeProvider value={!isLightMode ? DarkTheme : DefaultTheme}>
-        <PaperProvider theme={!isLightMode ? DarkTheme : DefaultTheme}>
+        <PaperProvider theme={!isLightMode ? MD3DarkTheme : PaperDefault}>
           <DbContext.Provider value={db}>
             {
-              isFirstLaunch && !onboardingCompleted ?
+              !onboardingCompleted ?
               <OnboardingScreen setOnboarded={setOnboardingCompleted} />
               :
               <Stack>
