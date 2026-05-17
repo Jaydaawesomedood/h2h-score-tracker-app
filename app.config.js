@@ -9,7 +9,6 @@ export default {
   icon: "./assets/images/icon.png",
   scheme: "myapp",
   userInterfaceStyle: "automatic",
-  newArchEnabled: true,
   splash: {
     image: "./assets/images/splash.png",
     resizeMode: "contain",
@@ -22,7 +21,7 @@ export default {
   android: {
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
-      backgroundColor: "#ffffff"
+      backgroundColor: "#151718"
     },
     package: IS_DEV ? "com.jasonchoo.my.h2h.dev" : IS_PREVIEW ? "com.jasonchoo.my.h2h.preview" : "com.jasonchoo.my.h2h"
   },
@@ -30,6 +29,10 @@ export default {
     bundler: "metro",
     output: "static",
     favicon: "./assets/images/favicon.png"
+  },
+  androidStatusBar: {
+    hidden: true,
+    translucent: false,
   },
   plugins: [
     "expo-router",
@@ -64,5 +67,11 @@ export default {
     eas: {
       projectId: "5391759a-edf1-48b2-87ee-2dc6abf5f2c7"
     }
+  },
+  "updates": {
+    "url": "https://u.expo.dev/5391759a-edf1-48b2-87ee-2dc6abf5f2c7"
+  },
+  "runtimeVersion": {
+    "policy": "appVersion"
   }
 }

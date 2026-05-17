@@ -1,53 +1,91 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import ThemedView from '@/components/ThemedView';
 import TabBarIcon from '@/components/navigation/TabBarIcon';
 
-import { regular } from '@/constants/styles/Text';
-import { useThemeColor } from '@/hooks/useThemeColor';
+import PrimaryActionTabButton from '@/components/tabs/PrimaryActionTabButton';
+import useThemeColor from '@/hooks/v2/useThemeColor';
+import Modal from '@/components/_ui/modal/Modal';
+import LogScoreHeader from '@/components/views/modals/log-score/LogScoreHeader';
+import LogScoreBody from '@/components/views/modals/log-score/LogScoreBody';
 
 export default function TabLayout() {
-  const backgroundColor = useThemeColor("tabBarBackground");
-  const borderColor = useThemeColor("tabBarBorder");
-  const activeColor = useThemeColor("tabIconSelected");
+  const tabBgColor = useThemeColor('card');
+  const tabBorderColor = useThemeColor('border');
+  const tabItemActiveColor = useThemeColor('primary');
+  const bgColor = useThemeColor('background');
 
-  const tabs = [
-    // { page: "index", name: "Profile", icon: "user", tabBarShowLabel: true },
-    { page: "index", name: "Matches", icon: "ranking-star", tabBarShowLabel: true },
-    { page: "players", name: "Players", icon: "people-group", tabBarShowLabel: true },
-    // { page: "stats", name: "Stats", icon: "chart-bar", tabBarShowLabel: true },
-    { page: "settings", name: "Settings", icon: "gear", tabBarShowLabel: true },
-  ];
-  
+  const [isLogScoreModalVisible, setIsLogScoreModalVisible] = useState<boolean>(false);
+
   return (
-    <ThemedView style={styles.main}>
+    <View style={[styles.main, { backgroundColor: bgColor }]}>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: activeColor,
+          tabBarStyle: {
+            backgroundColor: tabBgColor,
+            borderColor: tabBorderColor,
+          },
+          sceneStyle: {
+            backgroundColor: bgColor
+          },
+          tabBarActiveTintColor: tabItemActiveColor,
           headerShown: false,
-          tabBarStyle: { backgroundColor, borderColor }
+          animation: "fade",
         }}
       >
-        {
-          tabs.map(({ page, name, icon, ...otherProps }) => (
-            <Tabs.Screen
-              key={name.toLowerCase()}
-              name={page}
-              options={{
-                title: name,
-                tabBarIcon: ({ color }: any) => (
-                  <TabBarIcon name={icon} color={color} />
-                ),
-                tabBarLabelStyle: { fontFamily: regular },
-                ...otherProps
-              }}
-            />
-          ))
-        }
+        <Tabs.Screen
+          name='index'
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ color }) => (<TabBarIcon name={'house'} color={color} />),
+          }}
+        />
+        <Tabs.Screen
+          name='history'
+          options={{
+            tabBarLabel: 'History',
+            tabBarIcon: ({ color }) => (<TabBarIcon name={'chart-bar'} color={color} />),
+          }}
+        />
+        <Tabs.Screen
+          name='custom'
+          options={{
+            tabBarLabel: 'custom',
+            tabBarButton: () => (<PrimaryActionTabButton onPress={() => setIsLogScoreModalVisible(true)} />)
+          }}
+          listeners={{
+            tabPress: (e) => {
+              e.preventDefault();
+            }
+          }}
+        />
+        <Tabs.Screen
+          name='players'
+          options={{
+            tabBarLabel: 'Players',
+            tabBarIcon: ({ color }) => (<TabBarIcon name={'people-group'} color={color} />),
+          }}
+        />
+        <Tabs.Screen
+          name='settings'
+          options={{
+            tabBarLabel: 'Profile',
+            tabBarIcon: ({ color }) => (<TabBarIcon name={'user-large'} color={color} />),
+          }}
+        />
       </Tabs>
-    </ThemedView>
+      
+      {/* Log Score Modal */}
+      <Modal visible={isLogScoreModalVisible} onClose={() => setIsLogScoreModalVisible(false)} height={'85%'}>
+        <Modal.Header>
+          <LogScoreHeader onCloseModal={() => setIsLogScoreModalVisible(false)} />
+        </Modal.Header>
+        <Modal.Body>
+          <LogScoreBody />
+        </Modal.Body>
+      </Modal>
+    </View>
   );
 }
 

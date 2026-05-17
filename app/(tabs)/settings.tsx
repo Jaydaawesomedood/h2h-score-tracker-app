@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { List, Switch } from "react-native-paper";
 
 import ScreenTitle from "@/components/screens/ScreenTitle";
-import ThemedView from "@/components/ThemedView";
+import ThemedView from "@/components/_ui/ThemedView";
 
 import { Containers } from "@/constants/styles/Containers";
 import { medium, regular, small } from "@/constants/styles/Text";

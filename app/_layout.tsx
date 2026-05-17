@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider as bye } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SQLite from 'expo-sqlite';
 import { useEffect, useState } from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import 'react-native-reanimated';
 import { DefaultTheme as PaperDefault, MD3DarkTheme, PaperProvider } from 'react-native-paper';
 
@@ -17,6 +17,8 @@ import { DbContext, useDataStore, useThemeStore } from '@/utils/context';
 import { showErrorToast } from '@/utils/toast.util';
 import { GetAllMatches } from '@/utils/repositories/MatchRepository';
 import { GetAllParticipants } from '@/utils/repositories/PlayerRepository';
+import { DARK_THEME, LIGHT_THEME } from '@/constants/Themes';
+import ThemeProvider from '@/providers/ThemeProvider';
 
 const screenOptions = { headerShown: false };
 
@@ -124,32 +126,34 @@ export default function RootLayout() {
 
   return (
     // View is needed to wrap the entire stack or a white flicker will happen between navigation (due to OS color wrongly setup)
-    <ThemedView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor={"transparent"}/>
-      <ThemeProvider value={!isLightMode ? DarkTheme : DefaultTheme}>
-        <PaperProvider theme={!isLightMode ? MD3DarkTheme : PaperDefault}>
-          <DbContext.Provider value={db}>
-            {
-              !onboardingCompleted ?
-              <OnboardingScreen setOnboarded={setOnboardingCompleted} />
-              :
-              <Stack>
-                <Stack.Screen name="(tabs)" options={screenOptions} />
-                <Stack.Screen name='player/add' options={screenOptions} />
-                <Stack.Screen name='player/[id]/index' options={screenOptions} />
-                <Stack.Screen name='player/[id]/edit' options={screenOptions} />
-                <Stack.Screen name='team/add' options={screenOptions} />
-                <Stack.Screen name='team/[id]/index' options={screenOptions} />
-                <Stack.Screen name='team/[id]/edit' options={screenOptions} />
-                <Stack.Screen name='match/add' options={screenOptions} />
-                <Stack.Screen name='match/[id]/index' options={screenOptions} />
-                <Stack.Screen name='match/[id]/edit' options={screenOptions} />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-            }
-          </DbContext.Provider>
-        </PaperProvider>
+      <ThemeProvider>
+        {/* <ThemeProvider value={DARK_THEME}> */}
+          {/* <PaperProvider theme={!isLightMode ? MD3DarkTheme : PaperDefault}> */}
+            <DbContext.Provider value={db}>
+              {/* {
+                !onboardingCompleted ?
+                <OnboardingScreen setOnboarded={setOnboardingCompleted} />
+                : */}
+                <Stack>
+                  <Stack.Screen name="(tabs)" options={screenOptions} />
+                  {/* <Stack.Screen name='player/add' options={screenOptions} />
+                  <Stack.Screen name='player/[id]/index' options={screenOptions} />
+                  <Stack.Screen name='player/[id]/edit' options={screenOptions} />
+                  <Stack.Screen name='team/add' options={screenOptions} />
+                  <Stack.Screen name='team/[id]/index' options={screenOptions} />
+                  <Stack.Screen name='team/[id]/edit' options={screenOptions} />
+                  <Stack.Screen name='match/add' options={screenOptions} />
+                  <Stack.Screen name='match/[id]/index' options={screenOptions} />
+                  <Stack.Screen name='match/[id]/edit' options={screenOptions} />
+                  <Stack.Screen name="+not-found" /> */}
+                </Stack>
+              {/* } */}
+            </DbContext.Provider>
+          {/* </PaperProvider> */}
+        {/* </ThemeProvider> */}
       </ThemeProvider>
-    </ThemedView>
+    </View>
   );
 }

@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import ThemedText from "@/components/ThemedText";
-import ThemedView from "@/components/ThemedView";
+import ThemedView from "@/components/_ui/ThemedView";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import MatchAdvancedFilterModal from "@/components/modals/MatchAdvancedFilterModal";
 import ScreenTitle from "@/components/screens/ScreenTitle";

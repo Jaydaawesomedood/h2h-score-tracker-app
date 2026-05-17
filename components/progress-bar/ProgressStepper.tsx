@@ -5,7 +5,7 @@ import ProgressStepIcon from "./ProgressStepIcon";
 import SecondaryButton from "../buttons/SecondaryButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { StepperContext } from "@/utils/context";
-
+// TODO - delete file
 interface StepperData {
   label: string;
   screen: ReactElement;
