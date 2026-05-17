@@ -1,5 +1,4 @@
 import useThemeColor from '@/hooks/v2/useThemeColor';
-import { useTheme } from '@react-navigation/native';
 import { StyleSheet, Text, TextProps } from 'react-native';
 
 type IThemedTextProps = TextProps & {
