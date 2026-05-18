@@ -7,17 +7,25 @@ import MatchPlayersStep from "../../log-score-steps/MatchPlayersStep";
 import MatchScoreStep from "../../log-score-steps/MatchScoreStep";
 import MatchReviewStep from "../../log-score-steps/MatchReviewStep";
 
-export default function LogScoreBody() {
+interface ILogScoreBodyProps {
+  onCloseModal: () => void,
+}
+
+export default function LogScoreBody(props: ILogScoreBodyProps) {
   return (
     <View style={styles.body}>
       <LogScoreProvider>
         <ProgressTrackerProvider>
-          <ProgressTracker steps={4} screens={[
-            <MatchOverviewStep />,
-            <MatchPlayersStep />,
-            <MatchScoreStep />,
-            <MatchReviewStep />
-          ]} />
+          <ProgressTracker
+            steps={4}
+            screens={[
+              <MatchOverviewStep />,
+              <MatchPlayersStep />,
+              <MatchScoreStep />,
+              <MatchReviewStep />
+            ]}
+            onComplete={props.onCloseModal}
+          />
         </ProgressTrackerProvider>
       </LogScoreProvider>
     </View>

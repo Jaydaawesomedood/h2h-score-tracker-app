@@ -9,6 +9,7 @@ import useProgressTracker from "@/hooks/v2/useProgressTracker";
 interface IProgressTrackerProps {
   steps: number,
   screens: ReactElement[],
+  onComplete: () => void,
 }
 
 export default function ProgressTracker(props: IProgressTrackerProps) {
@@ -90,6 +91,17 @@ export default function ProgressTracker(props: IProgressTrackerProps) {
               icon="chevron-right"
               iconPlacement="right"
               buttonStyle={{ columnGap: 8 }}
+              textStyle={{ color: primaryColor }}
+            />
+          </View>
+        }
+        {
+          current === props.steps - 1 &&
+          <View style={{ marginLeft: 'auto' }}>
+            <Button
+              type="secondary"
+              text="Complete"
+              onPress={props.onComplete}
               textStyle={{ color: primaryColor }}
             />
           </View>

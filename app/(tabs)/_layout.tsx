@@ -82,7 +82,7 @@ export default function TabLayout() {
           <LogScoreHeader onCloseModal={() => setIsLogScoreModalVisible(false)} />
         </Modal.Header>
         <Modal.Body>
-          <LogScoreBody />
+          <LogScoreBody onCloseModal={() => setIsLogScoreModalVisible(false)} />
         </Modal.Body>
       </Modal>
     </View>
