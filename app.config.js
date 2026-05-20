@@ -23,7 +23,8 @@ export default {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#151718"
     },
-    package: IS_DEV ? "com.jasonchoo.my.h2h.dev" : IS_PREVIEW ? "com.jasonchoo.my.h2h.preview" : "com.jasonchoo.my.h2h"
+    package: IS_DEV ? "com.jasonchoo.my.h2h.dev" : IS_PREVIEW ? "com.jasonchoo.my.h2h.preview" : "com.jasonchoo.my.h2h",
+    softwareKeyboardLayoutMode: "pan"
   },
   web: {
     bundler: "metro",

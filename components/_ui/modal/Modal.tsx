@@ -1,11 +1,27 @@
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { Fragment, PropsWithChildren, ReactNode, useEffect, useRef, useState } from "react";
-import { Animated, Keyboard, KeyboardEvent, Platform, Modal as RNModal, StyleSheet, TouchableWithoutFeedback, useWindowDimensions, View, ViewStyle } from "react-native";
+import { Animated, Keyboard, KeyboardAvoidingView, KeyboardEvent, Platform, Modal as RNModal, StyleSheet, TouchableWithoutFeedback, useWindowDimensions, View, ViewStyle } from "react-native";
 
 type ModalProps = PropsWithChildren & {
   visible: boolean,
   onClose: () => void,
   height: ViewStyle['height'],
+}
+
+function getModalHeightValue(height: ViewStyle['height'], windowHeight: number) {
+  if (typeof height === "number") {
+    return height;
+  }
+
+  if (typeof height === "string" && height.endsWith("%")) {
+    const percentage = Number.parseFloat(height);
+
+    if (!Number.isNaN(percentage)) {
+      return (percentage / 100) * windowHeight;
+    }
+  }
+
+  return 0;
 }
 
 function Modal({ children, ...props }: ModalProps) {
@@ -47,37 +63,37 @@ function Modal({ children, ...props }: ModalProps) {
     }
   }, [mounted]);
 
-  const keyboardOffset = useRef(new Animated.Value(0)).current;
+  // const keyboardOffset = useRef(new Animated.Value(0)).current;
 
   // Keyboard events subscription
-  useEffect(() => {
-    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+  // useEffect(() => {
+  //   const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+  //   const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
-    const onShow = (e: KeyboardEvent) => {
-      Animated.timing(keyboardOffset, {
-        toValue: -e.endCoordinates.height,
-        duration: e.duration || 250,
-        useNativeDriver: true,
-      }).start();
-    };
+  //   const onShow = (e: KeyboardEvent) => {
+  //     Animated.timing(keyboardOffset, {
+  //       toValue: -e.endCoordinates.height,
+  //       duration: e.duration || 250,
+  //       useNativeDriver: true,
+  //     }).start();
+  //   };
 
-    const onHide = (e: KeyboardEvent) => {
-      Animated.timing(keyboardOffset, {
-        toValue: 0,
-        duration: e.duration || 250,
-        useNativeDriver: true,
-      }).start();
-    };
+  //   const onHide = (e: KeyboardEvent) => {
+  //     Animated.timing(keyboardOffset, {
+  //       toValue: 0,
+  //       duration: e.duration || 250,
+  //       useNativeDriver: true,
+  //     }).start();
+  //   };
 
-    const showSub = Keyboard.addListener(showEvent, onShow);
-    const hideSub = Keyboard.addListener(hideEvent, onHide);
+  //   const showSub = Keyboard.addListener(showEvent, onShow);
+  //   const hideSub = Keyboard.addListener(hideEvent, onHide);
 
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
-  }, []);
+  //   return () => {
+  //     showSub.remove();
+  //     hideSub.remove();
+  //   };
+  // }, [keyboardOffset, props.height, windowHeight]);
 
   if (!mounted) return null;
 
@@ -88,21 +104,30 @@ function Modal({ children, ...props }: ModalProps) {
       animationType="none"
       onRequestClose={props.onClose}
     >
-      <TouchableWithoutFeedback onPress={props.onClose}>
-        <View style={styles.backdrop}></View>
-      </TouchableWithoutFeedback>
-      <Animated.View
-        style={[
-          styles.content,
-          { height: props.height, backgroundColor },
-          { transform: [
-            { translateY: slideAnimation },
-            { translateY: keyboardOffset }
-          ] },
-        ]}
-      >
-        {children}
-      </Animated.View>
+      <View style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={props.onClose}>
+          <View style={styles.backdrop}></View>
+        </TouchableWithoutFeedback>
+        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={[{ justifyContent: 'flex-end', height: props.height }]}
+            keyboardVerticalOffset={0}
+          >  
+            <Animated.View
+              style={[
+                styles.content,
+                { height: '100%', backgroundColor },
+                // { transform: [
+                //   { translateY: slideAnimation },
+                // ] },
+              ]}
+            >
+              {children}
+            </Animated.View>
+          </KeyboardAvoidingView>
+        </View>
+      </View>
     </RNModal>
   );
 }
@@ -126,17 +151,16 @@ export default Modal;
 
 const styles = StyleSheet.create({
   backdrop: {
+    ...StyleSheet.absoluteFill,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
-    height: "100%",
-    width: "100%",
   },
   content: {
     paddingTop: 24,
     paddingBottom: 32,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    bottom: 0,
-    position: "absolute",
+    // bottom: 0,
+    // position: "absolute",
     width: "100%",
   },
 });

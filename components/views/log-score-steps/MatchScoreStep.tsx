@@ -46,34 +46,36 @@ export default function MatchScoreStep() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ rowGap: 16, height: '100%'}}>
+    <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>
       <ThemedText style={{ color: muted }}>
         What's the score?
       </ThemedText>
-      <View style={[styles.setCardContainer, Styles.FLEX_HORIZONTAL_CENTER, { backgroundColor: card, borderColor: border, columnGap: 24, paddingVertical: 16 }]}>
-        <ThemedText weight="bold" style={{ flex: 1, textAlign: 'center' }}>Jason</ThemedText>
-        <ThemedText weight="bold" style={{ color: muted }}>VS</ThemedText>
-        <ThemedText weight="bold" style={{ flex: 1, textAlign: 'center' }}>Bryan</ThemedText>
-      </View>
-      <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>
-        {
-          sets.map((set, index) => (
-            <SetCard
-              key={`log-score-set-${index}`}
-              setIndex={index + 1}
-              removable={index > 0}
-              onRemove={() => handleRemoveSet(index)}
-              sets={sets}
-              onValueChange={handleUpdateScore}
-            />
-          ))
-        }
-        <DashedIconButton
-          text="Add set"
-          onPress={handleAddSet}
-        />
-      </View>
-    </ScrollView>
+      <ScrollView contentContainerStyle={{ rowGap: 16 }}>
+        <View style={[styles.setCardContainer, Styles.FLEX_HORIZONTAL_CENTER, { backgroundColor: card, borderColor: border, columnGap: 24, paddingVertical: 16 }]}>
+          <ThemedText weight="bold" style={{ flex: 1, textAlign: 'center' }}>Jason</ThemedText>
+          <ThemedText weight="bold" style={{ color: muted }}>VS</ThemedText>
+          <ThemedText weight="bold" style={{ flex: 1, textAlign: 'center' }}>Bryan</ThemedText>
+        </View>
+        <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>
+          {
+            sets.map((set, index) => (
+              <SetCard
+                key={`log-score-set-${index}`}
+                setIndex={index + 1}
+                removable={index > 0}
+                onRemove={() => handleRemoveSet(index)}
+                sets={sets}
+                onValueChange={handleUpdateScore}
+              />
+            ))
+          }
+          <DashedIconButton
+            text="Add set"
+            onPress={handleAddSet}
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -90,7 +92,7 @@ function SetCard(props: ISetCardProps) {
           SET {props.setIndex}
         </ThemedText>
         {
-          props.removable && 
+          props.removable &&
           (
             <Button
               text="Remove"
