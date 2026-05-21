@@ -13,10 +13,11 @@ interface IProgressTrackerProps {
 }
 
 export default function ProgressTracker(props: IProgressTrackerProps) {
-  const { current, onNext, onPrevious } = useProgressTracker();
-  const progressTrackerListRef = useRef<FlatList<ReactElement<any>>>(null);
+  const { current, onNext, onPrevious, isNextDisabled } = useProgressTracker();
+  const progressTrackerListRef = useRef<FlatList<ReactElement>>(null);
 
   const primaryColor = useThemeColor('primary');
+  const primaryDisabledColor = useThemeColor('primaryDisabled');
   const incompleteBgColor = useThemeColor('shade');
 
   const getStepState = (index: number) => {
@@ -91,7 +92,8 @@ export default function ProgressTracker(props: IProgressTrackerProps) {
               icon="chevron-right"
               iconPlacement="right"
               buttonStyle={{ columnGap: 8 }}
-              textStyle={{ color: primaryColor }}
+              textStyle={{ color: isNextDisabled ? primaryDisabledColor : primaryColor }}
+              disabled={isNextDisabled}
             />
           </View>
         }
@@ -102,7 +104,8 @@ export default function ProgressTracker(props: IProgressTrackerProps) {
               type="secondary"
               text="Complete"
               onPress={props.onComplete}
-              textStyle={{ color: primaryColor }}
+              textStyle={{ color: isNextDisabled ? primaryDisabledColor : primaryColor }}
+              disabled={isNextDisabled}
             />
           </View>
         }

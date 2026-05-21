@@ -2,10 +2,11 @@ import DatePicker from "@/components/_ui/input/DatePicker";
 import SelectableOption from "@/components/_ui/select/SelectableOption";
 import ThemedText from "@/components/_ui/ThemedText";
 import { Styles } from "@/constants/v2/Styles";
-import { LogScoreContext } from "@/contexts/LogScoreContext";
+import { useLogScore } from "@/hooks/v2/useLogScore";
+import useProgressTracker from "@/hooks/v2/useProgressTracker";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { ComponentProps, useContext, useState } from "react";
+import { ComponentProps, useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 interface IMatchTypeCardProps {
@@ -13,12 +14,19 @@ interface IMatchTypeCardProps {
   title: string,
   description: string,
   value: 'singles' | 'doubles',
+  type?: 'singles' | 'doubles',
+  setType: React.Dispatch<React.SetStateAction<'singles' | 'doubles' | undefined>>,
 }
 
 export default function MatchOverviewStep() {
-  const { date, setDate } = useContext(LogScoreContext);
+  const { date, setDate, type, setType } = useLogScore();
+  const { checkIsNextDisabled } = useProgressTracker();
   const [isDatePickerVisible, setIsDatePickerVisible] = useState<boolean>(false);
   const muted = useThemeColor('muted');
+
+  useEffect(() => {
+    checkIsNextDisabled({ date, type });
+  }, [date, type]);
 
   return (
     <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>
@@ -27,8 +35,22 @@ export default function MatchOverviewStep() {
       </ThemedText>
       <ScrollView contentContainerStyle={[Styles.FLEX_COLUMN, { rowGap: 16 }]}>
         <View style={[Styles.FLEX_COLUMN, { rowGap: 8 }]}>
-          <MatchTypeCard icon='user-large' title="Singles" description="1-vs-1" value="singles" />
-          <MatchTypeCard icon='user-group' title="Doubles" description="2-vs-2" value="doubles" />
+          <MatchTypeCard
+            icon='user-large'
+            title="Singles"
+            description="1-vs-1"
+            value="singles"
+            type={type}
+            setType={setType}
+          />
+          <MatchTypeCard
+            icon='user-group'
+            title="Doubles"
+            description="2-vs-2"
+            value="doubles"
+            type={type}
+            setType={setType}
+          />
         </View>
         <View>
           <DatePicker>
@@ -47,15 +69,13 @@ export default function MatchOverviewStep() {
 }
 
 function MatchTypeCard(props: IMatchTypeCardProps) {
-  const { type, setType } = useContext(LogScoreContext);
-
   const text = useThemeColor('text');
   const color = useThemeColor('muted');
 
   return (
     <SelectableOption
-      selected={type === props.value}
-      onPress={() => setType(props.value)}
+      selected={props.type === props.value}
+      onPress={() => props.setType(props.value)}
       renderLeftSegment={() => (<FontAwesome6 name={props.icon} color={color} size={20} />)}
       renderContent={() => (
         <View style={[Styles.FLEX_COLUMN, { rowGap: 4 }]}>

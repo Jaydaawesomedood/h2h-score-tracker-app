@@ -19,13 +19,15 @@ interface IButtonProps {
 export default function Button(props: IButtonProps) {
   const color = useThemeColor('muted');
   const primary = useThemeColor('primary');
+  const primaryDisabled = useThemeColor('primaryDisabled');
 
   return (
     <TouchableOpacity
       activeOpacity={0.5}
+      disabled={props.disabled}
       style={[
         styles[props.type ?? 'primary'],
-        props.type === 'primary' && { backgroundColor: primary, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+        props.type === 'primary' && { backgroundColor: props.disabled ? primaryDisabled : primary, display: 'flex', alignItems: 'center', justifyContent: 'center' },
         props.buttonStyle,
         props.iconPlacement === 'right' && { flexDirection: 'row-reverse' },
       ]}
