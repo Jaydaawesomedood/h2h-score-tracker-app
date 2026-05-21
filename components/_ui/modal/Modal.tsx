@@ -1,6 +1,6 @@
 import useThemeColor from "@/hooks/v2/useThemeColor";
-import { Fragment, PropsWithChildren, ReactNode, useEffect, useRef, useState } from "react";
-import { Animated, Keyboard, KeyboardAvoidingView, KeyboardEvent, Platform, Modal as RNModal, StyleSheet, TouchableWithoutFeedback, useWindowDimensions, View, ViewStyle } from "react-native";
+import { Fragment, PropsWithChildren, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { Animated, DimensionValue, Keyboard, KeyboardEvent, LayoutChangeEvent, Platform, Modal as RNModal, StyleSheet, TouchableWithoutFeedback, useWindowDimensions, View, ViewStyle } from "react-native";
 
 type ModalProps = PropsWithChildren & {
   visible: boolean,
@@ -8,29 +8,13 @@ type ModalProps = PropsWithChildren & {
   height: ViewStyle['height'],
 }
 
-function getModalHeightValue(height: ViewStyle['height'], windowHeight: number) {
-  if (typeof height === "number") {
-    return height;
-  }
-
-  if (typeof height === "string" && height.endsWith("%")) {
-    const percentage = Number.parseFloat(height);
-
-    if (!Number.isNaN(percentage)) {
-      return (percentage / 100) * windowHeight;
-    }
-  }
-
-  return 0;
-}
-
-function Modal({ children, ...props }: ModalProps) {
+function Modal({ children, height = '50%', ...props }: ModalProps) {
   const [mounted, setIsMounted] = useState<boolean>(false);
 
   const backgroundColor = useThemeColor('background');
 
-  const { height: windowHeight } = useWindowDimensions();
-  const slideAnimation = useRef(new Animated.Value(windowHeight)).current;
+  const { height: SCREEN_HEIGHT } = useWindowDimensions();
+  const slideAnimation = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
   useEffect(() => {
     if (props.visible) {
@@ -40,7 +24,7 @@ function Modal({ children, ...props }: ModalProps) {
       slideAnimation.stopAnimation();
       slideAnimation.setValue(0);
       Animated.timing(slideAnimation, {
-        toValue: windowHeight,
+        toValue: SCREEN_HEIGHT,
         duration: 300,
         useNativeDriver: true,
       }).start(({ finished }) => {
@@ -54,7 +38,7 @@ function Modal({ children, ...props }: ModalProps) {
   useEffect(() => {
     if (mounted && props.visible) {
       slideAnimation.stopAnimation();
-      slideAnimation.setValue(windowHeight);
+      slideAnimation.setValue(SCREEN_HEIGHT);
       Animated.timing(slideAnimation, {
         toValue: 0,
         duration: 300,
@@ -63,37 +47,97 @@ function Modal({ children, ...props }: ModalProps) {
     }
   }, [mounted]);
 
-  // const keyboardOffset = useRef(new Animated.Value(0)).current;
+  function toPx(value: DimensionValue): number | null {
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string' && value.endsWith('%')) {
+      return (parseFloat(value) / 100) * SCREEN_HEIGHT;
+    }
+    return null; // 'auto' or unresolvable — fall back to onLayout
+  }
 
-  // Keyboard events subscription
-  // useEffect(() => {
-  //   const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-  //   const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+  // Resolved pixel height used for keyboard math.
+  const baseHeight = useRef<number>(toPx(height) ?? 0);
+  const animatedBottom = useRef(new Animated.Value(0)).current;
+  // Initialise with the resolved pixel value; falls back to 0 until onLayout fires for 'auto' heights.
+  const animatedHeight = useRef(new Animated.Value(toPx(height) ?? 0)).current;
 
-  //   const onShow = (e: KeyboardEvent) => {
-  //     Animated.timing(keyboardOffset, {
-  //       toValue: -e.endCoordinates.height,
-  //       duration: e.duration || 250,
-  //       useNativeDriver: true,
-  //     }).start();
-  //   };
+  // Sync baseHeight + animatedHeight when props.height changes,
+  // as long as the keyboard isn't currently open.
+  useEffect(() => {
+    const px = toPx(height);
+    if (px !== null) {
+      baseHeight.current = px;
+      animatedHeight.setValue(px);
+    }
+    // If px is null (i.e. 'auto'), onLayout handles it — nothing to do here.
+  }, [height]);
 
-  //   const onHide = (e: KeyboardEvent) => {
-  //     Animated.timing(keyboardOffset, {
-  //       toValue: 0,
-  //       duration: e.duration || 250,
-  //       useNativeDriver: true,
-  //     }).start();
-  //   };
+  // Captures the natural rendered height for 'auto' (or any value toPx
+  // can't resolve). Guarded so it only fires once and doesn't fight the
+  // keyboard-driven height animation.
+  const heightMeasured = useRef(false);
 
-  //   const showSub = Keyboard.addListener(showEvent, onShow);
-  //   const hideSub = Keyboard.addListener(hideEvent, onHide);
+  const handleLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      if (!heightMeasured.current && toPx(height) === null) {
+        const measured = e.nativeEvent.layout.height;
+        baseHeight.current = measured;
+        animatedHeight.setValue(measured);
+        heightMeasured.current = true;
+      }
+    },
+    [height],
+  );
 
-  //   return () => {
-  //     showSub.remove();
-  //     hideSub.remove();
-  //   };
-  // }, [keyboardOffset, props.height, windowHeight]);
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const handleShow = (e: KeyboardEvent) => {
+      const kbHeight = e.endCoordinates.height;
+      const duration = e.duration ?? 250;
+      const base = baseHeight.current; // always the latest pixel value
+
+      const targetHeight = base + kbHeight > SCREEN_HEIGHT ? SCREEN_HEIGHT - kbHeight : base;
+
+      Animated.parallel([
+        Animated.timing(animatedBottom, {
+          toValue: kbHeight,
+          duration,
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedHeight, {
+          toValue: targetHeight,
+          duration,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    };
+
+    const handleHide = (e: KeyboardEvent) => {
+      const duration = e.duration ?? 250;
+
+      Animated.parallel([
+        Animated.timing(animatedBottom, {
+          toValue: 0,
+          duration,
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedHeight, {
+          toValue: baseHeight.current,
+          duration,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    };
+
+    const showSub = Keyboard.addListener(showEvent, handleShow);
+    const hideSub = Keyboard.addListener(hideEvent, handleHide);
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   if (!mounted) return null;
 
@@ -108,25 +152,22 @@ function Modal({ children, ...props }: ModalProps) {
         <TouchableWithoutFeedback onPress={props.onClose}>
           <View style={styles.backdrop}></View>
         </TouchableWithoutFeedback>
-        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={[{ justifyContent: 'flex-end', height: props.height }]}
-            keyboardVerticalOffset={0}
-          >  
-            <Animated.View
-              style={[
-                styles.content,
-                { height: '100%', backgroundColor },
-                // { transform: [
-                //   { translateY: slideAnimation },
-                // ] },
-              ]}
-            >
-              {children}
-            </Animated.View>
-          </KeyboardAvoidingView>
-        </View>
+        <Animated.View
+          onLayout={handleLayout}
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: animatedBottom,
+            height: animatedHeight,
+          }}
+        >
+          <Animated.View
+            style={[styles.content, { flex: 1, backgroundColor }]}
+          >
+            {children}
+          </Animated.View>
+        </Animated.View>
       </View>
     </RNModal>
   );
@@ -159,8 +200,6 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    // bottom: 0,
-    // position: "absolute",
     width: "100%",
   },
 });
