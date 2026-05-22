@@ -4,6 +4,7 @@ export const THEMES: { light: Theme, dark: Theme } = {
   light: {
     primary: "#32a852",
     primaryDisabled: "#79a485",
+    secondary: "#F9A620",
     background: "#ffffff",
     card: "#f2f2f2",
     text: "#000000",
@@ -18,6 +19,7 @@ export const THEMES: { light: Theme, dark: Theme } = {
   dark: {
     primary: "#32a852",
     primaryDisabled: "#79a485",
+    secondary: "#D88F18",
     background: "#0b0b0b",
     card: "#151718",
     text: "#ffffff",

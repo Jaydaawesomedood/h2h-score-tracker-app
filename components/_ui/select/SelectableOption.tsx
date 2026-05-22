@@ -9,10 +9,12 @@ type SelectableOptionProps = PropsWithChildren & {
   renderLeftSegment?: () => ReactNode,
   renderContent?: () => ReactNode,
   containerStyle?: StyleProp<ViewStyle>,
+  type?: 'primary' | 'secondary',
 };
 
 export default function SelectableOption({ children, ...props }: SelectableOptionProps) {
   const primary = useThemeColor('primary');
+  const secondary = useThemeColor('secondary');
   const background = useThemeColor('card');
   const unselected = useThemeColor('border');
 
@@ -20,7 +22,14 @@ export default function SelectableOption({ children, ...props }: SelectableOptio
     <TouchableOpacity
       activeOpacity={0.6}
       onPress={props.onPress}
-      style={[styles.card, props.containerStyle, { borderColor: props.selected ? primary : unselected, backgroundColor: background }]}
+      style={[
+        styles.card,
+        props.containerStyle,
+        {
+          borderColor: props.selected ? (props.type === 'secondary' ? secondary : primary) : unselected,
+          backgroundColor: background 
+        }
+      ]}
     >
       {
         props.renderLeftSegment &&
@@ -37,7 +46,7 @@ export default function SelectableOption({ children, ...props }: SelectableOptio
       <View 
         style={[
           styles.selectorIcon,
-          props.selected ? { backgroundColor: primary } : { borderWidth: 2, borderColor: unselected }
+          props.selected ? { backgroundColor: props.type === 'secondary' ? secondary : primary } : { borderWidth: 2, borderColor: unselected }
         ]}
       ></View>
     </TouchableOpacity>

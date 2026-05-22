@@ -1,7 +1,7 @@
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import ProgressTrackerIcon from "./ProgressTrackerIcon";
 import { Styles } from "@/constants/v2/Styles";
-import { Fragment, ReactElement, useRef } from "react";
+import { Fragment, ReactElement, useEffect, useRef } from "react";
 import Button from "../button/Button";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import useProgressTracker from "@/hooks/v2/useProgressTracker";
@@ -10,10 +10,11 @@ interface IProgressTrackerProps {
   steps: number,
   screens: ReactElement[],
   onComplete: () => void,
+  validationMap?: { [key: number]: any },
 }
 
 export default function ProgressTracker(props: IProgressTrackerProps) {
-  const { current, onNext, onPrevious, isNextDisabled } = useProgressTracker();
+  const { current, onNext, onPrevious, isNextDisabled, checkIsNextDisabled } = useProgressTracker();
   const progressTrackerListRef = useRef<FlatList<ReactElement>>(null);
 
   const primaryColor = useThemeColor('primary');
@@ -39,6 +40,11 @@ export default function ProgressTracker(props: IProgressTrackerProps) {
   const scrollTo = (index: number) => {
     progressTrackerListRef.current?.scrollToIndex({ index, animated: true });
   }
+
+  useEffect(() => {
+    if (!props.validationMap || !props.validationMap[current]) return;
+    checkIsNextDisabled(props.validationMap[current]);
+  }, [current]);
 
   return (
     <View style={[Styles.FLEX_COLUMN, { flex: 1 }]}>

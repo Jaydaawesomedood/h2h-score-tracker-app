@@ -5,18 +5,21 @@ import { Styles } from "@/constants/v2/Styles";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { Player } from "@/models/v2/data/Player";
 import { usePlayersStore } from "@/store/usePlayersStore";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Button from "@/components/_ui/button/Button";
 import DashedIconButton from "@/components/_ui/button/DashedIconButton";
 import AddPlayerForm from "../forms/AddPlayerForm";
 import * as Crypto from "expo-crypto";
+import useProgressTracker from "@/hooks/v2/useProgressTracker";
+import { useLogScore } from "@/hooks/v2/useLogScore";
 
 interface IPlayerSelectorProps {
   player: Player,
   selected: boolean,
   onPress: () => void,
   isNewPlayer?: boolean,
+  type?: 'primary' | 'secondary',
 }
 
 interface IQuickAddSectionProps {
@@ -25,18 +28,43 @@ interface IQuickAddSectionProps {
 }
 
 export default function MatchPlayersStep() {
+  const { type, sideA, sideB, setSideA, setSideB } = useLogScore();
+  const { current, checkIsNextDisabled } = useProgressTracker();
+
+  // List & add players manually
   const players = usePlayersStore((state) => state.players);
   const addPlayer = usePlayersStore((state) => state.addPlayer);
 
+  // Quick add player
+  const [isQuickAddExpanded, setIsQuickAddExpanded] = useState<boolean>(false);
+  const [newPlayerIds, setNewPlayerIds] = useState<string[]>([]);
+  
   const muted = useThemeColor('muted');
 
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | undefined>(undefined);
-  const [isQuickAddExpanded, setIsQuickAddExpanded] = useState<boolean>(false);
-
-  const [newPlayerIds, setNewPlayerIds] = useState<string[]>([]);
-
   const handleSelectPlayer = (player: Player) => {
-    setSelectedPlayer(player);
+    const expectedLength = type === 'doubles' ? 2 : 1;
+
+    // Remove player if already selected
+    if (sideA.find((p) => p.id === player.id)) {
+      setSideA(sideA.filter((p) => p.id !== player.id));
+      return;
+    }
+
+    if (sideB.find((p) => p.id === player.id)) {
+      setSideB(sideB.filter((p) => p.id !== player.id));
+      return;
+    }
+
+    // Otherwise, add player to the first available side
+    if (sideA.length < expectedLength) {
+      setSideA([...sideA, player]);
+      return;
+    }
+
+    if (sideB.length < expectedLength) {
+      setSideB([...sideB, player]);
+      return;
+    }
   }
 
   const handleExpandQuickAdd = () => setIsQuickAddExpanded(true);
@@ -44,7 +72,7 @@ export default function MatchPlayersStep() {
   const handleQuickAddPlayer = (player: Player) => {
     addPlayer(player);
     setNewPlayerIds((prev) => [player.id, ...prev]);
-    setSelectedPlayer(player);
+    handleSelectPlayer(player);
   }
 
   const orderedPlayers = useMemo(() => {
@@ -53,6 +81,12 @@ export default function MatchPlayersStep() {
       ...players.filter((p) => !newPlayerIds.includes(p.id)),
     ];
   }, [players, newPlayerIds]);
+
+  useEffect(() => {
+    if (current !== 1) return;
+    const expectedLength = type === 'doubles' ? 2 : 1;
+    checkIsNextDisabled({ sideA, sideB }, () => sideA.length === expectedLength && sideB.length === expectedLength);
+  }, [sideA, sideB]);
 
   return (
     <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>
@@ -87,9 +121,10 @@ export default function MatchPlayersStep() {
               <PlayerSelector
                 key={p.id}
                 player={p}
-                selected={p.id === selectedPlayer?.id}
+                selected={sideA.concat(sideB).find((player) => player.id === p.id) ? true : false}
                 onPress={() => handleSelectPlayer(p)}
                 isNewPlayer={newPlayerIds.includes(p.id)}
+                type={sideA.find((player) => player.id === p.id) ? 'primary' : 'secondary'}
               />
             ))
           }
@@ -115,6 +150,7 @@ function PlayerSelector(props: IPlayerSelectorProps) {
         </View>
       )}
       containerStyle={{ ...styles.playerCard }}
+      type={props.type}
     />
   );
 }

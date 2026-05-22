@@ -19,12 +19,20 @@ interface IMatchTypeCardProps {
 }
 
 export default function MatchOverviewStep() {
-  const { date, setDate, type, setType } = useLogScore();
-  const { checkIsNextDisabled } = useProgressTracker();
+  const { date, setDate, type, setType, setSideA, setSideB } = useLogScore();
+  const { current, checkIsNextDisabled } = useProgressTracker();
   const [isDatePickerVisible, setIsDatePickerVisible] = useState<boolean>(false);
   const muted = useThemeColor('muted');
+  
+  // Reset selected players when match type changes
+  useEffect(() => {
+    if (current !== 0) return;
+    setSideA([]);
+    setSideB([]);
+  }, [type]);
 
   useEffect(() => {
+    if (current !== 0) return;
     checkIsNextDisabled({ date, type });
   }, [date, type]);
 

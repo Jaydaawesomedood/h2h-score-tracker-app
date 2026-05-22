@@ -3,8 +3,10 @@ import DashedIconButton from "@/components/_ui/button/DashedIconButton";
 import TextInput from "@/components/_ui/input/TextInput";
 import ThemedText from "@/components/_ui/ThemedText";
 import { Styles } from "@/constants/v2/Styles";
+import { useLogScore } from "@/hooks/v2/useLogScore";
+import useProgressTracker from "@/hooks/v2/useProgressTracker";
 import useThemeColor from "@/hooks/v2/useThemeColor";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 interface ISetCardProps {
@@ -23,7 +25,8 @@ interface IScoreInputProps {
 }
 
 export default function MatchScoreStep() {
-  const [sets, setSets] = useState<number[][]>([[]]);
+  const { sets, setSets, sideA, sideB } = useLogScore();
+  const { current, checkIsNextDisabled } = useProgressTracker();
 
   const card = useThemeColor('card');
   const border = useThemeColor('border');
@@ -45,6 +48,11 @@ export default function MatchScoreStep() {
     setSets(updatedSets);
   }
 
+  useEffect(() => {
+    if (current !== 2) return;
+    checkIsNextDisabled({ sets }, () => sets.length > 0 && sets.every((set) => set.length === 2 && set.every((score) => score !== undefined)));
+  }, [sets]);
+
   return (
     <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>
       <ThemedText style={{ color: muted }}>
@@ -52,9 +60,33 @@ export default function MatchScoreStep() {
       </ThemedText>
       <ScrollView contentContainerStyle={{ rowGap: 16 }}>
         <View style={[styles.setCardContainer, Styles.FLEX_HORIZONTAL_CENTER, { backgroundColor: card, borderColor: border, columnGap: 24, paddingVertical: 16 }]}>
-          <ThemedText weight="bold" style={{ flex: 1, textAlign: 'center' }}>Jason</ThemedText>
+          <View style={[styles.playerNameContainer]}>
+            {
+              sideA.map(player => (
+                <ThemedText
+                  key={player.id}
+                  weight="bold"
+                  style={{ textAlign: 'center' }}
+                >
+                  {player.firstName}
+                </ThemedText>
+              ))
+            }
+          </View>
           <ThemedText weight="bold" style={{ color: muted }}>VS</ThemedText>
-          <ThemedText weight="bold" style={{ flex: 1, textAlign: 'center' }}>Bryan</ThemedText>
+          <View style={[styles.playerNameContainer]}>
+            {
+              sideB.map(player => (
+                <ThemedText
+                  key={player.id}
+                  weight="bold"
+                  style={{ textAlign: 'center' }}
+                >
+                  {player.firstName}
+                </ThemedText>
+              ))
+            }
+          </View>
         </View>
         <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>
           {
@@ -156,5 +188,10 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: 'LeagueSpartanBold',
     fontSize: 24,
+  },
+  playerNameContainer: {
+    ...Styles.FLEX_COLUMN,
+    rowGap: 4,
+    flex: 1,
   }
 });

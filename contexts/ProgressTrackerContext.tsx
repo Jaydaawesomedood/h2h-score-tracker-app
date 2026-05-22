@@ -5,7 +5,7 @@ type ProgressTrackerState = {
   onNext: () => void,
   onPrevious: () => void,
   isNextDisabled: boolean,
-  checkIsNextDisabled: (data: any) => void,
+  checkIsNextDisabled: (data: any, ...conditions: (() => boolean)[]) => void,
 }
 
 export const ProgressTrackerContext = createContext<ProgressTrackerState>({

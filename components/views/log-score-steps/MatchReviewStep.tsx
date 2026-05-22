@@ -1,23 +1,34 @@
 import PlayerIcon from "@/components/_ui/PlayerIcon";
 import ThemedText from "@/components/_ui/ThemedText";
 import { Styles } from "@/constants/v2/Styles";
+import { useLogScore } from "@/hooks/v2/useLogScore";
 import useThemeColor from "@/hooks/v2/useThemeColor";
+import DateHelper from "@/utils/date-helper.util";
+import moment from "moment";
 import { View, ScrollView, StyleSheet } from "react-native";
 
 export default function MatchReviewStep() {
+  const { type, date, sets, sideA, sideB } = useLogScore();
+
   const muted = useThemeColor("muted");
   const primary = useThemeColor("primary");
   const background = useThemeColor("card");
   const border = useThemeColor("border");
 
+  const getDate = () => {
+    if (date === DateHelper.toDateWithFormat(moment().date().toString())) return "Today";
+    else if (date === DateHelper.toDateWithFormat(moment().subtract(1, 'day').date().toString())) return "Yesterday";
+    return date;
+  };
+
   return (
     <View>
-      <ScrollView contentContainerStyle={{ rowGap: 16, height: '100%'}}>
+      <ScrollView contentContainerStyle={{ rowGap: 16, height: '100%' }}>
         <ThemedText style={{ color: muted }}>
           Review your changes
         </ThemedText>
         <View style={[styles.container, { backgroundColor: background, borderColor: border }]}>
-          <ThemedText weight="bold" style={{ color: muted }}>Singles • Today</ThemedText>
+          <ThemedText weight="bold" style={{ color: muted, textTransform: 'capitalize' }}>{type} • {getDate()}</ThemedText>
           <View id="logscore-review-players" style={[Styles.FLEX_HORIZONTAL_CENTER]}>
             <View style={[Styles.FLEX_COLUMN, { rowGap: 8 }]}>
               <View style={[Styles.FLEX_HORIZONTAL_CENTER]}>
@@ -36,39 +47,21 @@ export default function MatchReviewStep() {
             </View>
           </View>
           <View>
-            <View style={[Styles.FLEX_HORIZONTAL_CENTER, { columnGap: 64 }]}>
-              <View style={{ minWidth: 80 }}>
-                <ThemedText weight="bold" style={{ color: muted, fontSize: 16 }}>Set 1</ThemedText>
-              </View>
-              <View style={{ flex: 1, ...Styles.FLEX_HORIZONTAL_CENTER, justifyContent: 'flex-start' }}>
-                <ThemedText weight="bold" style={{ fontSize: 24 }}>28</ThemedText>
-              </View>
-              <View style={{ flex: 1, ...Styles.FLEX_HORIZONTAL_CENTER, justifyContent: 'flex-start' }}>
-                <ThemedText weight="bold" style={{ fontSize: 24, color: primary }}>30</ThemedText>
-              </View>
-            </View>
-            <View style={[Styles.FLEX_HORIZONTAL_CENTER, { columnGap: 64 }]}>
-              <View style={{ minWidth: 80 }}>
-                <ThemedText weight="bold" style={{ color: muted, fontSize: 16 }}>Set 2</ThemedText>
-              </View>
-              <View style={{ flex: 1, ...Styles.FLEX_HORIZONTAL_CENTER, justifyContent: 'flex-start' }}>
-                <ThemedText weight="bold" style={{ fontSize: 24, color: primary }}>21</ThemedText>
-              </View>
-              <View style={{ flex: 1, ...Styles.FLEX_HORIZONTAL_CENTER, justifyContent: 'flex-start' }}>
-                <ThemedText weight="bold" style={{ fontSize: 24 }}>19</ThemedText>
-              </View>
-            </View>
-            <View style={[Styles.FLEX_HORIZONTAL_CENTER, { columnGap: 64 }]}>
-              <View style={{ minWidth: 80 }}>
-                <ThemedText weight="bold" style={{ color: muted, fontSize: 16 }}>Set 3</ThemedText>
-              </View>
-              <View style={{ flex: 1, ...Styles.FLEX_HORIZONTAL_CENTER, justifyContent: 'flex-start' }}>
-                <ThemedText weight="bold" style={{ fontSize: 24, color: primary }}>21</ThemedText>
-              </View>
-              <View style={{ flex: 1, ...Styles.FLEX_HORIZONTAL_CENTER, justifyContent: 'flex-start' }}>
-                <ThemedText weight="bold" style={{ fontSize: 24 }}>16</ThemedText>
-              </View>
-            </View>
+            {
+              sets.map((set, index) => (
+                <View key={`match-review-set-${index + 1}`} style={[Styles.FLEX_HORIZONTAL_CENTER, { columnGap: 64 }]}>
+                  <View style={{ minWidth: 80 }}>
+                    <ThemedText weight="bold" style={{ color: muted, fontSize: 16 }}>Set {index + 1}</ThemedText>
+                  </View>
+                  <View style={[styles.scoreValueContainer]}>
+                    <ThemedText weight="bold" style={[{ fontSize: 24 }, Math.max(...set) === set[0] && { color: primary }]}>{set[0]}</ThemedText>
+                  </View>
+                  <View style={[styles.scoreValueContainer]}>
+                    <ThemedText weight="bold" style={[{ fontSize: 24 }, Math.max(...set) === set[1] && { color: primary }]}>{set[1]}</ThemedText>
+                  </View>
+                </View>
+              ))
+            }
           </View>
         </View>
       </ScrollView>
@@ -84,5 +77,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     paddingVertical: 16,
     paddingHorizontal: 24,
+  },
+  scoreValueContainer: {
+    flex: 1,
+    ...Styles.FLEX_HORIZONTAL_CENTER,
+    justifyContent: 'flex-start'
   }
 });

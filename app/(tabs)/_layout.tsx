@@ -9,6 +9,7 @@ import useThemeColor from '@/hooks/v2/useThemeColor';
 import Modal from '@/components/_ui/modal/Modal';
 import LogScoreHeader from '@/components/views/modals/log-score/LogScoreHeader';
 import LogScoreBody from '@/components/views/modals/log-score/LogScoreBody';
+import LogScoreProvider from '@/providers/LogScoreProvider';
 
 export default function TabLayout() {
   const tabBgColor = useThemeColor('card');
@@ -77,14 +78,16 @@ export default function TabLayout() {
       </Tabs>
       
       {/* Log Score Modal */}
-      <Modal visible={isLogScoreModalVisible} onClose={() => setIsLogScoreModalVisible(false)} height={'85%'}>
-        <Modal.Header>
-          <LogScoreHeader onCloseModal={() => setIsLogScoreModalVisible(false)} />
-        </Modal.Header>
-        <Modal.Body>
-          <LogScoreBody onCloseModal={() => setIsLogScoreModalVisible(false)} />
-        </Modal.Body>
-      </Modal>
+      <LogScoreProvider>
+        <Modal visible={isLogScoreModalVisible} onClose={() => setIsLogScoreModalVisible(false)} height={'85%'}>
+          <Modal.Header>
+            <LogScoreHeader onCloseModal={() => setIsLogScoreModalVisible(false)} />
+          </Modal.Header>
+          <Modal.Body>
+            <LogScoreBody onCloseModal={() => setIsLogScoreModalVisible(false)} />
+          </Modal.Body>
+        </Modal>
+      </LogScoreProvider>
     </View>
   );
 }

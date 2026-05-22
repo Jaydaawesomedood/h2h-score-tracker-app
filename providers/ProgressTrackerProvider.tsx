@@ -7,7 +7,7 @@ export default function ProgressTrackerProvider({ children }: { children: ReactN
   const onNext = () => setCurrentStep(currentStep + 1);
   const onPrevious = () => setCurrentStep(currentStep - 1);
 
-  const checkIsNextDisabled = (data: any) => {
+  const checkIsNextDisabled = (data: any, ...conditions: (() => boolean)[]) => {
     let disabled = false;
 
     Object.values(data).forEach(value => {
@@ -16,9 +16,15 @@ export default function ProgressTrackerProvider({ children }: { children: ReactN
       if (value === undefined || value === null) disabled = true;
     });
 
+    for (const condition of conditions) {
+      if (!condition()) {
+        disabled = true;
+        break;
+      }
+    }
+
     setIsNextDisabled(disabled);
   }
-
 
   return (
     <ProgressTrackerContext.Provider value={{ current: currentStep, onNext, onPrevious, isNextDisabled, checkIsNextDisabled }}>
