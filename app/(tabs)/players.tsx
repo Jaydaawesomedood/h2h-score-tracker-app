@@ -26,7 +26,7 @@ import Modal from "@/components/_ui/modal/Modal";
 import AddPlayerHeader from "@/components/views/modals/add-player/AddPlayerHeader";
 import AddPlayerBody from "@/components/views/modals/add-player/AddPlayerBody";
 import { usePlayersStore } from "@/store/usePlayersStore";
-import PlayerIcon from "@/components/_ui/PlayerIcon";
+import PlayerIcon from "@/components/_ui/custom-components/PlayerIcon";
 
 interface IPlayerCardProps {
   player: { id: string, firstName: string, lastName: string, color: string }

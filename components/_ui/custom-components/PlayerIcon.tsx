@@ -1,6 +1,6 @@
 import { Styles } from "@/constants/v2/Styles";
 import { StyleSheet, View } from "react-native";
-import ThemedText from "./ThemedText";
+import ThemedText from "../ThemedText";
 import { Player } from "@/models/v2/data/Player";
 
 interface IPlayerIconProps {

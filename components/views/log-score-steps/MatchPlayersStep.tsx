@@ -1,4 +1,4 @@
-import PlayerIcon from "@/components/_ui/PlayerIcon";
+import PlayerIcon from "@/components/_ui/custom-components/PlayerIcon";
 import SelectableOption from "@/components/_ui/select/SelectableOption";
 import ThemedText from "@/components/_ui/ThemedText";
 import { Styles } from "@/constants/v2/Styles";
@@ -13,6 +13,7 @@ import AddPlayerForm from "../forms/AddPlayerForm";
 import * as Crypto from "expo-crypto";
 import useProgressTracker from "@/hooks/v2/useProgressTracker";
 import { useLogScore } from "@/hooks/v2/useLogScore";
+import PlayerIconPair from "@/components/_ui/custom-components/PlayerIconPair";
 
 interface IPlayerSelectorProps {
   player: Player,
@@ -196,12 +197,11 @@ function RecentMatchCard() {
       selected={false}
       onPress={() => {}}
       renderLeftSegment={() => (
-        <View style={[Styles.FLEX_HORIZONTAL_CENTER, { justifyContent: 'flex-start', position: 'relative' }]}>
-          <PlayerIcon player={{ id: '1', firstName: 'Jason', lastName: 'Choo', color: '#b54aa5' }} size={32} />
-          <View style={{ position: 'absolute', left: '40%' }}>
-            <PlayerIcon player={{ id: '2', firstName: 'Bryan', lastName: 'Kee', color: '#c89b3a' }} size={32} />
-          </View>
-        </View>
+        <PlayerIconPair
+          player1={{ id: '1', firstName: 'Jason', lastName: 'Choo', color: '#b54aa5' }}
+          player2={{ id: '2', firstName: 'Bryan', lastName: 'Kee', color: '#c89b3a' }}
+          size={32}
+        />
       )}
       renderContent={() => (
         <View>
