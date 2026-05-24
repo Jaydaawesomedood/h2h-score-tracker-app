@@ -5,7 +5,7 @@ import { Styles } from "@/constants/v2/Styles";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { Player } from "@/models/v2/data/Player";
 import { usePlayersStore } from "@/store/usePlayersStore";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Button from "@/components/_ui/button/Button";
 import DashedIconButton from "@/components/_ui/button/DashedIconButton";
@@ -14,6 +14,11 @@ import * as Crypto from "expo-crypto";
 import useProgressTracker from "@/hooks/v2/useProgressTracker";
 import { useLogScore } from "@/hooks/v2/useLogScore";
 import PlayerIconPair from "@/components/_ui/custom-components/PlayerIconPair";
+import { useMatchesStore } from "@/store/useMatchesStore";
+import moment from "moment";
+import { Match } from "@/models/v2/data/Match";
+import DateHelper from "@/utils/v2/date-helper.util";
+import { useShallow } from "zustand/react/shallow";
 
 interface IPlayerSelectorProps {
   player: Player,
@@ -28,8 +33,22 @@ interface IQuickAddSectionProps {
   addPlayer: (player: Player) => void,
 }
 
+interface IRecentMatchCardProps {
+  match: Match,
+  onPress: () => void,
+  selected: boolean,
+}
+
 export default function MatchPlayersStep() {
   const { type, sideA, sideB, setSideA, setSideB } = useLogScore();
+  const recentMatches = useMatchesStore(
+    useShallow((state) => {
+      return state.matches
+              .filter((match: Match) => match.type === type)
+              .sort((a: Match, b: Match) => moment(b.date, "DD/MM/YYYY").diff(moment(a.date, "DD/MM/YYYY")))
+              .slice(0, 2)
+    }
+  ));
   const { current, checkIsNextDisabled } = useProgressTracker();
 
   // List & add players manually
@@ -39,10 +58,20 @@ export default function MatchPlayersStep() {
   // Quick add player
   const [isQuickAddExpanded, setIsQuickAddExpanded] = useState<boolean>(false);
   const [newPlayerIds, setNewPlayerIds] = useState<string[]>([]);
+
+  // Recent matches
+  const [recentMatchSelection, setRecentMatchSelection] = useState<Match | undefined>(undefined);
   
   const muted = useThemeColor('muted');
 
   const handleSelectPlayer = (player: Player) => {
+    if (recentMatchSelection) {
+      setSideA([player]);
+      setSideB([]);
+      setRecentMatchSelection(undefined);
+      return;
+    }
+    
     const expectedLength = type === 'doubles' ? 2 : 1;
 
     // Remove player if already selected
@@ -66,6 +95,12 @@ export default function MatchPlayersStep() {
       setSideB([...sideB, player]);
       return;
     }
+  }
+
+  const handleSelectRecentMatch = (match: Match) => {
+    setRecentMatchSelection(match);
+    setSideA(match.sideA);
+    setSideB(match.sideB);
   }
 
   const handleExpandQuickAdd = () => setIsQuickAddExpanded(true);
@@ -95,12 +130,24 @@ export default function MatchPlayersStep() {
         Who played?
       </ThemedText>
       <ScrollView contentContainerStyle={{ rowGap: 16 }}>
-        <View style={{ rowGap: 8 }}>
-          <ThemedText weight="bold">Recent Matchups</ThemedText>
-          <RecentMatchCard />
-          <RecentMatchCard />
-        </View>
-        <ThemedText weight="bold">Or Pick Manually</ThemedText>
+        {
+          recentMatches.length > 0 && (
+            <Fragment>
+              <View style={{ rowGap: 8 }}>
+                <ThemedText weight="bold">Recent Matchups</ThemedText>
+                {recentMatches.map((match) => (
+                  <RecentMatchCard
+                    key={match.id}
+                    match={match}
+                    onPress={() => handleSelectRecentMatch(match)}
+                    selected={recentMatchSelection?.id === match.id}
+                  />
+                ))}
+              </View>
+              <ThemedText weight="bold">Or Pick Manually</ThemedText>
+            </Fragment>
+          )
+        }
         {
           isQuickAddExpanded
           ? (
@@ -122,7 +169,7 @@ export default function MatchPlayersStep() {
               <PlayerSelector
                 key={p.id}
                 player={p}
-                selected={sideA.concat(sideB).find((player) => player.id === p.id) ? true : false}
+                selected={recentMatchSelection === undefined && sideA.concat(sideB).find((player) => player.id === p.id) ? true : false}
                 onPress={() => handleSelectPlayer(p)}
                 isNewPlayer={newPlayerIds.includes(p.id)}
                 type={sideA.find((player) => player.id === p.id) ? 'primary' : 'secondary'}
@@ -189,24 +236,50 @@ function QuickAddPlayerSection(props: IQuickAddSectionProps) {
   );
 }
 
-function RecentMatchCard() {
+function RecentMatchCard(props: IRecentMatchCardProps) {
   const muted = useThemeColor('muted');
 
   return (
     <SelectableOption
-      selected={false}
-      onPress={() => {}}
+      selected={props.selected}
+      onPress={props.onPress}
       renderLeftSegment={() => (
-        <PlayerIconPair
-          player1={{ id: '1', firstName: 'Jason', lastName: 'Choo', color: '#b54aa5' }}
-          player2={{ id: '2', firstName: 'Bryan', lastName: 'Kee', color: '#c89b3a' }}
-          size={32}
-        />
+        <View style={[Styles.FLEX_COLUMN, { rowGap: 8 }]}>
+          {
+            props.match.type === 'doubles' ? (
+              <Fragment>
+                <PlayerIconPair
+                  player1={props.match.sideA[0]}
+                  player2={props.match.sideA[1]}
+                  size={32}
+                />
+                <PlayerIconPair
+                  player1={props.match.sideB[0]}
+                  player2={props.match.sideB[1]}
+                  size={32}
+                />
+              </Fragment>
+            )
+            : (
+              <PlayerIconPair
+                player1={props.match.sideA[0]}
+                player2={props.match.sideB[0]}
+                size={32}
+              />
+            )
+          }
+        </View>
       )}
       renderContent={() => (
         <View>
-          <ThemedText weight="bold">Jason vs Bryan</ThemedText>
-          <ThemedText weight="light" style={{ color: muted, fontSize: 12 }}>2 days ago</ThemedText>
+          <ThemedText weight="bold">
+            {props.match.sideA.map(p => p.firstName).join(' & ')}
+            &nbsp;vs&nbsp;
+            {props.match.sideB.map(p => p.firstName).join(' & ')}
+          </ThemedText>
+          <ThemedText weight="light" style={{ color: muted, fontSize: 12 }}>
+            {DateHelper.getDateDisplayText(props.match.date)}
+          </ThemedText>
         </View>
       )}
       containerStyle={{ ...styles.playerCard, width: '100%' }}

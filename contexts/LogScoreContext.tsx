@@ -12,6 +12,7 @@ type LogScore = {
   setSets: React.Dispatch<React.SetStateAction<number[][]>>,
   setSideA: React.Dispatch<React.SetStateAction<Player[]>>,
   setSideB: React.Dispatch<React.SetStateAction<Player[]>>,
+  reset: () => void,
 };
 
 export const LogScoreContext = createContext<LogScore>({
@@ -25,4 +26,5 @@ export const LogScoreContext = createContext<LogScore>({
   setSets: () => {},
   setSideA: () => {},
   setSideB: () => {},
+  reset: () => {},
 });

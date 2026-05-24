@@ -5,7 +5,7 @@ interface PlayersStore {
   players: Player[],
   addPlayer: (player: Player) => void,
   removePlayer: (id: string) => void,
-  updatePlayer: (player: Player) => void,
+  updatePlayer: (id: string, player: Player) => void,
 }
 
 export const usePlayersStore = create<PlayersStore>((set) => ({
@@ -22,7 +22,7 @@ export const usePlayersStore = create<PlayersStore>((set) => ({
   removePlayer: (id: string) => set((state) => ({
     players: [...state.players.slice().splice(state.players.findIndex(pl => pl.id === id), 1)]
   })),
-  updatePlayer: (player: Player) => set((state) => ({
-    players: [...state.players.map(pl => pl.id === player.id ? { ...player } : { ...pl })]
+  updatePlayer: (id: string, player: Player) => set((state) => ({
+    players: [...state.players.map(pl => pl.id === id ? { ...player } : { ...pl })]
   })),
 }));

@@ -5,6 +5,7 @@ export const Styles: { [key: string]: ViewStyle } = {
   SCREEN_BODY: {
     paddingHorizontal: 24,
     paddingVertical: 36,
+    flex: 1,
   },
   FLEX_HORIZONTAL_SIDE: {
     display: 'flex',

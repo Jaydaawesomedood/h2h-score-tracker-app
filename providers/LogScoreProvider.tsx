@@ -10,8 +10,16 @@ export default function LogScoreProvider({ children }: { children: React.ReactNo
   const [sideB, setSideB] = useState<Player[]>([]);
   const [sets, setSets] = useState<number[][]>([[]]);
 
+  const reset = () => {
+    setType(undefined);
+    setDate(moment().format("DD/MM/YYYY"));
+    setSideA([]);
+    setSideB([]);
+    setSets([[]]);
+  }
+
   return (
-    <LogScoreContext.Provider value={{ type, date, setType, setDate, sideA, sideB, setSideA, setSideB, sets, setSets }}>
+    <LogScoreContext.Provider value={{ type, date, setType, setDate, sideA, sideB, setSideA, setSideB, sets, setSets, reset }}>
       {children}
     </LogScoreContext.Provider>
   );

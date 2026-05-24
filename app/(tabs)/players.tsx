@@ -81,6 +81,7 @@ function PlayerCard(props: IPlayerCardProps) {
 
   return (
     <TouchableOpacity
+      onPress={() => router.push(`player/${props.player.id}` as Href)}
       activeOpacity={0.6}
       style={[
         { backgroundColor, borderColor },

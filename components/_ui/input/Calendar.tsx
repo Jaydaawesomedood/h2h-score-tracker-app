@@ -3,7 +3,7 @@ import useThemeColor from "@/hooks/v2/useThemeColor";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { Calendar as RNCalendar } from "react-native-calendars";
 import { DateData, Direction } from "react-native-calendars/src/types";
-import DateHelper from "@/utils/date-helper.util";
+import DateHelper from "@/utils/v2/date-helper.util";
 import { View } from "react-native";
 
 interface ICalendarProps {

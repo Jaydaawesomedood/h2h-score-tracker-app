@@ -6,6 +6,10 @@ import MatchPlayersStep from "../../log-score-steps/MatchPlayersStep";
 import MatchScoreStep from "../../log-score-steps/MatchScoreStep";
 import MatchReviewStep from "../../log-score-steps/MatchReviewStep";
 import { useLogScore } from "@/hooks/v2/useLogScore";
+import { useMatchesStore } from "@/store/useMatchesStore";
+import * as Crypto from "expo-crypto";
+import moment from "moment";
+import { ScoreHelper } from "@/utils/v2/score-helper.util";
 
 interface ILogScoreBodyProps {
   onCloseModal: () => void,
@@ -13,6 +17,21 @@ interface ILogScoreBodyProps {
 
 export default function LogScoreBody(props: ILogScoreBodyProps) {
   const { type, date, sideA, sideB, sets } = useLogScore();
+  const addMatch = useMatchesStore.getState().addMatch;
+
+  const handleOnComplete = () => {
+    addMatch({
+      id: Crypto.randomUUID(),
+      type: type!,
+      date,
+      sideA,
+      sideB,
+      sets,
+      winner: ScoreHelper.calculateWinner(sets),
+      createdAt: moment().toString(),
+    });
+    props.onCloseModal();
+  }
 
   return (
     <View style={styles.body}>
@@ -25,7 +44,7 @@ export default function LogScoreBody(props: ILogScoreBodyProps) {
             <MatchScoreStep />,
             <MatchReviewStep />
           ]}
-          onComplete={props.onCloseModal}
+          onComplete={handleOnComplete}
           validationMap={{
             0: { date, type },
             1: { sideA, sideB },

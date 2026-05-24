@@ -6,8 +6,7 @@ import { useLogScore } from "@/hooks/v2/useLogScore";
 import useProgressTracker from "@/hooks/v2/useProgressTracker";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { Player } from "@/models/v2/data/Player";
-import DateHelper from "@/utils/date-helper.util";
-import moment from "moment";
+import DateHelper from "@/utils/v2/date-helper.util";
 import { View, ScrollView, StyleSheet } from "react-native";
 
 export default function MatchReviewStep() {
@@ -38,12 +37,6 @@ export default function MatchReviewStep() {
     return undefined;
   };
 
-  const getDate = () => {
-    if (date === DateHelper.toDateWithFormat(moment().date().toString())) return "Today";
-    else if (date === DateHelper.toDateWithFormat(moment().subtract(1, 'day').date().toString())) return "Yesterday";
-    return date;
-  };
-
   return (
     <View>
       <ScrollView contentContainerStyle={{ rowGap: 16, height: '100%' }}>
@@ -51,7 +44,7 @@ export default function MatchReviewStep() {
           Review your changes
         </ThemedText>
         <View style={[styles.container, { backgroundColor: background, borderColor: border }]}>
-          <ThemedText weight="bold" style={{ color: muted, textTransform: 'capitalize' }}>{type} • {getDate()}</ThemedText>
+          <ThemedText weight="bold" style={{ color: muted, textTransform: 'capitalize' }}>{type} • {DateHelper.getDateDisplayText(date)}</ThemedText>
           {/* Players */}
           <View id="logscore-review-players" style={[Styles.FLEX_HORIZONTAL_CENTER]}>
             <View style={[Styles.FLEX_COLUMN, { rowGap: 8 }]}>
