@@ -27,7 +27,8 @@ export default function PlayerStatDetails(props: IPlayerStatDetailsProps) {
 
   return (
     <View style={[styles.container, { borderColor }]}>
-      <View style={{ paddingBottom: 16 }}>
+      <ThemedText weight="bold" style={{ fontSize: 18 }}>Matches</ThemedText>
+      <View>
         <Bar
           values={[props.stats.stats.matchesWon, props.stats.stats.matchesLost]}
           subtitle={['Won', 'Lost']}

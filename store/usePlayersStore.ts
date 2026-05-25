@@ -17,6 +17,9 @@ export const usePlayersStore = create<PlayersStore>((set) => ({
     { id: '933a9e9b-2a10-44ce-9080-d9c51598834e', firstName: 'Tee', lastName: 'Shei Weon', color: '#219677' },
     { id: '1ac66ac2-4859-4cf9-983d-2f2b92e4e180', firstName: 'Nurul', lastName: 'Syfiqah Ishak', color: '#97633c' },
     { id: '27175d54-8677-415a-9a81-f57304730f20', firstName: 'Jeevitha', lastName: 'Patmanathan', color: '#c89b3a' },
+    { id: '1127d5a1-4a23-474c-bd35-f4cbb60aab30', firstName: 'Ngoi', lastName: 'Kar Kian', color: '#a375f3' },
+    { id: '99cf2d5f-e235-43ad-8b1a-93336f9ccf6a', firstName: 'Aaron', lastName: 'Wee', color: '#219677' },
+    { id: '54899b82-cdf2-482a-ac53-545dcb39752f', firstName: 'Humaira', lastName: 'Shuheimi', color: '#219677' },
   ],
   addPlayer: (player: Player) => set((state) => ({ players: [...state.players, player] })),
   removePlayer: (id: string) => set((state) => ({

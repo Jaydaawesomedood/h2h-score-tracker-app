@@ -1,5 +1,6 @@
 import { LayoutChangeEvent } from "react-native";
 import { Match } from "../data/Match";
+import { Player } from "../data/Player";
 
 export type PlayerProfileTab = {
   matches: Match[],
@@ -33,5 +34,13 @@ export type PlayerStats = {
     setsPlayed: number,
     setsWon: number,
     winRate: string,
-  }
+  },
+  partners: PartnerStat[],
+}
+
+export type PartnerStat = Player & {
+  matches: number,
+  won: number,
+  lost: number,
+  winRate: number,
 }
