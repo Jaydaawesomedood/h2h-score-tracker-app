@@ -1,4 +1,5 @@
 import { Match } from "@/models/v2/data/Match";
+import { Player } from "@/models/v2/data/Player";
 import { PartnerStat } from "@/models/v2/views/PlayerProfileTab";
 
 export class PlayerStatsHelper {
@@ -75,7 +76,66 @@ export class PlayerStatsHelper {
     });
 
     // Sort descendingly based on win rate
+    // TODO - Sort win rate based on adjusted win rate
+    /**
+     * adjustedWinRate = ((w * ravg) + (n * r)) / (w + n)
+     * Where
+     * r = win rate of player,
+     * n = total games played by player,
+     * w = weight (avg number of games needed to overcome the baseline),
+     * ravg = average win rate, either across all players or a neutral baseline (0.5)
+     */
     return Array.from(stats).sort((a, b) => b.winRate - a.winRate);
+  }
+
+  public static getAllPartners(matches: Match[], playerId: string) {
+    const partners: { [key: string]: any } = {};
+
+    matches.forEach(match => {
+      const side = match.sideA.find(p => p.id === playerId) ? 'A' : 'B';
+      const partner = match[`side${side}`]?.find(player => player.id !== playerId);
+
+      if (!partner) return;
+
+      // If partner is not in the object - add new stats
+      if (!partners[partner.id]) {
+        partners[partner.id] = { ...partner };
+      }
+    });
+
+    return partners;
+  }
+
+  public static getAllOpponents(matches: Match[], playerId: string, partnerId?: string) {
+    const opponentSet = new Set<string>();
+    const opponents: Player[][] = [];
+    
+    // If no partner ID, get all singles opponents
+    if (!partnerId || partnerId.trim() === '') {
+      matches.forEach(match => {
+        const opponentSide = match.sideA.find(p => p.id === playerId) ? 'B' : 'A';
+        const key = match[`side${opponentSide}`].map(player => player.id).join('|');
+        if (opponentSet.has(key)) return;
+        opponents.push([...match[`side${opponentSide}`]]);
+        opponentSet.add(key);
+      });
+      return opponents;
+    }
+
+    matches
+    .filter(match => (
+      match.sideA.every(p => p.id === playerId || p.id === partnerId)
+      || match.sideB.every(p => p.id === playerId || p.id === partnerId)
+    ))
+    .forEach(match => {
+      const opponentSide = match.sideA.every(p => p.id === playerId || p.id === partnerId) ? 'B' : 'A';
+      const key = match[`side${opponentSide}`].map(player => player.id).join('|');
+      if (opponentSet.has(key)) return;
+      opponents.push([...match[`side${opponentSide}`]]);
+      opponentSet.add(key);
+    });
+
+    return opponents;
   }
 
   private static getMatchesWon(matches: Match[], playerId: string): number {

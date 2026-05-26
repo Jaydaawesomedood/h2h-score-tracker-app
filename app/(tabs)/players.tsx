@@ -1,7 +1,7 @@
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { Href, router } from "expo-router";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, Keyboard, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import ThemedText from "@/components/_ui/ThemedText";
 import ThemedView from "@/components/_ui/ThemedView";
@@ -22,11 +22,9 @@ import { useDataStore } from "@/utils/context";
 import { FilterParticipantsByProperty } from "@/utils/participants.utils";
 import Button from "@/components/_ui/button/Button";
 import { Styles } from "@/constants/v2/Styles";
-import Modal from "@/components/_ui/modal/Modal";
-import AddPlayerHeader from "@/components/views/modals/add-player/AddPlayerHeader";
-import AddPlayerBody from "@/components/views/modals/add-player/AddPlayerBody";
 import { usePlayersStore } from "@/store/usePlayersStore";
 import PlayerIcon from "@/components/_ui/custom-components/PlayerIcon";
+import AddPlayerModal from "@/components/v2/modals/AddPlayerModal";
 
 interface IPlayerCardProps {
   player: { id: string, firstName: string, lastName: string, color: string }
@@ -60,16 +58,10 @@ export default function Players() {
       />
       
       {/* Add Player Modal */}
-      <Modal visible={isAddPlayerModalVisible} onClose={() => setIsAddPlayerModalVisible(false)} height={'50%'}>
-        <Modal.Header>
-          <AddPlayerHeader onCloseModal={() => setIsAddPlayerModalVisible(false)} />
-        </Modal.Header>
-        <Modal.Body>
-          <ScrollView>
-            <AddPlayerBody onCloseModal={() => setIsAddPlayerModalVisible(false)} />
-          </ScrollView>
-        </Modal.Body>
-      </Modal>
+      <AddPlayerModal
+        isVisible={isAddPlayerModalVisible}
+        onCloseModal={() => setIsAddPlayerModalVisible(false)}
+      />
     </ThemedView>
   );
 }

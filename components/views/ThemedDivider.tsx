@@ -3,6 +3,7 @@ import { StyleSheet, View, ViewProps } from "react-native";
 import ThemedText from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
+// TODO - delete file
 type Props = ViewProps & {
   text?: string;
 };

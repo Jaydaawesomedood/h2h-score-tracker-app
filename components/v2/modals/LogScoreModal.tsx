@@ -1,6 +1,5 @@
 import Modal from "@/components/_ui/modal/Modal";
 import LogScoreBody from "@/components/views/modals/log-score/LogScoreBody";
-import LogScoreHeader from "@/components/views/modals/log-score/LogScoreHeader";
 import { useLogScore } from "@/hooks/v2/useLogScore";
 
 interface ILogScoreModalProps {
@@ -18,8 +17,10 @@ export default function LogScoreModal({ isVisible, onCloseModal }: ILogScoreModa
 
   return (
     <Modal visible={isVisible} onClose={handleOnCloseModal} height={'85%'}>
-      <Modal.Header>
-        <LogScoreHeader onCloseModal={handleOnCloseModal} />
+      <Modal.Header
+        title="Add Match Results"
+        onCloseModal={handleOnCloseModal}
+      >
       </Modal.Header>
       <Modal.Body>
         <LogScoreBody onCloseModal={handleOnCloseModal} />

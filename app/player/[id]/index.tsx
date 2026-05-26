@@ -97,7 +97,7 @@ export default function PlayerProfileScreen() {
                     tabs={[
                       { label: "Overview", screen: { Component: PlayerOverviewTab, props: { matches, playerId: id as string }} },
                       { label: "Stats", screen: { Component: PlayerStatsTab, props: { matches, playerId: id as string } } },
-                      { label: "H2H", screen: { Component: PlayerH2HTab } },
+                      { label: "H2H", screen: { Component: PlayerH2HTab, props: { matches, player } } },
                     ]}
                   />
                 </View>

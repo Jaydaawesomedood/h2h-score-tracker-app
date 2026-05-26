@@ -1,14 +1,12 @@
 import Button from "@/components/_ui/button/Button";
 import PlayerIcon from "@/components/_ui/custom-components/PlayerIcon";
-import Modal from "@/components/_ui/modal/Modal";
 import ThemedText from "@/components/_ui/ThemedText";
 import { Styles } from "@/constants/v2/Styles";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { PartnerStat, PlayerStats } from "@/models/v2/views/PlayerProfileTab";
 import { Fragment, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import PartnerHeader from "../../modals/partners/PartnerHeader";
-import PartnerBody from "../../modals/partners/PartnerBody";
+import PartnersStatsModal from "@/components/v2/modals/PartnersStatsModal";
 
 interface IPartnerStatsProps {
   stats: PlayerStats,
@@ -39,14 +37,14 @@ export default function PartnerStats(props: IPartnerStatsProps) {
         </View> */}
         <View style={{ rowGap: 8 }}>
           {
-            props.stats.partners && props.stats.partners.slice(0, 3).map((partner, index) => (
+            props.stats.partners && props.stats.partners.slice(0, 5).map((partner, index) => (
               <PartnerRow key={partner.id} index={index + 1} partner={partner} />
             ))
           }
         </View>
       </View>
       {
-        props.stats.partners && props.stats.partners.length > 3 && (
+        props.stats.partners && props.stats.partners.length > 5 && (
           <Fragment>
             <View style={[Styles.FLEX_HORIZONTAL_CENTER]}>
               <Button
@@ -56,18 +54,14 @@ export default function PartnerStats(props: IPartnerStatsProps) {
                 textStyle={{ color: primary }}
               />
             </View>
-            <Modal
-              visible={isPartnerModalVisible}
-              onClose={onClosePartnerModal}
-              height={'80%'}
-            >
-              <Modal.Header>
-                <PartnerHeader onCloseModal={onClosePartnerModal} />
-              </Modal.Header>
-              <Modal.Body>
-                <PartnerBody row={PartnerRow} partners={props.stats.partners} />
-              </Modal.Body>
-            </Modal>
+            <PartnersStatsModal
+              isVisible={isPartnerModalVisible}
+              onCloseModal={onClosePartnerModal}
+              bodyProps={{
+                row: PartnerRow,
+                partners: props.stats.partners
+              }}
+            />
           </Fragment>
         )
       }

@@ -1,11 +1,19 @@
+import { Styles } from "@/constants/v2/Styles";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { Fragment, PropsWithChildren, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { Animated, DimensionValue, Keyboard, KeyboardEvent, LayoutChangeEvent, Platform, Modal as RNModal, StyleSheet, TouchableWithoutFeedback, useWindowDimensions, View, ViewStyle } from "react-native";
+import ThemedText from "../ThemedText";
+import Button from "../button/Button";
 
 type ModalProps = PropsWithChildren & {
   visible: boolean,
   onClose: () => void,
   height: ViewStyle['height'],
+}
+
+type IModalHeaderProps = {
+  title: string,
+  onCloseModal: () => void,
 }
 
 function Modal({ children, height = '50%', ...props }: ModalProps) {
@@ -173,9 +181,12 @@ function Modal({ children, height = '50%', ...props }: ModalProps) {
   );
 }
 
-function ModalHeader({ children }: { children: ReactNode | undefined }) {
+function ModalHeader(props: IModalHeaderProps) {
   return (
-    <Fragment>{children}</Fragment>
+    <View style={styles.header}>
+      <ThemedText weight="bold" style={{ fontSize: 24 }}>{props.title}</ThemedText>
+      <Button type="secondary" text="Cancel" onPress={props.onCloseModal} />
+    </View>
   );
 }
 
@@ -201,5 +212,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     width: "100%",
+  },
+  header: {
+    marginBottom: 16,
+    paddingHorizontal: 24,
+    ...Styles.FLEX_HORIZONTAL_SIDE
   },
 });

@@ -22,7 +22,7 @@ export default function PlayerIcon(props: IPlayerIconProps) {
     >
       <ThemedText
         weight="bold"
-        style={{ fontSize: props.size ? props.size / 3 : 24, margin: 0 }}
+        style={{ fontSize: props.size ? props.size / 3 : 24, margin: 0, width: '100%', textAlign: 'center' }}
       >
         {props.player.firstName.charAt(0).concat(props.player.lastName.charAt(0))}
       </ThemedText>
@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
   userImageContainer: {
     borderRadius: '100%',
     aspectRatio: 1 / 1,
-    padding: 8,
     margin: 0,
   }
 });
