@@ -3,7 +3,7 @@ import { GetWinRate } from "./common/common.util";
 import { Match, MatchLite } from "@/models/Match";
 import { Player, Team } from "@/models/Player";
 import { H2HStats, StatsByPartner } from "@/models/Stats";
-
+// TODO - delete file
 export function getHigherScore(scores: Number[]) {
   if (scores[1] > scores[0]) return 1;
   else return 0;

@@ -202,7 +202,7 @@ export default function ThemedTabView({ tabs }: Props) {
               >
                 <Component
                   onLayout={(event: LayoutChangeEvent) => {
-                    if (tabHeights.current[index]) return;
+                    if (tabHeights.current[index] && Math.round(tabHeights.current[index]) === Math.round(event.nativeEvent.layout.height)) return;
                     handleItemLayout(index, event.nativeEvent.layout.height);
                   }}
                   {...props}

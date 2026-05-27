@@ -51,16 +51,20 @@ export default function MatchSummaryCard({ match, style }: MatchSummaryCardProps
                         ))
                       }
                     </View>
-                    <View style={[Styles.FLEX_HORIZONTAL_CENTER, { columnGap: 16 }]}>
+                    <View style={[Styles.FLEX_HORIZONTAL_CENTER, { columnGap: 8, flexShrink: 0 }]}>
                       {
                         match.sets.map((set: number[], scoreIndex: number) => (
-                          <ThemedText
-                            key={`${match.id}-teamscore-${scoreIndex}`}
-                            weight="bold"
-                            style={index === set.indexOf(Math.max(...set)) ? { color: primary } : {}}
-                          >
-                              {set[index].toString()}
-                          </ThemedText>
+                          <View key={`${match.id}-teamscore-${scoreIndex}`} style={[{ minWidth: 24 }]}>
+                            <ThemedText
+                              weight="bold"
+                              style={[
+                                index === set.indexOf(Math.max(...set)) ? { color: primary } : {},
+                                { textAlign: 'center' }
+                              ]}
+                            >
+                                {set[index].toString()}
+                            </ThemedText>
+                          </View>
                         ))
                       }
                     </View>

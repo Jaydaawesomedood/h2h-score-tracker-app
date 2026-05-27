@@ -6,14 +6,17 @@ import SelectH2HModal from "@/components/v2/modals/SelectH2HPartnerModal";
 import { Styles } from "@/constants/v2/Styles";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { Player } from "@/models/v2/data/Player";
+import { ToughestOpponentStat } from "@/models/v2/views/PlayerProfileTab";
 import { FontAwesome } from "@expo/vector-icons";
 import { Fragment, SetStateAction, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import ToughestOpponents from "./ToughestOpponents";
 
 interface IH2HSelectorProps {
   player: Player,
   partners: Player[],
   opponents: Player[][],
+  toughestOpponents: ToughestOpponentStat[],
   selectedPartner: Player | undefined,
   setSelectedPartner: React.Dispatch<SetStateAction<Player | undefined>>;
   selectedOpponent: Player[] | undefined,
@@ -112,6 +115,14 @@ export default function H2HSelector({ selectedPartner, setSelectedPartner, selec
             textStyle={{ color: primary }}
           />
         </View>
+        {
+          !selectedOpponent && props.toughestOpponents.length > 0 && (
+            <ToughestOpponents
+              toughestOpponents={props.toughestOpponents}
+              selectOpponent={(opp: Player[]) => setSelectedOpponent(opp)}
+            />
+          )
+        }
       </View>
       <SelectH2HModal
         isVisible={isSelectH2HModalVisible}

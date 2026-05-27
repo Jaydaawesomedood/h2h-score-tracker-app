@@ -38,6 +38,7 @@ export default function Button(props: IButtonProps) {
         <FontAwesome6
           name={props.icon}
           color={ props.textStyle ? StyleSheet.flatten(props.textStyle)?.color : props.type === 'secondary' ? color : 'white' }
+          size={props.textStyle ? StyleSheet.flatten(props.textStyle)?.fontSize : 16}
         />
       }
       <ThemedText

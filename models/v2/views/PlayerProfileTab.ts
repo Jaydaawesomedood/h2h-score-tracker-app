@@ -44,3 +44,14 @@ export type PartnerStat = Player & {
   lost: number,
   winRate: number,
 }
+
+export type ToughestOpponentStat = {
+  opponent: Player[],
+  h2h: number[],
+}
+
+export type H2HStats = {
+  h2h: number[],
+  winRate: number[],
+  setsWon: number[],
+}

@@ -17,8 +17,7 @@ export class PlayerStatsHelper {
 
   public static getMatchesStats(matches: Match[], playerId: string) {
     const matchesWon = this.getMatchesWon(matches, playerId);
-
-    const setsPlayed = matches.reduce((arr, match) => arr + match.sets.length, 0);
+    const setsPlayed = this.getSetsPlayed(matches);
 
     const setsWon = matches
                     .map(match => {
@@ -138,6 +137,94 @@ export class PlayerStatsHelper {
     return opponents;
   }
 
+  public static getToughestOpponents(matches: Match[], playerId: string, partnerId?: string) {
+    const playerSide = (partnerId && partnerId.trim() !== '') ? [playerId, partnerId] : [playerId];
+    let filteredMatches = this.getAllMatchesByPlayerIds(matches, playerSide);
+
+    const opponents = this.getAllOpponents(filteredMatches, playerId, partnerId);
+    const opponentsH2HMap = new Map<string, { opponent: Player[], h2h: number[] }>();
+
+    opponents.forEach(opponent => {
+      const key = opponent.map(player => player.id).join('|');
+      const h2h = this.getH2H(
+        this.getAllMatchesByPlayerIds(filteredMatches, playerSide, opponent.map(o => o.id)),
+        opponent
+      );
+      if (!opponentsH2HMap.has(key)) opponentsH2HMap.set(key, { opponent, h2h });
+    });
+
+    // return player/team, wins, losses
+    return Array.from(opponentsH2HMap.values())
+      .filter((({ h2h }) => h2h?.[1] >= h2h?.[0]))
+      .sort((a, b) => (b.h2h?.[1] ?? 0) - (a.h2h?.[1] ?? 0))
+      .slice(0, 5);
+  }
+
+  public static getH2H(matches: Match[], opponents: Player[], players?: Player[]): number[] {
+    let h2h: number[] = [0, 0];
+    const opponentPlayerIds = opponents.map(o => o.id);
+
+    let filteredMatches = matches;
+
+    if (players) {
+      filteredMatches = this.getAllMatchesByPlayerIds(
+        filteredMatches,
+        players.map(p => p.id),
+        opponentPlayerIds
+      );
+    }
+
+    filteredMatches.forEach(match => {
+      const opponentSide = match.sideA.every(p => opponentPlayerIds.includes(p.id)) ? 'A' : 'B';
+      h2h[match.winner === opponentSide ? 1 : 0] += 1;
+    });
+
+    return h2h;
+  }
+
+  public static getH2HDetails(matches: Match[], h2h: number[], opponents: Player[], players: Player[]) {
+    const totalMatches = h2h.reduce((arr, curr) => arr + curr, 0);
+    const winRate = [this.getWinRate(h2h[0], totalMatches), this.getWinRate(h2h[1], totalMatches)];
+
+    const filteredMatches = this.getAllMatchesByPlayerIds(
+      matches,
+      players.map(p => p.id),
+      opponents.map(o => o.id)
+    );
+
+    let setsWon = [0, 0];
+
+    // Get # of sets won
+    filteredMatches.forEach(match => {
+      const playerSide = match.sideA.every(p => players.map(player => player.id).includes(p.id)) ? 'A' : 'B';
+      match.sets.forEach(set => {
+        const setWinner = Boolean(set.indexOf(Math.max(...set))) ? 'B' : 'A' // 0 or 1 to A or B
+        setsWon[setWinner === playerSide ? 0 : 1] += 1;
+      });
+    })
+
+    return {
+      winRate,
+      setsWon,
+    };
+  }
+
+  public static getAllMatchesByPlayerIds(matches: Match[], playerSideIds: string[], opponentSideIds?: string[]): Match[] {
+    let filtered = matches.filter(match => (
+      match.sideA.every(p => playerSideIds.includes(p.id))
+      || match.sideB.every(p => playerSideIds.includes(p.id))
+    ));
+
+    if (opponentSideIds) {
+      filtered = filtered.filter(match => (
+        match.sideA.every(p => opponentSideIds.includes(p.id))
+      || match.sideB.every(p => opponentSideIds.includes(p.id))
+      ));
+    }
+
+    return filtered;
+  }
+
   private static getMatchesWon(matches: Match[], playerId: string): number {
     return matches.reduce((acc, match) => {
       const side = match.sideA.find((p) => p.id === playerId) ? 'A' : 'B';
@@ -147,5 +234,9 @@ export class PlayerStatsHelper {
 
   private static getWinRate(won: number, total: number): number {
     return Number((total > 0 ? (won / total) * 100 : 0).toFixed(0))
+  }
+
+  private static getSetsPlayed(matches: Match[]) {
+    return matches.reduce((arr, match) => arr + match.sets.length, 0);
   }
 }

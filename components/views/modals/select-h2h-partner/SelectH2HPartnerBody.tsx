@@ -28,27 +28,34 @@ export default function SelectH2HBody(props: ISelectH2HBodyProps) {
   }
 
   return (
-    <FlatList
-      data={props.players}
-      renderItem={({ item, index }) => (
-        <TouchableOpacity activeOpacity={0.6} onPress={() => { handleSelectItem(item); }}>
-          <View style={[Styles.FLEX_COLUMN, { paddingVertical: 16 }]}>
-            {
-              item.map(player => (
-                <View key={`h2h-selector-${props.type}-${index}-${player.id}`} style={[styles.playerContainer]}>
-                  <PlayerIcon player={player} size={48} />
-                  <ThemedText style={{ fontSize: 16 }}>{player.firstName} {player.lastName}</ThemedText>
-                </View>
-              ))
-            }
-          </View>
-        </TouchableOpacity>
-      )}
-      keyExtractor={(item) => item.map(p => p.id).join('-')}
-      ItemSeparatorComponent={<View style={[styles.divider, { backgroundColor: dividerColor }]} />}
-      contentContainerStyle={{ paddingHorizontal: 24 }}
-    />
-  );
+    props.players.length > 0 ? (
+      <FlatList
+        data={props.players}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity activeOpacity={0.6} onPress={() => { handleSelectItem(item); }}>
+            <View style={[Styles.FLEX_COLUMN, { paddingVertical: 16 }]}>
+              {
+                item.map(player => (
+                  <View key={`h2h-selector-${props.type}-${index}-${player.id}`} style={[styles.playerContainer]}>
+                    <PlayerIcon player={player} size={48} />
+                    <ThemedText style={{ fontSize: 16 }}>{player.firstName} {player.lastName}</ThemedText>
+                  </View>
+                ))
+              }
+            </View>
+          </TouchableOpacity>
+        )}
+        keyExtractor={(item) => item.map(p => p.id).join('-')}
+        ItemSeparatorComponent={<View style={[styles.divider, { backgroundColor: dividerColor }]} />}
+        contentContainerStyle={{ paddingHorizontal: 24 }}
+      />
+    )
+    : (
+      <View style={[Styles.FLEX_HORIZONTAL_CENTER]}>
+        <ThemedText weight="light">No data available.</ThemedText>
+      </View>
+    )
+  )
 }
 
 const styles = StyleSheet.create({
