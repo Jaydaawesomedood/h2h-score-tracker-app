@@ -3,4 +3,5 @@ export type Player = {
   firstName: string,
   lastName: string,
   color: string,
+  isMe?: boolean,
 }

@@ -39,6 +39,7 @@ export default {
     "expo-router",
     "expo-font",
     "expo-sqlite",
+    ["@morrowdigital/watermelondb-expo-plugin"],
     [
       "expo-splash-screen",
       {
@@ -55,6 +56,19 @@ export default {
       "expo-dev-client",
       {
         addGeneratedScheme: !!IS_DEV
+      }
+    ],
+    [
+      "expo-build-properties",
+      {
+        "android": {
+          "kotlinVersion": "2.1.21",
+          "packagingOptions": {
+            "pickFirst": [
+              "**/libc++_shared.so"
+            ]
+          }
+        }
       }
     ]
   ],
