@@ -19,6 +19,7 @@ import { GetAllMatches } from '@/utils/repositories/MatchRepository';
 import { GetAllParticipants } from '@/utils/repositories/PlayerRepository';
 import { DARK_THEME, LIGHT_THEME } from '@/constants/Themes';
 import ThemeProvider from '@/providers/ThemeProvider';
+import { usePlayersStore } from '@/store/usePlayersStore';
 
 const screenOptions = { headerShown: false };
 
@@ -26,6 +27,7 @@ const screenOptions = { headerShown: false };
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const fetch = usePlayersStore(state => state.fetch);
   const { isLightMode, setIsLightMode } = useThemeStore();
   const dataStore = useDataStore();
 
@@ -61,57 +63,66 @@ export default function RootLayout() {
       }
     };
 
-    // Set light/dark theme by getting user preference
-    async function setTheme() {
-      try {
-        const value = await AsyncStorage.getItem('lightmode');
-        if (value === 'true') setIsLightMode();
-      }
-      catch (err: any) {
-        console.log(err);
-      }
-    };
+    // // Set light/dark theme by getting user preference
+    // async function setTheme() {
+    //   try {
+    //     const value = await AsyncStorage.getItem('lightmode');
+    //     if (value === 'true') setIsLightMode();
+    //   }
+    //   catch (err: any) {
+    //     console.log(err);
+    //   }
+    // };
 
-    // Prepare database
-    async function openDb() {
-      const db = await SQLite.openDatabaseAsync('h2h.db');
-      setDb(db);
-      return db;
-    };
+    // // Prepare database
+    // async function openDb() {
+    //   const db = await SQLite.openDatabaseAsync('h2h.db');
+    //   setDb(db);
+    //   return db;
+    // };
 
-    // Check if app is on first launch or not, if yes, and db connection is open, create db tables
-    async function handleData(database: SQLite.SQLiteDatabase) {
-      try {
-        if (firstLaunch) {
-          await database.execAsync(DbQueries.CreateAllTables);
-          await AsyncStorage.setItem('launched', 'true');
-        }
-        else if (!firstLaunch) {
-          // Get data if its not first time launching
-          await GetAllParticipants(database, dataStore.setPlayers, dataStore.setTeams, showErrorToast);
-          await GetAllMatches(database, dataStore.setSinglesMatches, dataStore.setDoublesMatches, showErrorToast);
-        }
-      }
-      catch (err: any) {
-        console.log(err);
-        showErrorToast();
-      }
-    };
+    // // Check if app is on first launch or not, if yes, and db connection is open, create db tables
+    // async function handleData(database: SQLite.SQLiteDatabase) {
+    //   try {
+    //     if (firstLaunch) {
+    //       await database.execAsync(DbQueries.CreateAllTables);
+    //       await AsyncStorage.setItem('launched', 'true');
+    //     }
+    //     else if (!firstLaunch) {
+    //       // Get data if its not first time launching
+    //       await GetAllParticipants(database, dataStore.setPlayers, dataStore.setTeams, showErrorToast);
+    //       await GetAllMatches(database, dataStore.setSinglesMatches, dataStore.setDoublesMatches, showErrorToast);
+    //     }
+    //   }
+    //   catch (err: any) {
+    //     console.log(err);
+    //     showErrorToast();
+    //   }
+    // };
     
-    getInitState().then(() => {
-      setTheme().then(() => {
-        if(!db) {
-          openDb().then((database: SQLite.SQLiteDatabase) => {
-            handleData(database).then(() => {
-              setSetupCompleted(true);
-            });
-          });
-        }
-        else {
-          setSetupCompleted(true);
-        }
+    // getInitState().then(() => {
+    //   setTheme().then(() => {
+    //     if(!db) {
+    //       openDb().then((database: SQLite.SQLiteDatabase) => {
+    //         handleData(database).then(() => {
+    //           setSetupCompleted(true);
+    //         });
+    //       });
+    //     }
+    //     else {
+    //       setSetupCompleted(true);
+    //     }
+    //   });
+    // })
+
+    function initApp() {
+      getInitState().then(async () => {
+        await fetch();
+        setSetupCompleted(true);
       });
-    })
+    }
+
+    initApp();
   }, []);
 
   useEffect(() => {

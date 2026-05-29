@@ -35,6 +35,7 @@ export default function TabLayout() {
           tabBarActiveTintColor: tabItemActiveColor,
           headerShown: false,
           animation: "fade",
+          tabBarLabelStyle: { fontFamily: 'LeagueSpartanRegular' }
         }}
       >
         <Tabs.Screen

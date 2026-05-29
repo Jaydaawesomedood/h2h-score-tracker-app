@@ -13,6 +13,9 @@ web-build/
 package-lock.json
 eas.json
 
+ios/
+android/
+
 # For future features & development
 others/
 
