@@ -25,6 +25,7 @@ export const usePlayersStore = create<PlayersStore>((set, get) => ({
   // ],
   players: [],
 
+  // TODO - fetch by limit/offset to improve performance
   fetch: async() => {
     try {
       const players = await PlayersService.GetAllPlayers();
@@ -35,7 +36,6 @@ export const usePlayersStore = create<PlayersStore>((set, get) => ({
     }
   },
 
-  // addPlayer: (player: Player) => set((state) => ({ players: [...state.players, player] })),
   addPlayer: async(player: Player) => {
     try {
       const newPlayer = await PlayersService.AddPlayer({ ...player, isMe: get().players.length === 0 });

@@ -6,7 +6,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 type PlayerForm = Omit<Player, 'id'>;
 
 interface IAddPlayerFormProps {
-  // onFormValueChange: (form: PlayerForm) => void,
+  player?: Player,
 }
 
 interface IColorPickerProps {
@@ -32,8 +32,12 @@ function addPlayerReducer(state: PlayerForm, action: { fieldName: string, value:
 
 const initialFormState: PlayerForm = { firstName: '', lastName: '', color: colors[0] };
 
+function initializeForm(player: Player | undefined) {
+  return player ?? initialFormState;
+}
+
 const PlayerForm = forwardRef((props: IAddPlayerFormProps, ref) => {
-  const [state, dispatch] = useReducer(addPlayerReducer, initialFormState);
+  const [state, dispatch] = useReducer(addPlayerReducer, props.player, initializeForm);
 
   useImperativeHandle(ref, () => ({
     getFormData: () => (state),

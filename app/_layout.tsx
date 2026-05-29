@@ -150,10 +150,10 @@ export default function RootLayout() {
                 <Stack>
                   <Stack.Screen name="(tabs)" options={screenOptions} />
                   <Stack.Screen name='player/[id]/index' options={screenOptions} />
+                  <Stack.Screen name='player/[id]/edit' options={screenOptions} />
                   <Stack.Screen name="+not-found" />
                   {/* <Stack.Screen name='player/add' options={screenOptions} />
                   <Stack.Screen name='player/[id]/index' options={screenOptions} />
-                  <Stack.Screen name='player/[id]/edit' options={screenOptions} />
                   <Stack.Screen name='team/add' options={screenOptions} />
                   <Stack.Screen name='team/[id]/index' options={screenOptions} />
                   <Stack.Screen name='team/[id]/edit' options={screenOptions} />
