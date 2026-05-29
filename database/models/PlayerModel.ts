@@ -21,4 +21,8 @@ export default class PlayerModel extends Model {
       p.color = updatedPlayer.color;
     });
   }
+
+  @writer async delete() {
+    await this.destroyPermanently();
+  }
 }

@@ -9,7 +9,7 @@ interface PlayersStore {
   initPlayerListener: () => void,
   terminatePlayerListener: () => void,
   addPlayer: (player: Player) => Promise<void>,
-  removePlayer: (id: string) => void,
+  removePlayer: (id: string) => Promise<boolean>,
   updatePlayer: (player: Player) => Promise<void>,
 }
 
@@ -62,9 +62,16 @@ export const usePlayersStore = create<PlayersStore>((set, get) => ({
     }
   },
 
-  removePlayer: (id: string) => set((state) => ({
-    players: [...state.players.slice().splice(state.players.findIndex(pl => pl.id === id), 1)]
-  })),
+  removePlayer: async (id: string) => {
+    try {
+      const success = await PlayersService.DeletePlayer(id);
+      return success;
+    }
+    catch (err: any) {
+      console.error('Something went wrong.', err);
+      return false;
+    }
+  },
 
   updatePlayer: async (player: Player) => {
     try {

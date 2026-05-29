@@ -42,6 +42,18 @@ export class PlayersService {
     }
   }
 
+  static async DeletePlayer(id: string) {
+    try {
+      const player = await database.collections.get<PlayerModel>('players').find(id);
+      await player.delete();
+      return true;
+    }
+    catch(err: any) {
+      console.error('Something went wrong.', err);
+      return false;
+    }
+  }
+
   private static toPlayer(player: PlayerModel) {
     return {
       id: player.id,

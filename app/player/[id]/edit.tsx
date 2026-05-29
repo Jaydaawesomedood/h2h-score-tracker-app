@@ -25,14 +25,29 @@ export default function EditPlayerScreen() {
   );
 
   const updatePlayer = usePlayersStore(state => state.updatePlayer);
+  const deletePlayer = usePlayersStore(state => state.removePlayer);
 
+  const handleSaveChanges = () => {
+    if (!formRef.current || !player) return;
+    updatePlayer(((formRef.current as any).getFormData()) as Player);
+    router.back();
+  }
+
+  const handleDelete = async () => {
+    const success = await deletePlayer(id as string);
+
+    if (success) {
+      router.dismissTo('/(tabs)/players');
+    }
+  }
+  
   const renderDeleteButton = () => {
     if (player?.isMe) return (<></>);
 
     return (
       <Button
         text=""
-        onPress={() => { }}
+        onPress={handleDelete}
         type="secondary"
         icon="trash"
         iconPlacement="left"
@@ -40,12 +55,6 @@ export default function EditPlayerScreen() {
         textStyle={{ color: deleteColor, fontSize: 18 }}
       />
     );
-  }
-
-  const handleSaveChanges = () => {
-    if (!formRef.current || !player) return;
-    updatePlayer(((formRef.current as any).getFormData()) as Player);
-    router.back();
   }
 
   const handleOnFormChange = () => {
