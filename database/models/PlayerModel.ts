@@ -13,4 +13,12 @@ export default class PlayerModel extends Model {
   @field('last_name') lastName!: string
   @field('color') color!: string
   @field('is_me') isMe!: boolean
+
+  @writer async updateProfile(updatedPlayer: Player) {
+    await this.update(p => {
+      p.firstName = updatedPlayer.firstName;
+      p.lastName = updatedPlayer.lastName;
+      p.color = updatedPlayer.color;
+    });
+  }
 }

@@ -27,7 +27,8 @@ const screenOptions = { headerShown: false };
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const fetch = usePlayersStore(state => state.fetch);
+  const initPlayerListener = usePlayersStore(state => state.initPlayerListener);
+  const terminatePlayerListener = usePlayersStore(state => state.terminatePlayerListener);
   const { isLightMode, setIsLightMode } = useThemeStore();
   const dataStore = useDataStore();
 
@@ -116,13 +117,15 @@ export default function RootLayout() {
     // })
 
     function initApp() {
-      getInitState().then(async () => {
-        await fetch();
+      initPlayerListener();
+      getInitState().then(() => {
         setSetupCompleted(true);
       });
     }
 
     initApp();
+
+    return () => terminatePlayerListener();
   }, []);
 
   useEffect(() => {

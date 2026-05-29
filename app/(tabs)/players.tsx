@@ -47,7 +47,7 @@ export default function Players() {
           icon="plus"
           iconPlacement="left"
           textStyle={{ color: primary, fontSize: 18 }}
-          buttonStyle={{ columnGap: 6 }}
+          buttonStyle={{ columnGap: 8 }}
           weight="bold"
         />
       </View>

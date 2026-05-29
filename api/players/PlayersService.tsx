@@ -1,6 +1,7 @@
 import { Player } from "@/models/v2/data/Player";
 import { database } from "../../database";
 import PlayerModel from "@/database/models/PlayerModel";
+import { map, Observable } from "@nozbe/watermelondb/utils/rx";
 
 export class PlayersService {
   static async AddPlayer(player: Player) {
@@ -18,11 +19,27 @@ export class PlayersService {
     return createdPlayer;
   }
 
-  static async GetAllPlayers(): Promise<Player[]> {
+  static ObserveAllPlayers(): Observable<Player[]> {
     // TODO - grab n number of players first (lazy loading)
     // TODO - move this to model instead
-    const allPlayers = await database.collections.get<PlayerModel>('players').query().fetch();
-    return allPlayers.map(pl => (this.toPlayer(pl)));
+    return database.collections
+      .get<PlayerModel>('players')
+      .query()
+      .observeWithColumns(['first_name', 'last_name', 'color'])
+      .pipe(
+        map(players => players.map(p => this.toPlayer(p)))
+      )
+  }
+
+  static async UpdatePlayer(updatedPlayer: Player) {
+    try {
+      const player = await database.collections.get<PlayerModel>('players').find(updatedPlayer.id);
+      await player.updateProfile(updatedPlayer);
+    }
+    catch(err: any)
+    {
+      console.error(err);
+    }
   }
 
   private static toPlayer(player: PlayerModel) {

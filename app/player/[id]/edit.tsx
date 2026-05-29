@@ -1,45 +1,89 @@
-// import { router, useLocalSearchParams } from "expo-router";
-// import { useContext, useEffect, useState } from "react";
-// import { Keyboard, TouchableWithoutFeedback } from "react-native";
-
+import Button from "@/components/_ui/button/Button";
 import ThemedText from "@/components/_ui/ThemedText";
 import ThemedView from "@/components/_ui/ThemedView";
 import PlayerForm from "@/components/views/forms/AddPlayerForm";
 import ScreenHeader from "@/components/views/headers/ScreenHeader";
 import { Styles } from "@/constants/v2/Styles";
+import useThemeColor from "@/hooks/v2/useThemeColor";
+import { Player } from "@/models/v2/data/Player";
 import { usePlayersStore } from "@/store/usePlayersStore";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { useRef, useState } from "react";
 import { ScrollView } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 
-// import ThemedView from "@/components/ThemedView";
-// import PrimaryButton from "@/components/buttons/PrimaryButton";
-// import SecondaryButton from "@/components/buttons/SecondaryButton";
-// import PlayerForm from "@/components/forms/PlayerForm";
-// import ScreenTitle from "@/components/screens/ScreenTitle";
-
-// import { ToastMessages } from "@/constants/messages/Toast";
-// import { Containers } from "@/constants/styles/Containers";
-// import { useThemeColor } from "@/hooks/useThemeColor";
-// import { DbContext, useDataStore, useProfileStore } from "@/utils/context";
-// import { showErrorToast, showMessageToast } from "@/utils/toast.util";
-// import { DeletePlayer, UpdatePlayer } from "@/utils/database/database";
-// import { GetAllPlayersV2, GetAllTeamsV2 } from "@/utils/repositories/PlayerRepository";
-// import { GetAllMatchesV2 } from "@/utils/repositories/MatchRepository";
-
 export default function EditPlayerScreen() {
+  const deleteColor = useThemeColor('red');
   const { id } = useLocalSearchParams();
+
+  const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
+
+  const formRef = useRef<PlayerForm>(null);
 
   const player = usePlayersStore(
     useShallow(state => state.players.find(player => player.id === id))
   );
 
+  const updatePlayer = usePlayersStore(state => state.updatePlayer);
+
+  const renderDeleteButton = () => {
+    if (player?.isMe) return (<></>);
+
+    return (
+      <Button
+        text=""
+        onPress={() => { }}
+        type="secondary"
+        icon="trash"
+        iconPlacement="left"
+        buttonStyle={{ columnGap: 8, paddingHorizontal: 4 }}
+        textStyle={{ color: deleteColor, fontSize: 18 }}
+      />
+    );
+  }
+
+  const handleSaveChanges = () => {
+    if (!formRef.current || !player) return;
+    updatePlayer(((formRef.current as any).getFormData()) as Player);
+    router.back();
+  }
+
+  const handleOnFormChange = () => {
+    if (!formRef.current || !player) return;
+
+    const formData = (formRef.current as any).getFormData();
+    let disabled = true;
+
+    for(const key of Object.keys(formData)) {
+      if (formData[key] !== (player as any)[key]) {
+        disabled = false;
+        break;
+      }
+    }
+
+    setIsSaveDisabled(disabled);
+  }
+
   return (
     <ThemedView style={[ Styles.SCREEN_BODY]}>
       <ScrollView contentContainerStyle={{ rowGap: 24 }}>
-        <ScreenHeader />
+        <ScreenHeader
+          renderActionButton={renderDeleteButton}
+        />
         <ThemedText weight="bold" style={{ fontSize: 32 }}>Edit Player</ThemedText>
-        <PlayerForm player={player} />
+        <PlayerForm
+          player={player}
+          onFormChange={handleOnFormChange}
+          ref={formRef}
+        />
+        <Button
+          text="Save Changes"
+          onPress={handleSaveChanges}
+          type="primary"
+          weight="bold"
+          textStyle={{ fontSize: 16 }}
+          disabled={isSaveDisabled}
+        />
       </ScrollView>
     </ThemedView>
   );

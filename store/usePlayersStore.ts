@@ -1,13 +1,16 @@
 import { PlayersService } from "@/api/players/PlayersService";
 import { Player } from "@/models/v2/data/Player";
 import { create } from "zustand";
+import { Subscription } from "rxjs"; 
 
 interface PlayersStore {
   players: Player[],
-  fetch: () => Promise<void>,
+  _dbSubscription: Subscription | null,
+  initPlayerListener: () => void,
+  terminatePlayerListener: () => void,
   addPlayer: (player: Player) => Promise<void>,
   removePlayer: (id: string) => void,
-  updatePlayer: (id: string, player: Player) => void,
+  updatePlayer: (player: Player) => Promise<void>,
 }
 
 export const usePlayersStore = create<PlayersStore>((set, get) => ({
@@ -24,22 +27,35 @@ export const usePlayersStore = create<PlayersStore>((set, get) => ({
   //   { id: '54899b82-cdf2-482a-ac53-545dcb39752f', firstName: 'Humaira', lastName: 'Shuheimi', color: '#219677' },
   // ],
   players: [],
+  _dbSubscription: null,
 
   // TODO - fetch by limit/offset to improve performance
-  fetch: async() => {
-    try {
-      const players = await PlayersService.GetAllPlayers();
-      set(() => ({ players: players }));
-    }
-    catch (err: any) {
-      console.error('Something went wrong.', err);
+  initPlayerListener: () => {
+    if (get()._dbSubscription) return;
+
+    const subscription = PlayersService.ObserveAllPlayers().subscribe({
+      next: (players) => {
+        set(() => ({ players: [...players] }));
+      },
+      error: (err) => {
+        console.error('Something went wrong.', err);
+      }
+    });
+
+    set({ _dbSubscription: subscription });
+  },
+
+  terminatePlayerListener: () => {
+    const { _dbSubscription } = get();
+    if (_dbSubscription) {
+      _dbSubscription.unsubscribe();
+      set({ _dbSubscription: null, players: [] });
     }
   },
 
-  addPlayer: async(player: Player) => {
+  addPlayer: async (player: Player) => {
     try {
-      const newPlayer = await PlayersService.AddPlayer({ ...player, isMe: get().players.length === 0 });
-      set(() => ({ players: [...get().players, newPlayer] }));
+      await PlayersService.AddPlayer({ ...player, isMe: get().players.length === 0 });
     }
     catch (err: any) {
       console.error('Something went wrong.', err);
@@ -49,7 +65,16 @@ export const usePlayersStore = create<PlayersStore>((set, get) => ({
   removePlayer: (id: string) => set((state) => ({
     players: [...state.players.slice().splice(state.players.findIndex(pl => pl.id === id), 1)]
   })),
-  updatePlayer: (id: string, player: Player) => set((state) => ({
-    players: [...state.players.map(pl => pl.id === id ? { ...player } : { ...pl })]
-  })),
+
+  updatePlayer: async (player: Player) => {
+    try {
+      await PlayersService.UpdatePlayer(player);
+    }
+    catch (err: any) {
+      console.error('Something went wrong.', err)
+    }
+  }
+  // updatePlayer: (id: string, player: Player) => set((state) => ({
+  //   players: [...state.players.map(pl => pl.id === id ? { ...player } : { ...pl })]
+  // })),
 }));

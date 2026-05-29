@@ -1,12 +1,13 @@
 import TextInput from "@/components/_ui/input/TextInput";
 import { Player } from "@/models/v2/data/Player";
-import { ActionDispatch, forwardRef, useImperativeHandle, useReducer } from "react";
+import { ActionDispatch, forwardRef, useEffect, useImperativeHandle, useReducer } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 type PlayerForm = Omit<Player, 'id'>;
 
 interface IAddPlayerFormProps {
   player?: Player,
+  onFormChange?: () => void,
 }
 
 interface IColorPickerProps {
@@ -51,6 +52,10 @@ const PlayerForm = forwardRef((props: IAddPlayerFormProps, ref) => {
   const handleFormFieldChange = (fieldName: string, value: string) => {
     dispatch({ fieldName, value });
   }
+
+  useEffect(() => {
+    props.onFormChange?.();
+  }, [state]);
 
   return (
     <View style={{ rowGap: 16 }}>
