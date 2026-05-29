@@ -2,6 +2,7 @@ import { Player } from "@/models/v2/data/Player";
 import { database } from "../../database";
 import PlayerModel from "@/database/models/PlayerModel";
 import { map, Observable } from "@nozbe/watermelondb/utils/rx";
+import { Q } from "@nozbe/watermelondb";
 
 export class PlayersService {
   static async AddPlayer(player: Player) {
@@ -24,7 +25,7 @@ export class PlayersService {
     // TODO - move this to model instead
     return database.collections
       .get<PlayerModel>('players')
-      .query()
+      .query(Q.experimentalJoinTables(['match_players']))
       .observeWithColumns(['first_name', 'last_name', 'color'])
       .pipe(
         map(players => players.map(p => this.toPlayer(p)))

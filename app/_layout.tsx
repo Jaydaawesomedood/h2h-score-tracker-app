@@ -20,6 +20,8 @@ import { GetAllParticipants } from '@/utils/repositories/PlayerRepository';
 import { DARK_THEME, LIGHT_THEME } from '@/constants/Themes';
 import ThemeProvider from '@/providers/ThemeProvider';
 import { usePlayersStore } from '@/store/usePlayersStore';
+import { useMatchesStore } from '@/store/useMatchesStore';
+import { MatchesService } from '@/api/MatchesService/MatchesService';
 
 const screenOptions = { headerShown: false };
 
@@ -28,7 +30,9 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const initPlayerListener = usePlayersStore(state => state.initPlayerListener);
+  const initMatchListener = useMatchesStore(state => state.initMatchListener);
   const terminatePlayerListener = usePlayersStore(state => state.terminatePlayerListener);
+  const terminateMatchListener = useMatchesStore(state => state.terminateMatchListener);
   const { isLightMode, setIsLightMode } = useThemeStore();
   const dataStore = useDataStore();
 
@@ -116,8 +120,12 @@ export default function RootLayout() {
     //   });
     // })
 
-    function initApp() {
+    async function initApp() {
       initPlayerListener();
+      initMatchListener();
+
+      // await MatchesService.test('0xpgxOvWFOvbwwG5');
+
       getInitState().then(() => {
         setSetupCompleted(true);
       });
@@ -125,7 +133,10 @@ export default function RootLayout() {
 
     initApp();
 
-    return () => terminatePlayerListener();
+    return () => {
+      terminatePlayerListener();
+      terminateMatchListener();
+    }
   }, []);
 
   useEffect(() => {
