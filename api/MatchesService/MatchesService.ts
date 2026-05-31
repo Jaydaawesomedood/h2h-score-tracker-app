@@ -31,8 +31,6 @@ export class MatchesService {
           playerId: player.id,
           side: 'B'
         }));
-
-        console.log('PREPARED SIDES',  [...preparedSideA, ...preparedSideB])
   
         const preparedMatchPlayersData = [...preparedSideA, ...preparedSideB].map(data => {
           return matchPlayersCollection.prepareCreate(mp => {
@@ -81,20 +79,20 @@ export class MatchesService {
       )
   }
 
-  static async test(id: string) {
+  static async nuke(id: string) {
     const a = database.collections.get<MatchPlayerModel>('match_players').query();
     // const b = database.collections.get<MatchModel>('matches').find(id);
 
-    const b = await database.collections.get<MatchModel>('matches').query().fetch();
+    const b = database.collections.get<MatchModel>('matches').query();
     const c = await a.fetch();
 
-    console.log(b);
-    console.log(c);
+    // console.log(b);
+    // console.log(c);
 
-    // await database.write(async() => {
-    //   (await b).destroyPermanently();
-    //   await a.destroyAllPermanently();
-    // })
+    await database.write(async() => {
+      await b.destroyAllPermanently();
+      await a.destroyAllPermanently();
+    })
   }
 
   private static async toMatch(match: MatchModel) {

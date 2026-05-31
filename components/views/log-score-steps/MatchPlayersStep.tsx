@@ -10,7 +10,6 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import Button from "@/components/_ui/button/Button";
 import DashedIconButton from "@/components/_ui/button/DashedIconButton";
 import AddPlayerForm from "../forms/AddPlayerForm";
-import * as Crypto from "expo-crypto";
 import useProgressTracker from "@/hooks/v2/useProgressTracker";
 import { useLogScore } from "@/hooks/v2/useLogScore";
 import PlayerIconPair from "@/components/_ui/custom-components/PlayerIconPair";
@@ -19,6 +18,7 @@ import moment from "moment";
 import { Match } from "@/models/v2/data/Match";
 import DateHelper from "@/utils/v2/date-helper.util";
 import { useShallow } from "zustand/react/shallow";
+import Badge from "@/components/_ui/badge/Badge";
 
 interface IPlayerSelectorProps {
   player: Player,
@@ -64,6 +64,17 @@ export default function MatchPlayersStep() {
   
   const muted = useThemeColor('muted');
 
+  const handleExpandQuickAdd = () => setIsQuickAddExpanded(true);
+
+  const handleQuickAddPlayer = async (player: Player) => {
+    const playerId = await addPlayer(player);
+
+    if (playerId && playerId.trim()) {
+      setNewPlayerIds((prev) => [playerId, ...prev]);
+      handleSelectPlayer({ ...player, id: playerId });
+    }
+  }
+
   const handleSelectPlayer = (player: Player) => {
     if (recentMatchSelection) {
       setSideA([player]);
@@ -101,14 +112,6 @@ export default function MatchPlayersStep() {
     setRecentMatchSelection(match);
     setSideA(match.sideA);
     setSideB(match.sideB);
-  }
-
-  const handleExpandQuickAdd = () => setIsQuickAddExpanded(true);
-
-  const handleQuickAddPlayer = (player: Player) => {
-    addPlayer(player);
-    setNewPlayerIds((prev) => [player.id, ...prev]);
-    handleSelectPlayer(player);
   }
 
   const orderedPlayers = useMemo(() => {
@@ -193,7 +196,9 @@ function PlayerSelector(props: IPlayerSelectorProps) {
           <ThemedText weight="bold">{props.player.firstName}</ThemedText>
           {
             props.isNewPlayer &&
-            <ThemedText style={{ color: 'green', fontSize: 12 }}>(New)</ThemedText>
+            <Badge
+              text="New"
+            />
           }
         </View>
       )}
@@ -208,7 +213,7 @@ function QuickAddPlayerSection(props: IQuickAddSectionProps) {
   const primary = useThemeColor('primary');
 
   const handleAddPlayer = () => {
-    props.addPlayer({ ...(formRef.current as any)?.getFormData(), id: Crypto.randomUUID() });
+    props.addPlayer({ ...(formRef.current as any)?.getFormData() });
     (formRef.current as any)?.resetForm();
   }
 

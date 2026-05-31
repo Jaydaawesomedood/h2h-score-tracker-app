@@ -7,5 +7,6 @@ export const PlayerSchema = tableSchema({
     { name: 'last_name', type: 'string' },
     { name: 'color', type: 'string' },
     { name: 'is_me', type: 'boolean' },
+    { name: 'created_at', type: 'number' }
   ],
 });

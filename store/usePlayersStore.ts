@@ -8,7 +8,7 @@ interface PlayersStore {
   _dbSubscription: Subscription | null,
   initPlayerListener: () => void,
   terminatePlayerListener: () => void,
-  addPlayer: (player: Player) => Promise<void>,
+  addPlayer: (player: Player) => Promise<string | undefined>,
   removePlayer: (id: string) => Promise<boolean>,
   updatePlayer: (player: Player) => Promise<void>,
 }
@@ -43,10 +43,12 @@ export const usePlayersStore = create<PlayersStore>((set, get) => ({
 
   addPlayer: async (player: Player) => {
     try {
-      await PlayersService.AddPlayer({ ...player, isMe: get().players.length === 0 });
+      const newPlayer = await PlayersService.AddPlayer({ ...player, isMe: get().players.length === 0 });
+      return newPlayer.id;
     }
     catch (err: any) {
       console.error('Something went wrong.', err);
+      return undefined;
     }
   },
 

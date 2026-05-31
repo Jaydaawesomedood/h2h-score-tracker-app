@@ -25,7 +25,10 @@ export class PlayersService {
     // TODO - move this to model instead
     return database.collections
       .get<PlayerModel>('players')
-      .query(Q.experimentalJoinTables(['match_players']))
+      .query(
+        Q.experimentalJoinTables(['match_players']),
+        Q.sortBy('created_at', Q.asc)
+      )
       .observeWithColumns(['first_name', 'last_name', 'color'])
       .pipe(
         map(players => players.map(p => this.toPlayer(p)))
@@ -62,6 +65,7 @@ export class PlayersService {
       lastName: player.lastName,
       color: player.color,
       isMe: player.isMe,
+      createdAt: player.createdAt,
     } as Player;
   }
 }

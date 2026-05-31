@@ -124,7 +124,7 @@ export default function RootLayout() {
       initPlayerListener();
       initMatchListener();
 
-      // await MatchesService.test('0xpgxOvWFOvbwwG5');
+      // await MatchesService.nuke('8Rm609vQXYUkZC8Q');
 
       getInitState().then(() => {
         setSetupCompleted(true);

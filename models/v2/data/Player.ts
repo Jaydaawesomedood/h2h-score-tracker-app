@@ -4,4 +4,5 @@ export type Player = {
   lastName: string,
   color: string,
   isMe?: boolean,
+  createdAt: number,
 }

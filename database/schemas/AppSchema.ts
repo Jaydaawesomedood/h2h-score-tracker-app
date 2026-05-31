@@ -4,7 +4,7 @@ import { MatchSchema } from "./MatchSchema";
 import { MatchPlayerSchema } from "./MatchPlayerSchema";
 
 export default appSchema({
-  version: 1,
+  version: 2,
   tables: [
     PlayerSchema,
     MatchSchema,
