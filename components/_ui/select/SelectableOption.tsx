@@ -6,6 +6,7 @@ import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-
 type SelectableOptionProps = PropsWithChildren & {
   selected: boolean,
   onPress: () => void,
+  disabled?: boolean,
   renderLeftSegment?: () => ReactNode,
   renderContent?: () => ReactNode,
   containerStyle?: StyleProp<ViewStyle>,
@@ -13,7 +14,7 @@ type SelectableOptionProps = PropsWithChildren & {
 };
 
 export default function SelectableOption({ children, ...props }: SelectableOptionProps) {
-  const primary = useThemeColor('primary');
+  const primary = props.disabled ? useThemeColor('primaryDisabled') : useThemeColor('primary');
   const secondary = useThemeColor('secondary');
   const background = useThemeColor('card');
   const unselected = useThemeColor('border');
@@ -22,6 +23,7 @@ export default function SelectableOption({ children, ...props }: SelectableOptio
     <TouchableOpacity
       activeOpacity={0.6}
       onPress={props.onPress}
+      disabled={props.disabled}
       style={[
         styles.card,
         props.containerStyle,

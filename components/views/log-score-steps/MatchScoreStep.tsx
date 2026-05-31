@@ -6,7 +6,7 @@ import { Styles } from "@/constants/v2/Styles";
 import { useLogScore } from "@/hooks/v2/useLogScore";
 import useProgressTracker from "@/hooks/v2/useProgressTracker";
 import useThemeColor from "@/hooks/v2/useThemeColor";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 interface ISetCardProps {

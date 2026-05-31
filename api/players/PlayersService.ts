@@ -41,8 +41,7 @@ export class PlayersService {
       const player = await database.collections.get<PlayerModel>('players').find(updatedPlayer.id);
       await player.updateProfile(updatedPlayer);
     }
-    catch(err: any)
-    {
+    catch(err: any) {
       console.error(err);
     }
   }

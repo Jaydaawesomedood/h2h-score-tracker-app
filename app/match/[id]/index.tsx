@@ -9,7 +9,7 @@ import { Styles } from "@/constants/v2/Styles";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { useMatchesStore } from "@/store/useMatchesStore";
 import { FontAwesome } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
+import { Href, router, useLocalSearchParams } from "expo-router";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 
@@ -40,7 +40,7 @@ export default function MatchProfileScreen() {
               renderActionButton={() => (
                 <Button
                   text="Edit"
-                  onPress={() => { }}
+                  onPress={() => router.navigate(`/match/${id}/edit` as Href)}
                   weight="bold"
                   textStyle={{ fontSize: 18, color: primary }}
                 />

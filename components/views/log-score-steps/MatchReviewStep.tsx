@@ -11,7 +11,7 @@ import { View, ScrollView, StyleSheet } from "react-native";
 
 export default function MatchReviewStep() {
   const { type, date, sets, sideA, sideB } = useLogScore();
-  const { current } = useProgressTracker();
+  const { current, totalSteps } = useProgressTracker();
 
   const muted = useThemeColor("muted");
   const primary = useThemeColor("primary");
@@ -19,7 +19,7 @@ export default function MatchReviewStep() {
   const border = useThemeColor("border");
 
   const renderPlayerIcon = (side: Player[]) => {
-    if (current !== 3) return undefined;
+    if (current < totalSteps - 1) return undefined;
 
     if (type === 'singles') {
       return <PlayerIcon player={side[0]} size={48} />;

@@ -9,16 +9,21 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { ComponentProps, useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 
+interface IMatchOverviewProps {
+  isEditMode?: boolean,
+}
+
 interface IMatchTypeCardProps {
   icon: ComponentProps<typeof FontAwesome6>['name'],
   title: string,
   description: string,
   value: 'singles' | 'doubles',
   type?: 'singles' | 'doubles',
+  disabled?: boolean,
   setType: React.Dispatch<React.SetStateAction<'singles' | 'doubles' | undefined>>,
 }
 
-export default function MatchOverviewStep() {
+export default function MatchOverviewStep(props: IMatchOverviewProps) {
   const { date, setDate, type, setType, setSideA, setSideB } = useLogScore();
   const { current, checkIsNextDisabled } = useProgressTracker();
   const [isDatePickerVisible, setIsDatePickerVisible] = useState<boolean>(false);
@@ -26,9 +31,11 @@ export default function MatchOverviewStep() {
   
   // Reset selected players when match type changes
   useEffect(() => {
-    if (current !== 0) return;
-    setSideA([]);
-    setSideB([]);
+    if (!type || current !== 0) return;
+    if (!props.isEditMode) {
+      setSideA([]);
+      setSideB([]);
+    }
   }, [type]);
 
   useEffect(() => {
@@ -50,6 +57,7 @@ export default function MatchOverviewStep() {
             value="singles"
             type={type}
             setType={setType}
+            disabled={props.isEditMode}
           />
           <MatchTypeCard
             icon='user-group'
@@ -58,6 +66,7 @@ export default function MatchOverviewStep() {
             value="doubles"
             type={type}
             setType={setType}
+            disabled={props.isEditMode}
           />
         </View>
         <View>
@@ -83,6 +92,7 @@ function MatchTypeCard(props: IMatchTypeCardProps) {
   return (
     <SelectableOption
       selected={props.type === props.value}
+      disabled={props.disabled}
       onPress={() => props.setType(props.value)}
       renderLeftSegment={() => (<FontAwesome6 name={props.icon} color={color} size={20} />)}
       renderContent={() => (

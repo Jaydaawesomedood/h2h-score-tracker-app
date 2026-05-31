@@ -64,7 +64,7 @@ export class MatchesService {
         Q.experimentalJoinTables(['match_players']),
         Q.sortBy('created_at', Q.desc)
       )
-      .observe();
+      .observeWithColumns(['date', 'sets', 'winner']);
 
     const players$ = database.withChangesForTables(['players']).pipe(startWith(null));
 
@@ -80,6 +80,38 @@ export class MatchesService {
           }
         })
       )
+  }
+
+  static async UpdateMatch(match: Match) {
+    try {
+      const updatedMatch = await database.collections.get<MatchModel>('matches').find(match.id);
+      await updatedMatch.updateDetails(match);
+    }
+    catch(err: any) {
+      console.error(err);
+    }
+  }
+
+  static async DeleteMatch(id: string) {
+    try {
+      const match = await database.collections.get<MatchModel>('matches').find(id);
+
+      // TODO - can move this into common code
+      const matchPlayerEntries = database.collections
+        .get<MatchPlayerModel>('match_players')
+        .query(Q.where('match_id', id));
+
+      await database.write(async () => {
+        await matchPlayerEntries.destroyAllPermanently();
+      })
+
+      await match.delete();
+      return true;
+    }
+    catch(err: any) {
+      console.error('Something went wrong.', err);
+      return false;
+    }
   }
 
   static async DeleteMatchesByPlayer(playerId: string) {

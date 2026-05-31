@@ -3,6 +3,7 @@ import { ReactNode, useState } from "react";
 
 export default function ProgressTrackerProvider({ children }: { children: ReactNode | undefined }) {
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [totalSteps, setTotalSteps] = useState<number>(0);
   const [isNextDisabled, setIsNextDisabled] = useState<boolean>(false);
   const onNext = () => setCurrentStep(currentStep + 1);
   const onPrevious = () => setCurrentStep(currentStep - 1);
@@ -27,7 +28,7 @@ export default function ProgressTrackerProvider({ children }: { children: ReactN
   }
 
   return (
-    <ProgressTrackerContext.Provider value={{ current: currentStep, onNext, onPrevious, isNextDisabled, checkIsNextDisabled }}>
+    <ProgressTrackerContext.Provider value={{ current: currentStep, onNext, onPrevious, isNextDisabled, checkIsNextDisabled, totalSteps, setTotalSteps }}>
       {children}
     </ProgressTrackerContext.Provider>
   );

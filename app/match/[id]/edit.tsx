@@ -1,168 +1,138 @@
+import ProgressTracker from "@/components/_ui/progress-tracker/ProgressTracker";
+import ThemedText from "@/components/_ui/ThemedText";
+import ThemedView from "@/components/_ui/ThemedView";
+import ScreenHeader from "@/components/views/headers/ScreenHeader";
+import MatchOverviewStep from "@/components/views/log-score-steps/MatchOverviewStep";
+import MatchReviewStep from "@/components/views/log-score-steps/MatchReviewStep";
+import MatchScoreStep from "@/components/views/log-score-steps/MatchScoreStep";
+import { Styles } from "@/constants/v2/Styles";
+import { useLogScore } from "@/hooks/v2/useLogScore";
+import useThemeColor from "@/hooks/v2/useThemeColor";
+import ProgressTrackerProvider from "@/providers/ProgressTrackerProvider";
+import LogScoreProvider from '@/providers/LogScoreProvider';
+import { useMatchesStore } from "@/store/useMatchesStore";
 import { router, useLocalSearchParams } from "expo-router";
-import moment from "moment";
-import { useContext, useState } from "react";
-import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
-
-import ThemedView from "@/components/ThemedView";
-import MatchDetailsForm from "@/components/forms/match/MatchDetailsForm";
-import MatchScoreForm from "@/components/forms/match/MatchScoreForm";
-import { ProgressStepper } from "@/components/progress-bar/ProgressStepper";
-import ScreenTitleWithBack from "@/components/screens/ScreenTitleWithBack";
-
-import { ToastMessages } from "@/constants/messages/Toast";
-import { Containers } from "@/constants/styles/Containers";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { Match } from "@/models/Match";
-import { Player, Team } from "@/models/Player";
-import { DbContext, EditMatchContext, useDataStore, useProfileStore } from "@/utils/context";
-import { showErrorToast, showMessageToast } from "@/utils/toast.util";
-import * as DbClient from "@/utils/database/database";
-import { GetAllMatchesV2, GetMatch } from "@/utils/repositories/MatchRepository";
+import { useEffect, useRef, useState } from "react";
+import { View } from "react-native";
+import { useShallow } from "zustand/react/shallow";
+import { MatchesService } from "@/api/MatchesService/MatchesService";
+import { ScoreHelper } from "@/utils/v2/score-helper.util";
+import Button from "@/components/_ui/button/Button";
+import PopupModal from "@/components/_ui/modal/PopupModal";
 
 export default function EditMatchScreen() {
-  // Context
-  const db = useContext(DbContext);
-  // TODO - Change to profile state, refer to edit player
+  const deleteColor = useThemeColor('red');
   const { id } = useLocalSearchParams();
-  const { profile, clearProfile } = useProfileStore();
-  const { setSinglesMatches, setDoublesMatches } = useDataStore();
 
-  // Colors
-  const deleteBtnColor = useThemeColor("deleteIcon");
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
+  const removeMatch = useMatchesStore(state => state.removeMatch);
 
-  // useState
-  const [currentStep, setCurrentStep] = useState<number>(0);
-
-  const [match, setMatch] = useState<Match>();
-  const [isMatchSettingDropdownOpen, setIsMatchSettingDropdownOpen] = useState<boolean>(false);
-  
-  const [matchSetting, setMatchSetting] = useState<string>(profile.match.mode);
-  const [matchDate, setMatchDate] = useState(moment(profile.match.datetime, "DD MMM YYYY").format("YYYY-MM-DD").toString());
-  const [matchScore, setMatchScore] = useState<Number[][]>([...profile.match.score]);
-
-  const onPrevious = () => { setCurrentStep(currentStep === 0 ? 0 : currentStep - 1); };
-  const onNext = () => { setCurrentStep(currentStep + 1); };
-
-  const onComplete = async () => {
-    if (db) {
-      await DbClient.UpdateMatch(
-        db, 
-        [matchSetting.toLowerCase(), moment(matchDate).format("DD-MM-YYYY").toString(), matchScore.map((set: Number[]) => set.join("-")).join(",")],
-        id as string,
-        (profile.match.category as string).toLowerCase().endsWith("d") ? "doubles" : "singles")
-      .then(async () => {
-        showMessageToast(ToastMessages.EditMatchSuccess);
-
-        // After updating match details, update store
-        await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
-
-        router.back();
-      })
-      .catch(() => showErrorToast());
-    }
-    else {
-      showErrorToast();
-    }
-  };
-
-  const onDelete = async () => {
-    if (db) {
-      await DbClient.DeleteMatch(db, id as string, getCategory())
-      .then(async () => {
-        showMessageToast(ToastMessages.DeleteMatchSuccess);
-        clearProfile();
-
-        // After updating match details, update store
-        await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
-
-        router.replace("/");
-      })
-      .catch(() => showErrorToast());
-    }
-    else {
-      showErrorToast();
-    }
-  };
-
-  const hideKeyboard = () => { Keyboard.dismiss(); };
-  const closeDropdown = () => { setIsMatchSettingDropdownOpen(false); };
-
-  const renderDetailsForm = () => (
-    <TouchableWithoutFeedback onPress={closeDropdown}>
-      <View style={{ flexGrow: 1, paddingVertical: 32 }}>
-        <MatchDetailsForm
-          isDropdownOpen={isMatchSettingDropdownOpen}
-          setIsDropdownOpen={setIsMatchSettingDropdownOpen}
-          onDropdownPress={hideKeyboard}
-          isEditingMatch={true}
-        />
-      </View>
-    </TouchableWithoutFeedback>
+  const match = useMatchesStore(
+    useShallow(state => state.matches.find(m => m.id === id))
   );
 
-  const renderScoreForm = () => (
-    <View style={{ flexGrow: 1, paddingVertical: 32 }}>
-      <MatchScoreForm isEditingMatch={true} />
-    </View>
-  );
+  const handleDelete = async () => {
+    const success = await removeMatch(id as string);
 
-  const getMatch = async () => {
-    if (db) await GetMatch(db, getCategory(), id as string, setMatch, showErrorToast);
-    else showErrorToast();
-  };
-
-  const getCategory = () => {
-    return (profile.match.category as string).endsWith("d") ? "doubles" : "singles";
-  };
-  
-  // useEffect(() => {
-  //   getMatch();
-  // }, []);
-
-  // TODO - Revisit context & this section
-  // useEffect(() => {
-  //   if (match) {
-  //     setMatchSetting(profile.match.mode.toLowerCase());
-  //     setMatchDate(moment(profile.match.datetime, "DD MMM YYYY").format("YYYY-MM-DD").toString());
-  //     setMatchScore([...profile.match.score]);
-  //   }
-  // }, [match]);
+    if (success) {
+      setIsDeleteModalVisible(false);
+      router.dismissTo('/(tabs)/history');
+    }
+  }
 
   return (
-    <EditMatchContext.Provider value={{
-      setting: matchSetting,
-      date: matchDate,
-      score: matchScore,
-      category: profile.match.category.toLowerCase().endsWith("d") ? "doubles" : "singles",
-      teams: profile.match.category.toLowerCase().endsWith("d") ? profile.match.teams as Team[] : profile.match.teams as Player[],
-      setSetting: setMatchSetting,
-      setDate: setMatchDate,
-      setScore: setMatchScore,
-    }}>
-      <ThemedView style={[Containers.screen, { paddingHorizontal: 0 }]}>
-        <ScreenTitleWithBack
-          title="Edit Match"
-          actionBtn={{
-            title: "",
-            icon: "trash",
-            onPress: onDelete,
-            customColor: deleteBtnColor
-          }}
-          style={{ paddingHorizontal: 32 }}
+    <ThemedView style={[Styles.SCREEN_BODY, { rowGap: 24, paddingHorizontal: 0 }]}>
+      <View style={{ paddingHorizontal: 24 }}>
+        <ScreenHeader
+          renderActionButton={() => (
+            <Button
+              text=""
+              onPress={() => setIsDeleteModalVisible(true)}
+              type="secondary"
+              icon="trash"
+              iconPlacement="left"
+              buttonStyle={{ columnGap: 8, paddingHorizontal: 4 }}
+              textStyle={{ color: deleteColor, fontSize: 18 }}
+            />
+          )}
         />
-        <View style={{ flex: 1 }}>
-          <ProgressStepper
-            currentStep={currentStep}
-            data={[
-              { label: "Match", screen: renderDetailsForm() },
-              { label: "Score", screen: renderScoreForm() },
-            ]}
-            onNext={onNext}
-            onPrevious={onPrevious}
-            onComplete={onComplete}
-          />
-        </View>
-      </ThemedView>
-    </EditMatchContext.Provider>
-  )
-};
+        <ThemedText weight="bold" style={{ fontSize: 32 }}>Edit Match</ThemedText>
+      </View>
+      <LogScoreProvider>
+        <EditMatchContent match={match} />
+      </LogScoreProvider>
+
+      <PopupModal
+        visible={isDeleteModalVisible}
+        onClose={() => setIsDeleteModalVisible(false)}
+      >
+        <PopupModal.Body>
+          <View style={{ rowGap: 8 }}>
+            <ThemedText style={{ fontSize: 18 }}>Are you sure you want to delete this player?</ThemedText>
+            <ThemedText weight="light">All matches involving this player will be deleted!</ThemedText>
+          </View>
+        </PopupModal.Body>
+        <PopupModal.Footer>
+          <View style={[Styles.FLEX_HORIZONTAL_SIDE]}>
+            <Button
+              type="secondary"
+              text="Cancel"
+              onPress={() => setIsDeleteModalVisible(false)}
+              buttonStyle={{ flex: 1, justifyContent: 'center' }}
+            />
+            <Button
+              type="primary"
+              text="Yes, delete"
+              onPress={handleDelete}
+              buttonStyle={{ flex: 1, backgroundColor: deleteColor }}
+              weight="bold"
+            />
+          </View>
+        </PopupModal.Footer>
+      </PopupModal>
+    </ThemedView>
+  );
+}
+
+function EditMatchContent({ match }: { match: any }) {
+  const { date, sets, setType, setDate, setSideA, setSideB, setSets } = useLogScore();
+  const matchInit = useRef<boolean>(false);
+
+  const handleSaveChanges = async () => {
+    await MatchesService.UpdateMatch({
+      ...match,
+      date,
+      sets,
+      winner: ScoreHelper.calculateWinner(sets),
+    });
+    router.back();
+  }
+
+  useEffect(() => {
+    if (!match || matchInit.current) return;
+    setType(match.type);
+    setDate(match.date);
+    setSideA(match.sideA);
+    setSideB(match.sideB);
+    setSets(match.sets);
+    matchInit.current = true;
+  }, [match]);
+
+  return (
+    <ProgressTrackerProvider>
+      <ProgressTracker
+        steps={3}
+        screens={[
+          <MatchOverviewStep isEditMode />,
+          <MatchScoreStep />,
+          <MatchReviewStep />
+        ]}
+        onComplete={handleSaveChanges}
+        validationMap={{
+          0: { date },
+          1: { sets }
+        }}
+      />
+    </ProgressTrackerProvider>
+  );
+}

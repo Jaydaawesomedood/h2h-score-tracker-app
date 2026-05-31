@@ -1,9 +1,10 @@
 import { Q, Query } from "@nozbe/watermelondb";
-import { children, date, field, lazy, readonly } from "@nozbe/watermelondb/decorators";
+import { children, date, field, lazy, readonly, writer } from "@nozbe/watermelondb/decorators";
 import Model, { Associations } from "@nozbe/watermelondb/Model";
 import MatchPlayerModel from "./MatchPlayerModel";
 import PlayerModel from "./PlayerModel";
 import { Player } from "@/models/v2/data/Player";
+import { Match } from "@/models/v2/data/Match";
 
 export default class MatchModel extends Model {
   static table = 'matches';
@@ -43,6 +44,18 @@ export default class MatchModel extends Model {
 
   async fetchSideB(): Promise<Player[]> {
     return (await this.sideB.fetch()).map(p => this.toPlayer(p));
+  }
+
+  @writer async updateDetails(updatedMatch: Match) {
+    await this.update(m => {
+      m.date = updatedMatch.date,
+      m._sets = JSON.stringify(updatedMatch.sets),
+      m.winner = updatedMatch.winner
+    });
+  }
+
+  @writer async delete() {
+    await this.destroyPermanently();
   }
 
   private toPlayer(player: PlayerModel) {

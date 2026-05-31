@@ -20,19 +20,25 @@ export default function ScoreHeader({ match }: IScoreHeaderProps) {
         {
           match.sets.map((set, index) => (
             <View key={`${match.id}-set${index}`} style={[Styles.FLEX_HORIZONTAL_CENTER]}>
-              <ThemedText
-                weight="bold"
-                style={[styles.score, set[0] > set[1] && { color: primary }]}
-              >
-                {set[0]}
-              </ThemedText>
-              <ThemedText>-</ThemedText>
-              <ThemedText
-                weight="bold"
-                style={[styles.score, set[1] > set[0] && { color: primary }]}
-              >
-                {set[1]}
-              </ThemedText>
+              <View style={{ width: '35%', maxWidth: '35%' }}>
+                <ThemedText
+                  weight="bold"
+                  style={[styles.score, set[0] > set[1] && { color: primary }]}
+                >
+                  {set[0]}
+                </ThemedText>
+              </View>
+              <View>
+                <ThemedText>-</ThemedText>
+              </View>
+              <View style={{ width: '35%', maxWidth: '35%' }}>
+                <ThemedText
+                  weight="bold"
+                  style={[styles.score, set[1] > set[0] && { color: primary }]}
+                >
+                  {set[1]}
+                </ThemedText>
+              </View>
             </View>
           ))
         }
@@ -44,14 +50,14 @@ export default function ScoreHeader({ match }: IScoreHeaderProps) {
 
 function MatchHeaderPlayerSide({ side, isWinner }: { side: Player[], isWinner: boolean }) {
   return (
-    <View style={[Styles.FLEX_COLUMN, { rowGap: 16, paddingHorizontal: 24 }, !isWinner && { opacity: 0.6 }]}>
+    <View style={[Styles.FLEX_COLUMN, styles.side, !isWinner && { opacity: 0.6 }]}>
       {
         side.map(player => (
           <View key={player.id} style={[Styles.FLEX_COLUMN, { rowGap: 4, alignItems: 'center' }]}>
             <PlayerIcon player={player} size={48} />
-            <View style={{ rowGap: 2, alignItems: 'center' }}>
-              <ThemedText>{player.firstName}</ThemedText>
-              <ThemedText>{player.lastName}</ThemedText>
+            <View style={{ alignItems: 'center' }}>
+              <ThemedText style={{ textAlign: 'center' }}>{player.firstName}</ThemedText>
+              <ThemedText style={{ textAlign: 'center' }}>{player.lastName}</ThemedText>
             </View>
           </View>
         ))
@@ -64,5 +70,11 @@ const styles = StyleSheet.create({
   score: {
     padding: 4,
     fontSize: 24,
+    textAlign: 'center',
+  },
+  side: {
+    rowGap: 16,
+    width: '30%',
+    maxWidth: '30%',
   }
 });

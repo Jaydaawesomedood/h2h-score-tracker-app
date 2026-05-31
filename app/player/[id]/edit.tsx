@@ -81,7 +81,7 @@ export default function EditPlayerScreen() {
   }
 
   return (
-    <ThemedView style={[ Styles.SCREEN_BODY]}>
+    <ThemedView style={[Styles.SCREEN_BODY]}>
       <ScrollView contentContainerStyle={{ rowGap: 24 }}>
         <ScreenHeader
           renderActionButton={renderDeleteButton}

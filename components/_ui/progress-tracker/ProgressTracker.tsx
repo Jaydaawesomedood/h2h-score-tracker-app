@@ -14,7 +14,7 @@ interface IProgressTrackerProps {
 }
 
 export default function ProgressTracker(props: IProgressTrackerProps) {
-  const { current, onNext, onPrevious, isNextDisabled, checkIsNextDisabled } = useProgressTracker();
+  const { current, onNext, onPrevious, isNextDisabled, checkIsNextDisabled, setTotalSteps } = useProgressTracker();
   const progressTrackerListRef = useRef<FlatList<ReactElement>>(null);
 
   const primaryColor = useThemeColor('primary');
@@ -40,6 +40,10 @@ export default function ProgressTracker(props: IProgressTrackerProps) {
   const scrollTo = (index: number) => {
     progressTrackerListRef.current?.scrollToIndex({ index, animated: true });
   }
+
+  useEffect(() => {
+    setTotalSteps(props.screens.length);
+  }, []);
 
   useEffect(() => {
     if (!props.validationMap || !props.validationMap[current]) return;
