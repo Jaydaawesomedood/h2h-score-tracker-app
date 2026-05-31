@@ -21,7 +21,7 @@ export const THEMES: { light: Theme, dark: Theme } = {
     primaryDisabled: "#79a485",
     secondary: "#D88F18",
     background: "#0b0b0b",
-    card: "#151718",
+    card: "#212426",
     text: "#ffffff",
     textDisabled: "#bbbbbb",
     border: '#303032',

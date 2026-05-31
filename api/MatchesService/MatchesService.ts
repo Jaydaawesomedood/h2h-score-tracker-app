@@ -60,7 +60,10 @@ export class MatchesService {
     // TODO - grab n number of matches first (lazy loading)
     const matches$ = database.collections
       .get<MatchModel>('matches')
-      .query(Q.experimentalJoinTables(['match_players']))
+      .query(
+        Q.experimentalJoinTables(['match_players']),
+        Q.sortBy('created_at', Q.desc)
+      )
       .observe();
 
     const players$ = database.withChangesForTables(['players']).pipe(startWith(null));

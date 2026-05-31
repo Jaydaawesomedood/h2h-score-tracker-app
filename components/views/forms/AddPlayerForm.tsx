@@ -51,7 +51,11 @@ const PlayerForm = forwardRef((props: IAddPlayerFormProps, ref) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useImperativeHandle(ref, () => ({
-    getFormData: () => (state),
+    getFormData: () => ({
+      firstName: state.firstName.trim(),
+      lastName: state.lastName.trim(),
+      color: state.color.trim(),
+    }),
     validateForm: () => {
       setErrors({});
 
