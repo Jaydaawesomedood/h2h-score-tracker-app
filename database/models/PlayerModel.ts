@@ -1,7 +1,9 @@
 import { Player } from "@/models/v2/data/Player";
-import { Model } from "@nozbe/watermelondb";
+import { Model, Q } from "@nozbe/watermelondb";
 import { Associations } from "@nozbe/watermelondb/Model";
-import { date, field, readonly, writer } from "@nozbe/watermelondb/decorators";
+import { date, field, lazy, readonly, writer } from "@nozbe/watermelondb/decorators";
+import MatchModel from "./MatchModel";
+import { Match } from "@/models/v2/data/Match";
 
 export default class PlayerModel extends Model {
   static table = 'players';
@@ -25,5 +27,31 @@ export default class PlayerModel extends Model {
 
   @writer async delete() {
     await this.destroyPermanently();
+  }
+
+  @lazy matches = this.collections
+    .get<MatchModel>('matches')
+    .query(
+      Q.on('match_players', 'player_id', this.id)
+    );
+
+  async fetchMatches() {
+    return (await this.matches.fetch()).map(m => this.toMatch(m));
+  }
+
+  private async toMatch(match: MatchModel) {
+    const sideA = await match.fetchSideA();
+    const sideB = await match.fetchSideB();
+
+    return {
+      id: match.id,
+      type: match.type,
+      date: match.date,
+      winner: match.winner,
+      createdAt: match._createdAt.toString() ?? new Date().toISOString(),
+      sets: match.sets as number[][],
+      sideA,
+      sideB,
+    } as Match;
   }
 }

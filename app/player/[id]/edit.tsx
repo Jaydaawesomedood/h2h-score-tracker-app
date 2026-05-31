@@ -18,7 +18,7 @@ export default function EditPlayerScreen() {
 
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
 
-  const formRef = useRef<PlayerForm>(null);
+  const formRef = useRef(null);
 
   const player = usePlayersStore(
     useShallow(state => state.players.find(player => player.id === id))
@@ -28,9 +28,13 @@ export default function EditPlayerScreen() {
   const deletePlayer = usePlayersStore(state => state.removePlayer);
 
   const handleSaveChanges = () => {
-    if (!formRef.current || !player) return;
-    updatePlayer(((formRef.current as any).getFormData()) as Player);
-    router.back();
+    const form = formRef.current as any;
+    if (!form || !player) return;
+
+    if (form.validateForm()) {
+      updatePlayer(({ ...player, ...form.getFormData()}) as Player);
+      router.back();
+    }
   }
 
   const handleDelete = async () => {

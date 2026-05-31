@@ -3,6 +3,7 @@ import { database } from "../../database";
 import PlayerModel from "@/database/models/PlayerModel";
 import { map, Observable } from "@nozbe/watermelondb/utils/rx";
 import { Q } from "@nozbe/watermelondb";
+import { MatchesService } from "../MatchesService/MatchesService";
 
 export class PlayersService {
   static async AddPlayer(player: Player) {
@@ -48,6 +49,7 @@ export class PlayersService {
 
   static async DeletePlayer(id: string) {
     try {
+      await MatchesService.DeleteMatchesByPlayer(id);
       const player = await database.collections.get<PlayerModel>('players').find(id);
       await player.delete();
       return true;

@@ -1,9 +1,10 @@
 import TextInput from "@/components/_ui/input/TextInput";
+import useThemeColor from "@/hooks/v2/useThemeColor";
 import { Player } from "@/models/v2/data/Player";
-import { ActionDispatch, forwardRef, useEffect, useImperativeHandle, useReducer } from "react";
+import { ActionDispatch, forwardRef, useEffect, useImperativeHandle, useReducer, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-type PlayerForm = Omit<Player, 'id'>;
+type PlayerFormValues = Omit<Player, 'id' | 'createdAt'>;
 
 interface IAddPlayerFormProps {
   player?: Player,
@@ -24,24 +25,55 @@ const colors = [
   '#97633d',
 ];
 
-function addPlayerReducer(state: PlayerForm, action: { fieldName: string, value: string }) {
+function addPlayerReducer(state: PlayerFormValues, action: { fieldName: string, value: string }) {
   return {
     ...state,
     [action.fieldName]: action.value,
   };
 }
 
-const initialFormState: PlayerForm = { firstName: '', lastName: '', color: colors[0] };
+const initialFormState: PlayerFormValues = { firstName: '', lastName: '', color: colors[0] };
 
 function initializeForm(player: Player | undefined) {
-  return player ?? initialFormState;
+  if (!player) return initialFormState;
+
+  return {
+    color: player?.color,
+    firstName: player?.firstName,
+    lastName: player?.lastName
+  } as PlayerFormValues;
 }
 
 const PlayerForm = forwardRef((props: IAddPlayerFormProps, ref) => {
+  const errorColor = useThemeColor('red');
+
   const [state, dispatch] = useReducer(addPlayerReducer, props.player, initializeForm);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useImperativeHandle(ref, () => ({
     getFormData: () => (state),
+    validateForm: () => {
+      setErrors({});
+
+      const errorMap: { [key: string]: string } = {
+        "firstName": "Please enter first name.",
+        "lastName": "Please enter last name.",
+        "color": "Please select a color.",
+      };
+
+      let error: { [key: string]: string } = {};
+
+      for (const key of Object.keys(state)) {
+        if (!(state as any)[key] || !(state as any)[key]?.trim()) {
+          error = { ...error, [key]: errorMap[key] ?? '' };
+        }
+      }
+      
+      setErrors(_ => error);
+
+      if (error && Object.keys(error).length > 0) return false;
+      return true;
+    },
     resetForm: () => {
       dispatch({ fieldName: "firstName", value: "" });
       dispatch({ fieldName: "lastName", value: "" });
@@ -69,6 +101,11 @@ const PlayerForm = forwardRef((props: IAddPlayerFormProps, ref) => {
             value={state.firstName}
             onChangeText={(text) => handleFormFieldChange("firstName", text)}
           />
+          {
+            errors?.["firstName"] && (
+              <TextInput.Message style={{ color: errorColor, fontSize: 12 }}>{errors['firstName']}</TextInput.Message>
+            )
+          }
         </TextInput>
       </View>
       <View style={{ rowGap: 8 }}>
@@ -78,6 +115,11 @@ const PlayerForm = forwardRef((props: IAddPlayerFormProps, ref) => {
             value={state.lastName}
             onChangeText={(text) => handleFormFieldChange("lastName", text)}
           />
+          {
+            errors?.["lastName"] && (
+              <TextInput.Message style={{ color: errorColor, fontSize: 12 }}>{errors['lastName']}</TextInput.Message>
+            )
+          }
         </TextInput>
       </View>
     </View>

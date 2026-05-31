@@ -1,7 +1,7 @@
-import ThemedText from "@/components/ThemedText";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 import { Fragment, PropsWithChildren } from "react";
 import { TextInput as RNTextInput, StyleSheet, TextInputProps, TextProps } from "react-native";
+import ThemedText from "../ThemedText";
 
 type ITextInputProps = TextInputProps & {};
 
@@ -31,8 +31,15 @@ function TextInputControl(props: ITextInputProps) {
   );
 }
 
+function TextInputMessage(props: TextProps) {
+  return (
+    <ThemedText weight="light" {...props}>{props.children}</ThemedText>
+  );
+}
+
 TextInput.Label = TextInputLabel;
 TextInput.Control = TextInputControl;
+TextInput.Message = TextInputMessage;
 
 const styles = StyleSheet.create({
   container: {

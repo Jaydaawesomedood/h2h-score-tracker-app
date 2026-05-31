@@ -1,10 +1,10 @@
 import { database } from "@/database";
 import MatchModel from "@/database/models/MatchModel";
 import MatchPlayerModel from "@/database/models/MatchPlayerModel";
+import PlayerModel from "@/database/models/PlayerModel";
 import { Match } from "@/models/v2/data/Match";
-import { Player } from "@/models/v2/data/Player";
 import { Q } from "@nozbe/watermelondb";
-import { map, Observable, startWith, switchMap } from "@nozbe/watermelondb/utils/rx";
+import { Observable, startWith, switchMap } from "@nozbe/watermelondb/utils/rx";
 import { combineLatest } from "rxjs";
 
 export class MatchesService {
@@ -79,20 +79,36 @@ export class MatchesService {
       )
   }
 
+  static async DeleteMatchesByPlayer(playerId: string) {
+    const player = await database.collections.get<PlayerModel>('players').find(playerId);
+    const matchesId = (await player.matches).map(m => m.id);
+
+    // TODO - it would be better to move this into PlayerModel
+    const matchPlayerEntries = database.collections
+      .get<MatchPlayerModel>('match_players')
+      .query(Q.where('match_id', Q.oneOf(matchesId)));
+
+    await database.write(async () => {
+      await player.matches.destroyAllPermanently();
+      await matchPlayerEntries.destroyAllPermanently();
+    })
+  }
+
   static async nuke(id: string) {
     const a = database.collections.get<MatchPlayerModel>('match_players').query();
+    const b = database.collections.get<MatchModel>('matches').query();
     // const b = database.collections.get<MatchModel>('matches').find(id);
 
-    const b = database.collections.get<MatchModel>('matches').query();
-    const c = await a.fetch();
+    const matchplayers = await a.fetch();
+    const matches = await b.fetch();
 
-    // console.log(b);
-    // console.log(c);
+    console.log(matches);
+    console.log(matchplayers);
 
-    await database.write(async() => {
-      await b.destroyAllPermanently();
-      await a.destroyAllPermanently();
-    })
+    // await database.write(async() => {
+    //   await b.destroyAllPermanently();
+    //   await a.destroyAllPermanently();
+    // })
   }
 
   private static async toMatch(match: MatchModel) {

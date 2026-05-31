@@ -9,7 +9,7 @@ import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Button from "@/components/_ui/button/Button";
 import DashedIconButton from "@/components/_ui/button/DashedIconButton";
-import AddPlayerForm from "../forms/AddPlayerForm";
+import PlayerForm from "../forms/AddPlayerForm";
 import useProgressTracker from "@/hooks/v2/useProgressTracker";
 import { useLogScore } from "@/hooks/v2/useLogScore";
 import PlayerIconPair from "@/components/_ui/custom-components/PlayerIconPair";
@@ -213,14 +213,18 @@ function QuickAddPlayerSection(props: IQuickAddSectionProps) {
   const primary = useThemeColor('primary');
 
   const handleAddPlayer = () => {
-    props.addPlayer({ ...(formRef.current as any)?.getFormData() });
-    (formRef.current as any)?.resetForm();
+    const form = formRef.current as any;
+
+    if (form && form.validateForm()) {
+      props.addPlayer({ ...form.getFormData() });
+      form.resetForm();
+    }
   }
 
   return (
     <View style={{ rowGap: 16, padding: 16, borderWidth: 4, borderColor: primary, borderRadius: 16 }}>
       <ThemedText style={{ color: primary, fontSize: 16 }} weight="bold">New Player</ThemedText>
-      <AddPlayerForm ref={formRef} />
+      <PlayerForm ref={formRef} />
       <View style={[Styles.FLEX_HORIZONTAL_SIDE]}>
         <Button
           type="secondary"
