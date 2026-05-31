@@ -1,4 +1,5 @@
 import Button from "@/components/_ui/button/Button";
+import PopupModal from "@/components/_ui/modal/PopupModal";
 import ThemedText from "@/components/_ui/ThemedText";
 import ThemedView from "@/components/_ui/ThemedView";
 import PlayerForm from "@/components/views/forms/AddPlayerForm";
@@ -9,7 +10,7 @@ import { Player } from "@/models/v2/data/Player";
 import { usePlayersStore } from "@/store/usePlayersStore";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 
 export default function EditPlayerScreen() {
@@ -17,6 +18,7 @@ export default function EditPlayerScreen() {
   const { id } = useLocalSearchParams();
 
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
 
   const formRef = useRef(null);
 
@@ -41,6 +43,7 @@ export default function EditPlayerScreen() {
     const success = await deletePlayer(id as string);
 
     if (success) {
+      setIsDeleteModalVisible(false);
       router.dismissTo('/(tabs)/players');
     }
   }
@@ -51,7 +54,7 @@ export default function EditPlayerScreen() {
     return (
       <Button
         text=""
-        onPress={handleDelete}
+        onPress={() => setIsDeleteModalVisible(true)}
         type="secondary"
         icon="trash"
         iconPlacement="left"
@@ -98,147 +101,35 @@ export default function EditPlayerScreen() {
           disabled={isSaveDisabled}
         />
       </ScrollView>
+
+      <PopupModal
+        visible={isDeleteModalVisible}
+        onClose={() => setIsDeleteModalVisible(false)}
+      >
+        <PopupModal.Body>
+          <View style={{ rowGap: 8 }}>
+            <ThemedText style={{ fontSize: 18 }}>Are you sure you want to delete this player?</ThemedText>
+            <ThemedText weight="light">All matches involving this player will be deleted!</ThemedText>
+          </View>
+        </PopupModal.Body>
+        <PopupModal.Footer>
+          <View style={[Styles.FLEX_HORIZONTAL_SIDE]}>
+            <Button
+              type="secondary"
+              text="Cancel"
+              onPress={() => setIsDeleteModalVisible(false)}
+              buttonStyle={{ flex: 1, justifyContent: 'center' }}
+            />
+            <Button
+              type="primary"
+              text="Yes, delete"
+              onPress={handleDelete}
+              buttonStyle={{ flex: 1, backgroundColor: deleteColor }}
+              weight="bold"
+            />
+          </View>
+        </PopupModal.Footer>
+      </PopupModal>
     </ThemedView>
   );
 }
-
-// export default function EditPlayerModal() {
-//   // Context
-//   const db = useContext(DbContext);
-//   const { profile, setProfile, clearProfile } = useProfileStore();
-//   const { setPlayers, setTeams, setSinglesMatches, setDoublesMatches } = useDataStore();
-  
-//   // Colors
-//   const deleteBtnColor = useThemeColor("deleteIcon");
-
-//   let { id } = useLocalSearchParams();
-
-//   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-//   const [originalFirstName, setOriginalFirstName] = useState<string>(String(profile.player.firstName));
-//   const [originalLastName, setOriginalLastName] = useState<string>(String(profile.player.lastName));
-//   const [originalLastNameFirst, setOriginalLastNameFirst] = useState<boolean>(Number(profile.player.lastNameFirst) === 1);
-//   const [originalGender, setOriginalGender] = useState<string>(String(profile.player.gender));
-  
-//   const [editFirstName, setEditFirstName] = useState<string>(originalFirstName);
-//   const [editLastName, setEditLastName] = useState<string>(String(originalLastName));
-//   const [editLastNameFirst, setEditLastNameFirst] = useState<boolean>(originalLastNameFirst);
-//   const [editGender, setEditGender] = useState<string>(originalGender);
-
-//   const [editDisabled, setEditDisabled] = useState<boolean>(true);
-
-//   const onCloseScreen = () => { router.back(); };
-
-//   const onUpdate = async () => {
-//     if (db) {
-//       try {
-//         await UpdatePlayer(db, [editFirstName.trim(), editLastName.trim(), editLastNameFirst ? 1 : 0, editGender, String(id)]);
-//         showMessageToast(ToastMessages.EditPlayerSuccess);
-//         setProfile({
-//           ...profile,
-//           player: {
-//             firstName: editFirstName,
-//             lastName: editLastName,
-//             lastNameFirst: editLastNameFirst,
-//             gender: editGender
-//           }
-//         });
-//         setOriginalData();
-
-//         // After updating player data in DB, call GetAllPlayers & GetAllTeams to update the store
-//         await GetAllPlayersV2(db, setPlayers, showErrorToast);
-//         await GetAllTeamsV2(db, setTeams, showErrorToast);
-//         await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
-//       }
-//       catch (err: any) {
-//         showErrorToast();
-//       }
-//     }
-//     else {
-//       showErrorToast();
-//     }
-//   };
-
-//   const onDelete = async () => {
-//     if (db) {
-//       try {
-//         await DeletePlayer(db, String(id));
-//         showMessageToast(ToastMessages.DeletePlayerSuccess);
-//         router.navigate("/(tabs)/players");
-//         clearProfile();
-
-//         // After deleting player from DB, call GetAllPlayers, GetAllTeams & GetAllMatches to update the store
-//         await GetAllPlayersV2(db, setPlayers, showErrorToast);
-//         await GetAllTeamsV2(db, setTeams, showErrorToast);
-//         await GetAllMatchesV2(db, setSinglesMatches, setDoublesMatches, showErrorToast);
-//       }
-//       catch (err: any) {
-//         showErrorToast();
-//       }
-//     }
-//     else {
-//       showErrorToast();
-//     }
-//   };
-
-//   const hideKeyboard = () => { Keyboard.dismiss(); };
-//   const closeDropdown = () => { setIsDropdownOpen(false); };
-
-//   const setOriginalData = () => {
-//     setOriginalFirstName(editFirstName);
-//     setOriginalLastName(editLastName);
-//     setOriginalLastNameFirst(editLastNameFirst);
-//     setOriginalGender(editGender);
-//     setEditDisabled(true);
-//   };
-
-//   useEffect(() => {
-//     if (
-//       (editFirstName !== originalFirstName ||
-//       editLastName !== originalLastName ||
-//       editLastNameFirst !== originalLastNameFirst ||
-//       editGender !== originalGender) &&
-//       editFirstName !== "" &&
-//       editGender !== ""
-//     ) {
-//       setEditDisabled(false);
-//     }
-//     else {
-//       setEditDisabled(true);
-//     }
-//   }, [editFirstName, editLastName, editLastNameFirst, editGender]);
-
-//   return (
-//     <TouchableWithoutFeedback onPress={() => { hideKeyboard(); closeDropdown(); }}>
-//       <ThemedView style={Containers.screen}>
-//         <ScreenTitle
-//           title="Edit Player"
-//           actionBtn={{
-//             title: "Close",
-//             onActionBtn: onCloseScreen
-//           }}
-//         />
-//         <PlayerForm
-//           firstName={editFirstName}
-//           setFirstName={setEditFirstName}
-//           lastName={editLastName}
-//           setLastName={setEditLastName}
-//           lastNameFirst={editLastNameFirst}
-//           setLastNameFirst={setEditLastNameFirst}
-//           gender={editGender}
-//           setGender={setEditGender}
-//           isDropdownOpen={isDropdownOpen}
-//           setIsDropdownOpen={setIsDropdownOpen}
-//           onDropdownClose={closeDropdown}
-//           onKeyboardClose={hideKeyboard}
-//         />
-//         <PrimaryButton title="Save Changes" onPress={onUpdate} disabled={editDisabled} />
-//         {
-//           (id !== "p1") ?
-//           <SecondaryButton title="Delete" icon="trash" iconPosition="left" onPress={onDelete} customColor={deleteBtnColor} style={{ alignSelf: "center", marginTop: 24 }} />
-//           : null
-//         }
-//       </ThemedView>
-//     </TouchableWithoutFeedback>
-//   );
-// }
