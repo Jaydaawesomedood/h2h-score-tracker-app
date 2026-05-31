@@ -168,12 +168,6 @@ export default function RootLayout() {
                   <Stack.Screen name='match/[id]/index' options={screenOptions} />
                   <Stack.Screen name='match/[id]/edit' options={screenOptions} />
                   <Stack.Screen name="+not-found" />
-                  {/* <Stack.Screen name='player/add' options={screenOptions} />
-                  <Stack.Screen name='team/add' options={screenOptions} />
-                  <Stack.Screen name='team/[id]/index' options={screenOptions} />
-                  <Stack.Screen name='team/[id]/edit' options={screenOptions} />
-                  <Stack.Screen name='match/add' options={screenOptions} />
-                  <Stack.Screen name="+not-found" /> */}
                 </Stack>
               {/* } */}
             </DbContext.Provider>
