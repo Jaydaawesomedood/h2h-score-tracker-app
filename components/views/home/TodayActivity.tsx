@@ -85,7 +85,7 @@ export default function TodayActivity({ stats }: ITodayActivityProps) {
                         </Fragment>
                       )
                         : (
-                          <ThemedText weight="light">No data available.</ThemedText>
+                          <ThemedText weight="light">No data available</ThemedText>
                         )
                     }
                   </View>

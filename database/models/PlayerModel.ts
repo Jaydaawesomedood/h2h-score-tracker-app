@@ -39,6 +39,10 @@ export default class PlayerModel extends Model {
     return (await this.matches.fetch()).map(m => this.toMatch(m));
   }
 
+  async fetchMatchCount() {
+    return (await this.matches.fetchCount());
+  }
+
   private async toMatch(match: MatchModel) {
     const sideA = await match.fetchSideA();
     const sideB = await match.fetchSideB();

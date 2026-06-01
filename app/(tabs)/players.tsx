@@ -76,7 +76,7 @@ function PlayerCard(props: IPlayerCardProps) {
         <ThemedText weight="bold" style={{ fontSize: 24 }}>
           { props.player.firstName.concat(' ', props.player.lastName) }
         </ThemedText>
-        <ThemedText weight="light">42 matches</ThemedText>
+        <ThemedText weight="light">{props.player.matchCount} match{props.player.matchCount !== 1 && 'es'}</ThemedText>
       </View>
       <View style={{ flexShrink: 1 }}>
         <FontAwesome name="chevron-right" size={14} color={muted} style={{ opacity: 0.4 }} />

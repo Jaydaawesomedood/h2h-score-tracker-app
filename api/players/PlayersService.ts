@@ -1,9 +1,10 @@
 import { Player } from "@/models/v2/data/Player";
 import { database } from "../../database";
 import PlayerModel from "@/database/models/PlayerModel";
-import { map, Observable } from "@nozbe/watermelondb/utils/rx";
+import { Observable, startWith, switchMap } from "@nozbe/watermelondb/utils/rx";
 import { Q } from "@nozbe/watermelondb";
 import { MatchesService } from "../MatchesService/MatchesService";
+import { combineLatest } from "rxjs";
 
 export class PlayersService {
   static async AddPlayer(player: Player) {
@@ -24,15 +25,28 @@ export class PlayersService {
   static ObserveAllPlayers(): Observable<Player[]> {
     // TODO - grab n number of players first (lazy loading)
     // TODO - move this to model instead
-    return database.collections
+    const players$ = database.collections
       .get<PlayerModel>('players')
       .query(
         Q.experimentalJoinTables(['match_players']),
         Q.sortBy('created_at', Q.asc)
       )
       .observeWithColumns(['first_name', 'last_name', 'color'])
+
+    const matches$ = database.withChangesForTables(['matches', 'match_players']).pipe(startWith(null));
+
+    return combineLatest([players$, matches$])
       .pipe(
-        map(players => players.map(p => this.toPlayer(p)))
+        switchMap(async ([players]) => {
+          try {
+            const promises = players.map((p) => this.toPlayer(p));
+            return Promise.all(promises);
+          }
+          catch (error: any) {
+            console.error("Error mapping matches inside stream:", error);
+            return []; 
+          }
+        })
       )
   }
 
@@ -59,7 +73,9 @@ export class PlayersService {
     }
   }
 
-  private static toPlayer(player: PlayerModel) {
+  private static async toPlayer(player: PlayerModel) {
+    const matches = await player.fetchMatchCount();
+
     return {
       id: player.id,
       firstName: player.firstName,
@@ -67,6 +83,7 @@ export class PlayersService {
       color: player.color,
       isMe: player.isMe,
       createdAt: player.createdAt,
+      matchCount: matches ?? 0,
     } as Player;
   }
 }

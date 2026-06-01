@@ -5,4 +5,5 @@ export type Player = {
   color: string,
   isMe?: boolean,
   createdAt: number,
+  matchCount?: number,
 }
