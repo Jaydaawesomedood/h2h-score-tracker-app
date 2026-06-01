@@ -74,8 +74,8 @@ export default function TabLayout() {
         <Tabs.Screen
           name='settings'
           options={{
-            tabBarLabel: 'Profile',
-            tabBarIcon: ({ color }) => (<TabBarIcon name={'user-large'} color={color} />),
+            tabBarLabel: 'Settings',
+            tabBarIcon: ({ color }) => (<TabBarIcon name={'gear'} color={color} />),
           }}
         />
       </Tabs>
