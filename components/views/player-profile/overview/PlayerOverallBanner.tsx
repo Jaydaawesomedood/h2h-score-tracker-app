@@ -1,11 +1,11 @@
 import Card from "@/components/_ui/card/Card";
 import ThemedText from "@/components/_ui/ThemedText";
 import { Styles } from "@/constants/v2/Styles";
-import { OverviewCategory } from "@/models/v2/views/PlayerProfileTab";
+import { OverviewBannerData } from "@/models/v2/views/PlayerProfileTab";
 import { StyleSheet, View } from "react-native";
 
 interface IPlayerOverallBannerProps {
-  summary: OverviewCategory,
+  summary: { [key: string]: OverviewBannerData },
 }
 
 export default function PlayerOverallBanner({ summary }: IPlayerOverallBannerProps) {

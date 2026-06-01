@@ -1,3 +1,4 @@
+import useThemeColor from "@/hooks/v2/useThemeColor";
 import { FontAwesome } from "@expo/vector-icons";
 import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 
@@ -6,9 +7,12 @@ interface IPrimaryActionTabButtonProps {
 }
 
 export default function PrimaryActionTabButton({ onPress} : IPrimaryActionTabButtonProps) {
+  const primary = useThemeColor('primary');
+  const background = useThemeColor('background');
+
   return (
-    <TouchableOpacity onPress={onPress} style={styles.button} activeOpacity={0.85}>
-      <FontAwesome name="plus" size={32} />
+    <TouchableOpacity onPress={onPress} style={[styles.button, { backgroundColor: primary }]} activeOpacity={0.85}>
+      <FontAwesome name="plus" size={32} color={background} />
     </TouchableOpacity>
   );
 }
@@ -16,10 +20,9 @@ export default function PrimaryActionTabButton({ onPress} : IPrimaryActionTabBut
 const styles = StyleSheet.create({
 	button: {
 		position: 'absolute',
-		top: -20,
+		top: -30,
 		left: '50%',
 		transform: [{ translateX: -40 }],
-		backgroundColor: '#4F46E5',
 		borderRadius: 24,
 		width: 80,
 		height: 80,

@@ -15,12 +15,12 @@ export type PlayerOverview = {
 }
 
 export type OverviewCategory = {
-  wins: OverviewData,
-  losses: OverviewData,
-  winRate: OverviewData,
+  wins: OverviewBannerData,
+  losses: OverviewBannerData,
+  winRate: OverviewBannerData,
 }
 
-type OverviewData = {
+export type OverviewBannerData = {
   value: any,
   label: string,
   color?: string,
