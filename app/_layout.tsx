@@ -15,13 +15,10 @@ import OnboardingScreen from '@/components/screens/OnboardingScreen';
 import { DbQueries } from '@/constants/messages/DbQueries';
 import { DbContext, useDataStore, useThemeStore } from '@/utils/context';
 import { showErrorToast } from '@/utils/toast.util';
-import { GetAllMatches } from '@/utils/repositories/MatchRepository';
-import { GetAllParticipants } from '@/utils/repositories/PlayerRepository';
 import { DARK_THEME, LIGHT_THEME } from '@/constants/Themes';
 import ThemeProvider from '@/providers/ThemeProvider';
 import { usePlayersStore } from '@/store/usePlayersStore';
 import { useMatchesStore } from '@/store/useMatchesStore';
-import { MatchesService } from '@/api/MatchesService/MatchesService';
 
 const screenOptions = { headerShown: false };
 
