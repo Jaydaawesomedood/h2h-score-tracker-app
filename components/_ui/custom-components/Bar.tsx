@@ -11,24 +11,31 @@ type BarProps = {
   barContentStyle?: StyleProp<ViewStyle>,
   customBarColor?: string,
   customBackgroundColor?: string,
+  showLabels?: boolean,
 };
 
-export function Bar({ values, subtitle, ...props}: BarProps) {
+export function Bar({ values, subtitle, showLabels = true, ...props}: BarProps) {
   const backgroundColor = props.customBackgroundColor ?? useThemeColor("background");
   const barColor = props.customBarColor ?? useThemeColor("primary");
 
-  return (
-    <View style={styles.container}>
+  const renderLabel = (value: string | number, subtitle?: string | number) => {
+    return (
       <View style={styles.titleContainer}>
         <ThemedText weight="bold" style={[{ fontSize: 24 }, props.labelStyle]}>
-          {values[0]}
+          {value}
         </ThemedText>
         {subtitle && (
           <ThemedText weight="light" style={[{ fontSize: 12 }, props.subtitleStyle]}>
-            {subtitle[0]}
+            {subtitle}
           </ThemedText>
         )}
       </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      { showLabels && renderLabel(values[0], subtitle ? subtitle[0] : undefined) }
       <View style={[styles.barContainer, props.barStyle]}>
         <View style={[styles.bar, { backgroundColor }]}>
           <View
@@ -43,16 +50,7 @@ export function Bar({ values, subtitle, ...props}: BarProps) {
           />
         </View>
       </View>
-      <View style={styles.titleContainer}>
-        <ThemedText weight="bold" style={[{ fontSize: 24 }, props.labelStyle]}>
-          {values[1]}
-        </ThemedText>
-        {subtitle && (
-          <ThemedText weight="light" style={[{ fontSize: 12 }, props.subtitleStyle]}>
-            {subtitle[1]}
-          </ThemedText>
-        )}
-      </View>
+      { showLabels && renderLabel(values[1], subtitle ? subtitle[1] : undefined) }
     </View>
   );
 };
