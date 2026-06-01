@@ -11,10 +11,17 @@ export default class MatchPlayerModel extends Model {
     'players': { type: 'belongs_to', key: 'player_id' },
   };
 
-  @field('match_id') matchId!: string
-  @field('player_id') playerId!: string
-  @field('side') side!: string
+  @field('match_id')
+  declare matchId: string
 
-  @immutableRelation('matches', 'match_id') match!: MatchModel
-  @relation('players', 'player_id') player!: PlayerModel
+  @field('player_id')
+  declare playerId: string
+  
+  @field('side')
+  declare side: string
+
+  @immutableRelation('matches', 'match_id')
+  declare match: MatchModel
+  @relation('players', 'player_id')
+  declare player: PlayerModel
 }

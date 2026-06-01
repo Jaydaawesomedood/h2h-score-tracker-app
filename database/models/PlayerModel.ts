@@ -11,11 +11,21 @@ export default class PlayerModel extends Model {
     match_players: { type: 'has_many', foreignKey: 'player_id' },
   };
 
-  @field('first_name') firstName!: string
-  @field('last_name') lastName!: string
-  @field('color') color!: string
-  @field('is_me') isMe!: boolean
-  @readonly @date('created_at') createdAt!: number
+  @field('first_name') 
+  declare firstName: string
+
+  @field('last_name') 
+  declare lastName: string
+
+  @field('color') 
+  declare color: string
+
+  @field('is_me') 
+  declare isMe: boolean
+  
+  @readonly
+  @date('created_at') 
+  declare createdAt: number
 
   @writer async updateProfile(updatedPlayer: Player) {
     await this.update(p => {

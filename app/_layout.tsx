@@ -121,8 +121,6 @@ export default function RootLayout() {
       initPlayerListener();
       initMatchListener();
 
-      // await MatchesService.nuke('8Rm609vQXYUkZC8Q');
-
       getInitState().then(() => {
         setSetupCompleted(true);
       });

@@ -5,6 +5,10 @@ export default {
   name: IS_DEV ? "Head2Head - Development" : IS_PREVIEW ? "Head2Head - Preview" : "Head2Head",
   slug: "h2h",
   version: "1.0.0",
+  platforms: [
+    "ios",
+    "android"
+  ],
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "myapp",
@@ -25,11 +29,6 @@ export default {
     },
     package: IS_DEV ? "com.jasonchoo.my.h2h.dev" : IS_PREVIEW ? "com.jasonchoo.my.h2h.preview" : "com.jasonchoo.my.h2h",
     softwareKeyboardLayoutMode: "pan"
-  },
-  web: {
-    bundler: "metro",
-    output: "static",
-    favicon: "./assets/images/favicon.png"
   },
   androidStatusBar: {
     hidden: true,

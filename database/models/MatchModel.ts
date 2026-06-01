@@ -12,13 +12,24 @@ export default class MatchModel extends Model {
     match_players: { type: 'has_many', foreignKey: 'match_id' }
   };
 
-  @field('type') type!: string
-  @field('date') date!: string
-  @field('sets') _sets!: string
-  @field('winner') winner!: string
-  @readonly @date('created_at') createdAt!: number
+  @field('type')
+  declare type: string
+  
+  @field('date')
+  declare date: string
 
-  @children('match_players') matchPlayers!: Query<MatchPlayerModel>
+  @field('sets')
+  declare _sets: string
+
+  @field('winner')
+  declare winner: string
+
+  @readonly
+  @date('created_at')
+  declare createdAt: number
+
+  @children('match_players')
+  declare matchPlayers: Query<MatchPlayerModel>
 
   get sets() {
     return JSON.parse(this._sets ?? '[]')
