@@ -1,17 +1,18 @@
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import ThemedText from "../ThemedText";
 import useThemeColor from "@/hooks/v2/useThemeColor";
 
 interface IBadgeProps {
   text: string,
-  color?: ViewStyle['backgroundColor']
+  color?: ViewStyle['backgroundColor'],
+  style?: StyleProp<ViewStyle>,
 }
 
 export default function Badge(props: IBadgeProps) {
   const primary = useThemeColor('primary');
 
   return (
-    <View style={[styles.badge, { backgroundColor: props.color ?? primary }]}>
+    <View style={[styles.badge, props.style, { backgroundColor: props.color ?? primary }]}>
       <ThemedText weight="bold" style={{ fontSize: 12 }}>{props.text}</ThemedText>
     </View>
   );

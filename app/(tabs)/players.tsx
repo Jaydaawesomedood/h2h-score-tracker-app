@@ -11,6 +11,7 @@ import { usePlayersStore } from "@/store/usePlayersStore";
 import PlayerIcon from "@/components/_ui/custom-components/PlayerIcon";
 import AddPlayerModal from "@/components/v2/modals/AddPlayerModal";
 import { Player } from "@/models/v2/data/Player";
+import Badge from "@/components/_ui/badge/Badge";
 
 interface IPlayerCardProps {
   player: Player
@@ -73,9 +74,16 @@ function PlayerCard(props: IPlayerCardProps) {
     >
       <PlayerIcon player={props.player} size={48} />
       <View style={[Styles.FLEX_COLUMN, { flexGrow: 1, flexShrink: 1, minWidth: 0, paddingHorizontal: 16 }]}>
-        <ThemedText weight="bold" style={{ fontSize: 24 }}>
-          { props.player.firstName.concat(' ', props.player.lastName) }
-        </ThemedText>
+        <View style={[Styles.FLEX_HORIZONTAL_CENTER, { justifyContent: 'flex-start', columnGap: 8, alignItems: 'center' }]}>
+          <ThemedText weight="bold" style={{ fontSize: 24 }}>
+            { props.player.firstName.concat(' ', props.player.lastName) }
+          </ThemedText>
+          {
+            props.player.isMe && (
+              <Badge text="You" style={{ alignSelf: 'center' }} />
+            )
+          }
+        </View>
         <ThemedText weight="light">{props.player.matchCount} match{props.player.matchCount !== 1 && 'es'}</ThemedText>
       </View>
       <View style={{ flexShrink: 1 }}>
