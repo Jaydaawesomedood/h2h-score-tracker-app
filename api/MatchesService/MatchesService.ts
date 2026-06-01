@@ -129,21 +129,19 @@ export class MatchesService {
     })
   }
 
-  static async nuke(id: string) {
-    const a = database.collections.get<MatchPlayerModel>('match_players').query();
-    const b = database.collections.get<MatchModel>('matches').query();
-    // const b = database.collections.get<MatchModel>('matches').find(id);
-
-    const matchplayers = await a.fetch();
-    const matches = await b.fetch();
-
-    console.log(matches);
-    console.log(matchplayers);
-
-    // await database.write(async() => {
-    //   await b.destroyAllPermanently();
-    //   await a.destroyAllPermanently();
-    // })
+  static async Nuke() {
+    try {
+      const allMatchPlayers = database.collections.get<MatchPlayerModel>('match_players').query();
+      const allMatches = database.collections.get<MatchModel>('matches').query();
+  
+      await database.write(async() => {
+        await allMatches.destroyAllPermanently();
+        await allMatchPlayers.destroyAllPermanently();
+      });
+    }
+    catch (err: any) {
+      console.error('Something went wrong.', err);
+    }
   }
 
   private static async toMatch(match: MatchModel) {

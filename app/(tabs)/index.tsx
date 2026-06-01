@@ -26,7 +26,7 @@ export default function HomeScreen() {
   if (!player) {
     return (
       <ThemedView style={[Styles.SCREEN_BODY]}>
-        <ThemedText weight="light">Oops! No data available.</ThemedText>
+        <ThemedText weight="light">No data available</ThemedText>
       </ThemedView>
     );
   }
@@ -93,21 +93,25 @@ export default function HomeScreen() {
           <ThemedText weight="bold" style={[styles.sectionTitle, { color: muted }]}>Today's Activity</ThemedText>
           <TodayActivity stats={todayStats} />
         </View>
-        <View style={{ rowGap: 24 }}>
-          <ThemedText weight="bold" style={[styles.sectionTitle, { color: muted }]}>Recent Matches</ThemedText>
-          <View style={{ rowGap: 16 }}>
-            {
-              recentMatches.length > 0 ? (
-                recentMatches.map(match => (
-                  <MatchSummaryCard key={match.id} match={match} />
-                ))
-              )
-              : (
-                <ThemedText weight="light">No data available.</ThemedText>
-              )
-            }
-          </View>
-        </View>
+        {
+          recentMatches.length > 0 && (
+            <View style={{ rowGap: 24 }}>
+              <ThemedText weight="bold" style={[styles.sectionTitle, { color: muted }]}>Recent Matches</ThemedText>
+              <View style={{ rowGap: 16 }}>
+                {
+                  recentMatches.length > 0 ? (
+                    recentMatches.map(match => (
+                      <MatchSummaryCard key={match.id} match={match} />
+                    ))
+                  )
+                  : (
+                    <ThemedText weight="light">No data available</ThemedText>
+                  )
+                }
+              </View>
+            </View>
+          )
+        }
       </ScrollView>
     </ThemedView>
   );

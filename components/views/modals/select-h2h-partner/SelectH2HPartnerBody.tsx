@@ -52,7 +52,7 @@ export default function SelectH2HBody(props: ISelectH2HBodyProps) {
     )
     : (
       <View style={[Styles.FLEX_HORIZONTAL_CENTER]}>
-        <ThemedText weight="light">No data available.</ThemedText>
+        <ThemedText weight="light">No data available</ThemedText>
       </View>
     )
   )

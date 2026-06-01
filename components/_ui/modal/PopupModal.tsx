@@ -8,9 +8,7 @@ type PopupModalProps = PropsWithChildren & {
   onClose: () => void,
 }
 
-type IPopupModalBodyProps = PropsWithChildren & {
-  
-}
+type IPopupModalBodyProps = PropsWithChildren;
 
 function PopupModal(props: PopupModalProps) {
   const backgroundColor = useThemeColor('card');

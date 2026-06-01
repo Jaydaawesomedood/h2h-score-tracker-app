@@ -83,8 +83,8 @@ export default function PlayerProfileScreen() {
                 </View>
               )
               : (
-                <View style={[Styles.FLEX_HORIZONTAL_CENTER, { flexGrow: 1, marginVertical: 32 }]}>
-                  <ThemedText weight="light">No data available for this player.</ThemedText>
+                <View style={[Styles.FLEX_HORIZONTAL_CENTER, { flex: 1, marginVertical: 32 }]}>
+                  <ThemedText weight="light" style={{ fontSize: 18 }}>No data available</ThemedText>
                 </View>
               )
             }

@@ -13,14 +13,23 @@ export default function HistoryScreen() {
       <View style={[Styles.FLEX_HORIZONTAL_SIDE]}>
         <ThemedText weight="bold" style={{ fontSize: 36, lineHeight: 48 }}>History</ThemedText>
       </View>
-      <View style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
-        <FlatList
-          data={matches}
-          renderItem={({ item }) => <MatchSummaryCard match={item} />}
-          keyExtractor={item => item.id}
-          contentContainerStyle={{ rowGap: 8 }}
-        />
-      </View>
+      {
+        matches.length > 0 ? (
+          <View style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+            <FlatList
+              data={matches}
+              renderItem={({ item }) => <MatchSummaryCard match={item} />}
+              keyExtractor={item => item.id}
+              contentContainerStyle={{ rowGap: 8 }}
+            />
+          </View>
+        )
+        : (
+          <View style={[Styles.FLEX_HORIZONTAL_CENTER, { flex: 1 }]}>
+            <ThemedText weight="light" style={{ fontSize: 18 }}>No data available</ThemedText>
+          </View>
+        )
+      }
     </ThemedView>
   );
 }

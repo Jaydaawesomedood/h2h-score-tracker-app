@@ -68,8 +68,7 @@ export default function EditMatchScreen() {
       >
         <PopupModal.Body>
           <View style={{ rowGap: 8 }}>
-            <ThemedText style={{ fontSize: 18 }}>Are you sure you want to delete this player?</ThemedText>
-            <ThemedText weight="light">All matches involving this player will be deleted!</ThemedText>
+            <ThemedText style={{ fontSize: 18 }}>Are you sure you want to delete this match?</ThemedText>
           </View>
         </PopupModal.Body>
         <PopupModal.Footer>

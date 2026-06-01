@@ -73,6 +73,19 @@ export class PlayersService {
     }
   }
 
+  static async Nuke() {
+    try {
+      const allPlayers = database.collections.get<PlayerModel>('players').query(Q.where('is_me', false));
+  
+      await database.write(async() => {
+        await allPlayers.destroyAllPermanently();
+      });
+    }
+    catch (err: any) {
+      console.error('Something went wrong.', err);
+    }
+  }
+
   private static async toPlayer(player: PlayerModel) {
     const matches = await player.fetchMatchCount();
 
