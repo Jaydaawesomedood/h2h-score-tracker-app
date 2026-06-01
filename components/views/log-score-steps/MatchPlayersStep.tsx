@@ -62,8 +62,8 @@ export default function MatchPlayersStep() {
 
         const matchExists = permutations
           .find(m => (
-            m.sideA.every(pl => (sideAIds.includes(pl.id)) || sideBIds.includes(pl.id)) &&
-            m.sideB.every(pl => (sideAIds.includes(pl.id)) || sideBIds.includes(pl.id))
+            (m.sideA.every(pl => (sideAIds.includes(pl.id))) || m.sideA.every(pl => sideBIds.includes(pl.id))) &&
+            (m.sideB.every(pl => (sideAIds.includes(pl.id))) || m.sideB.every(pl => sideBIds.includes(pl.id)))
           ))
 
         if (!matchExists) {

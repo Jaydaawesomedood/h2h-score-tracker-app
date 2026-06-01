@@ -26,7 +26,7 @@ interface IScoreInputProps {
 
 export default function MatchScoreStep() {
   const { sets, setSets, sideA, sideB } = useLogScore();
-  const { current, checkIsNextDisabled } = useProgressTracker();
+  const { current, totalSteps, checkIsNextDisabled } = useProgressTracker();
 
   const card = useThemeColor('card');
   const border = useThemeColor('border');
@@ -49,8 +49,14 @@ export default function MatchScoreStep() {
   }
 
   useEffect(() => {
-    if (current !== 2) return;
-    checkIsNextDisabled({ sets }, () => sets.length > 0 && sets.every((set) => set.length === 2 && set.every((score) => score !== undefined)));
+    if (current !== totalSteps - 2) return;
+    checkIsNextDisabled({ sets }, () => {
+      return sets.length > 0 && 
+        sets.every((set) => (
+          set.length === 2 &&
+          Array.from(set).every((score) => score !== undefined && score.toString().trim()
+        )))
+    });
   }, [sets]);
 
   return (
