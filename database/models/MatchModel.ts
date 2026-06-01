@@ -16,7 +16,7 @@ export default class MatchModel extends Model {
   @field('date') date!: string
   @field('sets') _sets!: string
   @field('winner') winner!: string
-  @readonly @date('created_at') _createdAt!: number
+  @readonly @date('created_at') createdAt!: number
 
   @children('match_players') matchPlayers!: Query<MatchPlayerModel>
 

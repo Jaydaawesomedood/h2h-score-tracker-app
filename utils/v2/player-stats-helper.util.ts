@@ -114,6 +114,7 @@ export class PlayerStatsHelper {
       matches.forEach(match => {
         const opponentSide = match.sideA.find(p => p.id === playerId) ? 'B' : 'A';
         const key = match[`side${opponentSide}`].map(player => player.id).join('|');
+
         if (opponentSet.has(key)) return;
         opponents.push([...match[`side${opponentSide}`]]);
         opponentSet.add(key);
@@ -129,7 +130,9 @@ export class PlayerStatsHelper {
     .forEach(match => {
       const opponentSide = match.sideA.every(p => p.id === playerId || p.id === partnerId) ? 'B' : 'A';
       const key = match[`side${opponentSide}`].map(player => player.id).join('|');
-      if (opponentSet.has(key)) return;
+      const keyReversed = key.split('|').reverse().join('|');
+
+      if (opponentSet.has(key) || opponentSet.has(keyReversed)) return;
       opponents.push([...match[`side${opponentSide}`]]);
       opponentSet.add(key);
     });
@@ -146,11 +149,13 @@ export class PlayerStatsHelper {
 
     opponents.forEach(opponent => {
       const key = opponent.map(player => player.id).join('|');
+      const keyReversed = key.split('|').reverse().join('|');
+
       const h2h = this.getH2H(
         this.getAllMatchesByPlayerIds(filteredMatches, playerSide, opponent.map(o => o.id)),
         opponent
       );
-      if (!opponentsH2HMap.has(key)) opponentsH2HMap.set(key, { opponent, h2h });
+      if (!opponentsH2HMap.has(key) && !opponentsH2HMap.has(keyReversed)) opponentsH2HMap.set(key, { opponent, h2h });
     });
 
     // return player/team, wins, losses

@@ -7,8 +7,6 @@ import MatchScoreStep from "../../log-score-steps/MatchScoreStep";
 import MatchReviewStep from "../../log-score-steps/MatchReviewStep";
 import { useLogScore } from "@/hooks/v2/useLogScore";
 import { useMatchesStore } from "@/store/useMatchesStore";
-import * as Crypto from "expo-crypto";
-import moment from "moment";
 import { ScoreHelper } from "@/utils/v2/score-helper.util";
 
 interface ILogScoreBodyProps {
@@ -21,14 +19,14 @@ export default function LogScoreBody(props: ILogScoreBodyProps) {
 
   const handleOnComplete = () => {
     addMatch({
-      id: Crypto.randomUUID(),
+      id: '',
       type: type!,
       date,
       sideA,
       sideB,
       sets,
       winner: ScoreHelper.calculateWinner(sets),
-      createdAt: moment().toString(),
+      createdAt: 0,
     });
     props.onCloseModal();
   }

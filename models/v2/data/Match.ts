@@ -8,5 +8,5 @@ export type Match = {
   sideA: Player[],
   sideB: Player[],
   winner: 'A' | 'B',
-  createdAt: string,
+  createdAt: number,
 };

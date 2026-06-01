@@ -48,7 +48,7 @@ export default class PlayerModel extends Model {
       type: match.type,
       date: match.date,
       winner: match.winner,
-      createdAt: match._createdAt.toString() ?? new Date().toISOString(),
+      createdAt: match.createdAt ?? new Date(),
       sets: match.sets as number[][],
       sideA,
       sideB,

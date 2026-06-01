@@ -48,7 +48,7 @@ export class MatchesService {
       return {
         ...match,
         id: createdMatch.id,
-        createdAt: createdMatch._createdAt?.toString() || new Date().toISOString()
+        createdAt: createdMatch.createdAt || new Date()
       };
     }
     catch (err: any) {
@@ -155,7 +155,7 @@ export class MatchesService {
       type: match.type,
       date: match.date,
       winner: match.winner,
-      createdAt: match._createdAt.toString() ?? new Date().toISOString(),
+      createdAt: match.createdAt ?? new Date(),
       sets: match.sets as number[][],
       sideA,
       sideB,

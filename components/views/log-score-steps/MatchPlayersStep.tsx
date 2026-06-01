@@ -43,10 +43,36 @@ export default function MatchPlayersStep() {
   const { type, sideA, sideB, setSideA, setSideB } = useLogScore();
   const recentMatches = useMatchesStore(
     useShallow((state) => {
-      return state.matches
+      const sortedMatches = state.matches
               .filter((match: Match) => match.type === type)
-              .sort((a: Match, b: Match) => moment(b.date, "DD/MM/YYYY").diff(moment(a.date, "DD/MM/YYYY")))
-              .slice(0, 2)
+              .sort((a: Match, b: Match) => {
+                if (a.date !== b.date) {
+                  return moment(b.date, "DD/MM/YYYY").diff(moment(a.date, "DD/MM/YYYY"))
+                }
+                return (b.createdAt - a.createdAt);
+              });
+      
+      const permutations: Match[] = [];
+
+      for(const match of sortedMatches) {
+        if (permutations.length === 2) break;
+
+        const sideAIds = match.sideA.map(p => p.id);
+        const sideBIds = match.sideB.map(p => p.id);
+
+        const matchExists = permutations
+          .find(m => (
+            m.sideA.every(pl => (sideAIds.includes(pl.id)) || sideBIds.includes(pl.id)) &&
+            m.sideB.every(pl => (sideAIds.includes(pl.id)) || sideBIds.includes(pl.id))
+          ))
+
+        if (!matchExists) {
+          permutations.push(match);
+          continue;
+        }
+      }
+
+      return permutations;
     }
   ));
   const { current, checkIsNextDisabled } = useProgressTracker();
