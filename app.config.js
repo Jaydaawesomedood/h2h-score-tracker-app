@@ -10,13 +10,13 @@ export default {
     "android"
   ],
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/images/logo/h2h-logo-icon.png",
   scheme: "myapp",
   userInterfaceStyle: "automatic",
   splash: {
-    image: "./assets/images/splash.png",
+    image: "./assets/images/logo/h2h-logo-splash.png",
     resizeMode: "contain",
-    backgroundColor: "#ffffff"
+    backgroundColor: "#3A3B40"
   },
   ios: {
     bundleIdentifier: IS_DEV ? "com.jasonchoo.my.h2h.dev" : IS_PREVIEW ? "com.jasonchoo.my.h2h.preview" : "com.jasonchoo.my.h2h",
@@ -24,8 +24,8 @@ export default {
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/images/adaptive-icon.png",
-      backgroundColor: "#151718"
+      foregroundImage: "./assets/images/logo/h2h-logo-android-adaptive.png",
+      backgroundColor: "#3A3B40"
     },
     package: IS_DEV ? "com.jasonchoo.my.h2h.dev" : IS_PREVIEW ? "com.jasonchoo.my.h2h.preview" : "com.jasonchoo.my.h2h",
     softwareKeyboardLayoutMode: "pan"
@@ -54,12 +54,8 @@ export default {
     [
       "expo-splash-screen",
       {
-        backgroundColor: "#ebebeb",
-        image: "./assets/images/splash-icon.png",
-        dark: {
-          image: "./assets/images/splash-icon.png",
-          backgroundColor: "#151718"
-        },
+        backgroundColor: "#3A3B40",
+        image: "./assets/images/logo/h2h-logo-splash.png",
         imageWidth: 200
       }
     ],

@@ -23,14 +23,6 @@ export default function HomeScreen() {
     useShallow(state => state.players.find(pl => pl.isMe))
   );
 
-  if (!player) {
-    return (
-      <ThemedView style={[Styles.SCREEN_BODY]}>
-        <ThemedText weight="light">No data available</ThemedText>
-      </ThemedView>
-    );
-  }
-
   // Get all matches player has played
   const matches = useMatchesStore(
     useShallow((state) => {
@@ -39,6 +31,7 @@ export default function HomeScreen() {
   );
 
   const overallStats = useMemo(() => {
+    if (!player) return undefined;
     const { matchesWon, wlPercentage } = PlayerStatsHelper.getMatchesSummary(matches, player.id);
     return {
       winRate: { value: wlPercentage, label: "Win Rate", color: primary },
@@ -48,6 +41,18 @@ export default function HomeScreen() {
   }, [matches]);
 
   const todayStats = useMemo(() => {
+    if (!player){
+      return {
+        matchesToday: 0,
+        statsToday: {
+          matchesWon: 0,
+          matchesLost: 0,
+          wlPercentage: '0%',
+        },
+        topPartnerToday: undefined,
+      };
+    } 
+
     const matchesToday = matches.filter(m => moment(m.date, "DD/MM/YYYY").date() === moment().date());
     const stats = PlayerStatsHelper.getMatchesSummary(matchesToday, player.id);
     const topPartner = PlayerStatsHelper.getPartnersStats(matchesToday.filter(m => m.type === 'doubles'), player.id).slice(0, 1);
@@ -61,6 +66,7 @@ export default function HomeScreen() {
 
   // Get most recent matches
   const recentMatches = useMemo(() => {
+    if (!player) return [];
     return matches
       .slice()
       .sort((a: Match, b: Match) => {
@@ -71,6 +77,14 @@ export default function HomeScreen() {
       })
       .slice(0, 2);
   }, [matches]);
+
+  if (!player) {
+    return (
+      <ThemedView style={[Styles.SCREEN_BODY, Styles.FLEX_HORIZONTAL_CENTER]}>
+        <ThemedText weight="light" style={{ fontSize: 18 }}>No data available</ThemedText>
+      </ThemedView>
+    );
+  }
 
   return (
     <ThemedView style={{ flex: 1 }}>

@@ -38,14 +38,23 @@ export default function Players() {
           weight="bold"
         />
       </View>
-      <View style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
-        <FlatList
-          data={players}
-          renderItem={({ item }) => (<PlayerCard player={item} />)}
-          keyExtractor={item => item.id}
-          contentContainerStyle={{ rowGap: 8 }}
-        />
-      </View>
+      {
+        players.length > 0 ? (
+          <View style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+            <FlatList
+              data={players}
+              renderItem={({ item }) => (<PlayerCard player={item} />)}
+              keyExtractor={item => item.id}
+              contentContainerStyle={{ rowGap: 8 }}
+            />
+          </View>
+        )
+        : (
+          <View style={[Styles.FLEX_HORIZONTAL_CENTER, { flex: 1 }]}>
+            <ThemedText weight="light" style={{ fontSize: 18 }}>No data available</ThemedText>
+          </View>
+        )
+      }
       
       {/* Add Player Modal */}
       <AddPlayerModal

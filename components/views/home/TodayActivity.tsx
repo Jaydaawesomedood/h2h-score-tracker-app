@@ -16,7 +16,7 @@ interface ITodayActivityProps {
       matchesLost: number,
       wlPercentage: string,
     },
-    topPartnerToday: PartnerStat,
+    topPartnerToday: PartnerStat | undefined,
   },
 }
 
