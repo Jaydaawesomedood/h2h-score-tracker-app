@@ -1,26 +1,23 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DarkTheme, DefaultTheme, ThemeProvider as bye } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import * as SQLite from 'expo-sqlite';
-import { useEffect, useState } from 'react';
-import { StatusBar, View } from 'react-native';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { Dimensions, StatusBar, StyleSheet, View } from 'react-native';
 import 'react-native-reanimated';
-import { DefaultTheme as PaperDefault, MD3DarkTheme, PaperProvider } from 'react-native-paper';
-
-import ThemedView from '@/components/ThemedView';
-import OnboardingScreen from '@/components/screens/OnboardingScreen';
-
-import { DbQueries } from '@/constants/messages/DbQueries';
-import { DbContext, useDataStore, useThemeStore } from '@/utils/context';
-import { showErrorToast } from '@/utils/toast.util';
-import { DARK_THEME, LIGHT_THEME } from '@/constants/Themes';
+import { Canvas, Mask, Group, Rect } from '@shopify/react-native-skia';
 import ThemeProvider from '@/providers/ThemeProvider';
 import { usePlayersStore } from '@/store/usePlayersStore';
 import { useMatchesStore } from '@/store/useMatchesStore';
+import { useOnboardingTour } from '@/hooks/v2/useOnboardingTour';
+import OnboardingTourProvider from '@/providers/OnboardingTourProvider';
+import { Styles } from '@/constants/v2/Styles';
+import useThemeColor from '@/hooks/v2/useThemeColor';
+import ThemedText from '@/components/_ui/ThemedText';
+import Button from '@/components/_ui/button/Button';
 
 const screenOptions = { headerShown: false };
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('screen');
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,8 +27,6 @@ export default function RootLayout() {
   const initMatchListener = useMatchesStore(state => state.initMatchListener);
   const terminatePlayerListener = usePlayersStore(state => state.terminatePlayerListener);
   const terminateMatchListener = useMatchesStore(state => state.terminateMatchListener);
-  const { isLightMode, setIsLightMode } = useThemeStore();
-  const dataStore = useDataStore();
 
   const [loaded] = useFonts({
     LeagueSpartanLight: require("../assets/fonts/LeagueSpartan-ExtraLight.ttf"),
@@ -40,9 +35,7 @@ export default function RootLayout() {
   });
 
   const [isFirstLaunch, setIsFirstLaunch] = useState<boolean>(false);
-  const [onboardingCompleted, setOnboardingCompleted] = useState<boolean>(false);
   const [setupCompleted, setSetupCompleted] = useState<boolean>(false);
-  const [db, setDb] = useState<SQLite.SQLiteDatabase | undefined>();
 
   // Actions on app initialization
   useEffect(() => {
@@ -53,69 +46,12 @@ export default function RootLayout() {
     // We will also check the 'onboarded' property
     async function getInitState() {
       const launched = await AsyncStorage.getItem('launched');
-      const onboarded = await AsyncStorage.getItem('onboarded');
 
       if (launched === null) {
         firstLaunch = true;
         setIsFirstLaunch(true);
       }
-
-      if (Boolean(onboarded) === true) {
-        setOnboardingCompleted(true);
-      }
     };
-
-    // // Set light/dark theme by getting user preference
-    // async function setTheme() {
-    //   try {
-    //     const value = await AsyncStorage.getItem('lightmode');
-    //     if (value === 'true') setIsLightMode();
-    //   }
-    //   catch (err: any) {
-    //     console.log(err);
-    //   }
-    // };
-
-    // // Prepare database
-    // async function openDb() {
-    //   const db = await SQLite.openDatabaseAsync('h2h.db');
-    //   setDb(db);
-    //   return db;
-    // };
-
-    // // Check if app is on first launch or not, if yes, and db connection is open, create db tables
-    // async function handleData(database: SQLite.SQLiteDatabase) {
-    //   try {
-    //     if (firstLaunch) {
-    //       await database.execAsync(DbQueries.CreateAllTables);
-    //       await AsyncStorage.setItem('launched', 'true');
-    //     }
-    //     else if (!firstLaunch) {
-    //       // Get data if its not first time launching
-    //       await GetAllParticipants(database, dataStore.setPlayers, dataStore.setTeams, showErrorToast);
-    //       await GetAllMatches(database, dataStore.setSinglesMatches, dataStore.setDoublesMatches, showErrorToast);
-    //     }
-    //   }
-    //   catch (err: any) {
-    //     console.log(err);
-    //     showErrorToast();
-    //   }
-    // };
-    
-    // getInitState().then(() => {
-    //   setTheme().then(() => {
-    //     if(!db) {
-    //       openDb().then((database: SQLite.SQLiteDatabase) => {
-    //         handleData(database).then(() => {
-    //           setSetupCompleted(true);
-    //         });
-    //       });
-    //     }
-    //     else {
-    //       setSetupCompleted(true);
-    //     }
-    //   });
-    // })
 
     async function initApp() {
       initPlayerListener();
@@ -149,26 +85,133 @@ export default function RootLayout() {
     <View style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor={"transparent"}/>
       <ThemeProvider>
-        {/* <ThemeProvider value={DARK_THEME}> */}
-          {/* <PaperProvider theme={!isLightMode ? MD3DarkTheme : PaperDefault}> */}
-            <DbContext.Provider value={db}>
-              {/* {
-                !onboardingCompleted ?
-                <OnboardingScreen setOnboarded={setOnboardingCompleted} />
-                : */}
-                <Stack>
-                  <Stack.Screen name="(tabs)" options={screenOptions} />
-                  <Stack.Screen name='player/[id]/index' options={screenOptions} />
-                  <Stack.Screen name='player/[id]/edit' options={screenOptions} />
-                  <Stack.Screen name='match/[id]/index' options={screenOptions} />
-                  <Stack.Screen name='match/[id]/edit' options={screenOptions} />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
-              {/* } */}
-            </DbContext.Provider>
-          {/* </PaperProvider> */}
-        {/* </ThemeProvider> */}
+        <OnboardingTourProvider>
+          <RootLayoutContent isFirstLaunch={isFirstLaunch} />
+        </OnboardingTourProvider>
       </ThemeProvider>
     </View>
   );
 }
+
+function AppStack() {
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={screenOptions} />
+      <Stack.Screen name='player/[id]/index' options={screenOptions} />
+      <Stack.Screen name='player/[id]/edit' options={screenOptions} />
+      <Stack.Screen name='match/[id]/index' options={screenOptions} />
+      <Stack.Screen name='match/[id]/edit' options={screenOptions} />
+      <Stack.Screen name="+not-found" />
+    </Stack>
+  );
+}
+
+function RootLayoutContent({ isFirstLaunch }: { isFirstLaunch: boolean }) {
+  const card = useThemeColor('card');
+
+  const { activeStep, activeStepName, steps, nextStep, startTour } = useOnboardingTour();
+  const tourTriggered = useRef(false); 
+
+  useEffect(() => {
+    // Fire only when it's a first launch, and we haven't fired yet
+    if (isFirstLaunch && !tourTriggered.current) {
+      tourTriggered.current = true;
+      startTour();
+    }
+  }, [isFirstLaunch]); // Catch layout registrations
+  
+  // Get current active step data based on sort order
+  const orderedSteps = Object.values(steps).sort((a, b) => a.order - b.order);
+  const currentStep = activeStep !== null ? orderedSteps[activeStep] : null;
+
+  // Intercept the Next button press to change screens if moving to step 3
+  const handleNextPress = async () => {
+    if (activeStepName === 'players_tab') {
+      // Automatically push them to the players tab layout before lighting step 3
+      router.push('/(tabs)/players'); 
+    }
+    else if (activeStep === Object.keys(steps).length - 1) {
+      await AsyncStorage.setItem('launched', 'true');
+    }
+
+    nextStep();
+  };
+  
+  if (currentStep === null || currentStep.x  === undefined || currentStep.y === undefined || currentStep.width === undefined || currentStep.height === undefined) {
+    return (
+      <Fragment>
+        <AppStack />
+        {
+          tourTriggered.current && currentStep !== null && (
+            <Canvas style={[StyleSheet.absoluteFill, { zIndex: 20, elevation: 20 }]} pointerEvents="auto">
+                <Rect x={0} y={0} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} color="rgba(0, 0, 0, 0.9)" />
+            </Canvas>
+          )
+        }
+      </Fragment>
+    );
+  }
+
+  const { x, y, width, height, title, description } = currentStep;
+
+  // Determine Tooltip Positioning
+  // If the spotlight target is in the bottom half of the screen, place the tooltip ABOVE it.
+  const isBottomHalf = y > SCREEN_HEIGHT / 2;
+  const tooltipStyle = isBottomHalf 
+    ? { bottom: SCREEN_HEIGHT - y + 16 } // Above target
+    : { top: y + height + 16 };                  // Below target
+
+  return (
+    <Fragment>
+      <AppStack />
+      
+      {/* 1. DARK SKIA BACKGROUND WITH HOLE */}
+      <Canvas style={[StyleSheet.absoluteFill, { zIndex: 20, elevation: 20 }]} pointerEvents="auto">
+        <Mask
+          mode="luminance"
+          mask={
+            <Group>
+              <Rect x={0} y={0} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} color="white" />
+              {/* <Circle cx={x} cy={y} r={r} color="black" /> */}
+              <Rect x={x} y={y} width={width} height={height} color="black" />
+            </Group>
+          }
+        >
+          <Rect x={0} y={0} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} color="rgba(0, 0, 0, 0.9)" />
+        </Mask>
+      </Canvas>
+
+      {/* 2. DYNAMIC FLOATING TOOLTIP */}
+      <View style={[styles.tooltipCard, tooltipStyle, { backgroundColor: card }]}>
+        <ThemedText weight="bold" style={[{ fontSize: 18 }]}>{title}</ThemedText>
+        <ThemedText style={[{ lineHeight: 20 }]}>{description}</ThemedText>
+
+        <View style={[Styles.FLEX_HORIZONTAL_SIDE]}>
+          <View style={[{ marginLeft: 'auto' }]}>
+            <Button
+              type="primary"
+              text={activeStep === orderedSteps.length - 1 ? 'Finish' : 'Next'}
+              onPress={handleNextPress}
+              buttonStyle={[{ paddingVertical: 8, paddingHorizontal: 16 }]}
+              weight="bold"
+            />
+          </View>
+        </View>
+      </View>
+    </Fragment>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  tooltipCard: {
+    position: 'absolute',
+    left: 20,
+    right: 20,
+    borderRadius: 16,
+    padding: 20,
+    elevation: 10,
+    zIndex: 100,
+    rowGap: 16,
+  }
+});

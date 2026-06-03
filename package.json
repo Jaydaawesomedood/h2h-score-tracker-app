@@ -21,6 +21,7 @@
     "@nozbe/watermelondb": "^0.28.0",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/native": "^7.0.14",
+    "@shopify/react-native-skia": "2.4.18",
     "expo": "~55.0.14",
     "expo-build-properties": "~55.0.14",
     "expo-checkbox": "~55.0.4",

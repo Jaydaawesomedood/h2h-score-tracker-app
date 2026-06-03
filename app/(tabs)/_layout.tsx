@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import TabBarIcon from '@/components/navigation/TabBarIcon';
 
@@ -8,6 +8,7 @@ import PrimaryActionTabButton from '@/components/tabs/PrimaryActionTabButton';
 import useThemeColor from '@/hooks/v2/useThemeColor';
 import LogScoreProvider from '@/providers/LogScoreProvider';
 import LogScoreModal from '@/components/v2/modals/LogScoreModal';
+import { OnboardingSpotlightStep } from '@/components/_ui/onboarding/OnboardingSpotlightStep';
 
 export default function TabLayout() {
   const tabBgColor = useThemeColor('card');
@@ -43,6 +44,18 @@ export default function TabLayout() {
           options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({ color }) => (<TabBarIcon name={'house'} color={color} />),
+            tabBarButton: (props) => {
+              const { ref, ...restProps } = props as any;
+
+              return (
+                <OnboardingSpotlightStep 
+                  name="home_tab" 
+                  style={{ flex: 1 }}
+                >
+                  <Pressable ref={ref} {...restProps} style={[{ flex: 1 }, restProps.style]} />
+                </OnboardingSpotlightStep>
+              );
+            }
           }}
         />
         <Tabs.Screen
@@ -69,13 +82,25 @@ export default function TabLayout() {
           options={{
             tabBarLabel: 'Players',
             tabBarIcon: ({ color }) => (<TabBarIcon name={'people-group'} color={color} />),
+            tabBarButton: (props) => {
+              const { ref, ...restProps } = props as any;
+
+              return (
+                <OnboardingSpotlightStep 
+                  name="players_tab"
+                  style={{ flex: 1 }}
+                >
+                  <Pressable ref={ref} {...restProps} style={[{ flex: 1 }, restProps.style]} />
+                </OnboardingSpotlightStep>
+              );
+            }
           }}
         />
         <Tabs.Screen
           name='settings'
           options={{
             tabBarLabel: 'Settings',
-            tabBarIcon: ({ color }) => (<TabBarIcon name={'gear'} color={color} />),
+            tabBarIcon: ({ color }) => (<TabBarIcon name={'gear'} color={color} />)
           }}
         />
       </Tabs>

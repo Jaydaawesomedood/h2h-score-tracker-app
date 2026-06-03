@@ -12,6 +12,7 @@ import PlayerIcon from "@/components/_ui/custom-components/PlayerIcon";
 import AddPlayerModal from "@/components/v2/modals/AddPlayerModal";
 import { Player } from "@/models/v2/data/Player";
 import Badge from "@/components/_ui/badge/Badge";
+import { OnboardingSpotlightStep } from "@/components/_ui/onboarding/OnboardingSpotlightStep";
 
 interface IPlayerCardProps {
   player: Player
@@ -27,16 +28,20 @@ export default function Players() {
     <ThemedView style={[Styles.SCREEN_BODY]}>
       <View style={[Styles.FLEX_HORIZONTAL_SIDE]}>
         <ThemedText weight="bold" style={{ fontSize: 36, lineHeight: 48 }}>Players</ThemedText>
-        <Button
-          type="secondary"
-          text="Add"
-          onPress={() => setIsAddPlayerModalVisible(true)}
-          icon="plus"
-          iconPlacement="left"
-          textStyle={{ color: primary, fontSize: 18 }}
-          buttonStyle={{ columnGap: 8 }}
-          weight="bold"
-        />
+        <OnboardingSpotlightStep
+          name="add_player_button"
+        >
+          <Button
+            type="secondary"
+            text="Add"
+            onPress={() => setIsAddPlayerModalVisible(true)}
+            icon="plus"
+            iconPlacement="left"
+            textStyle={{ color: primary, fontSize: 18 }}
+            buttonStyle={{ columnGap: 8 }}
+            weight="bold"
+          />
+        </OnboardingSpotlightStep>
       </View>
       {
         players.length > 0 ? (
@@ -49,13 +54,13 @@ export default function Players() {
             />
           </View>
         )
-        : (
-          <View style={[Styles.FLEX_HORIZONTAL_CENTER, { flex: 1 }]}>
-            <ThemedText weight="light" style={{ fontSize: 18 }}>No data available</ThemedText>
-          </View>
-        )
+          : (
+            <View style={[Styles.FLEX_HORIZONTAL_CENTER, { flex: 1 }]}>
+              <ThemedText weight="light" style={{ fontSize: 18 }}>No data available</ThemedText>
+            </View>
+          )
       }
-      
+
       {/* Add Player Modal */}
       <AddPlayerModal
         isVisible={isAddPlayerModalVisible}
@@ -85,7 +90,7 @@ function PlayerCard(props: IPlayerCardProps) {
       <View style={[Styles.FLEX_COLUMN, { flexGrow: 1, flexShrink: 1, minWidth: 0, paddingHorizontal: 16 }]}>
         <View style={[Styles.FLEX_HORIZONTAL_CENTER, { justifyContent: 'flex-start', columnGap: 8, alignItems: 'center' }]}>
           <ThemedText weight="bold" style={{ fontSize: 24 }}>
-            { props.player.firstName.concat(' ', props.player.lastName) }
+            {props.player.firstName.concat(' ', props.player.lastName)}
           </ThemedText>
           {
             props.player.isMe && (
