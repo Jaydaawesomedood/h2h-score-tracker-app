@@ -1,8 +1,20 @@
 const IS_DEV = process.env.APP_VARIANT === "development";
 const IS_PREVIEW = process.env.APP_VARIANT === "preview";
 
+function getAppName() {
+  if (IS_DEV) return "Head2Head - Development";
+  if (IS_PREVIEW) return "Head2Head - Preview";
+  return "Head2Head";
+}
+
+function getPackageName() {
+  if (IS_DEV) return "com.jasonchoo.my.h2h.dev";
+  if (IS_PREVIEW) return "com.jasonchoo.my.h2h.preview";
+  return "com.jasonchoo.my.h2h";
+}
+
 export default {
-  name: IS_DEV ? "Head2Head - Development" : IS_PREVIEW ? "Head2Head - Preview" : "Head2Head",
+  name: getAppName(),
   slug: "h2h",
   version: "1.0.0",
   platforms: [
@@ -19,7 +31,7 @@ export default {
     backgroundColor: "#3A3B40"
   },
   ios: {
-    bundleIdentifier: IS_DEV ? "com.jasonchoo.my.h2h.dev" : IS_PREVIEW ? "com.jasonchoo.my.h2h.preview" : "com.jasonchoo.my.h2h",
+    bundleIdentifier: getPackageName(),
     supportsTablet: true
   },
   android: {
@@ -27,7 +39,7 @@ export default {
       foregroundImage: "./assets/images/logo/h2h-logo-android-adaptive.png",
       backgroundColor: "#3A3B40"
     },
-    package: IS_DEV ? "com.jasonchoo.my.h2h.dev" : IS_PREVIEW ? "com.jasonchoo.my.h2h.preview" : "com.jasonchoo.my.h2h",
+    package: getPackageName(),
     softwareKeyboardLayoutMode: "pan"
   },
   androidStatusBar: {
