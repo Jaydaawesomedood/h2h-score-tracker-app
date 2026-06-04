@@ -8,9 +8,9 @@ function getAppName() {
 }
 
 function getPackageName() {
-  if (IS_DEV) return "com.jasonchoo.my.h2h.dev";
-  if (IS_PREVIEW) return "com.jasonchoo.my.h2h.preview";
-  return "com.jasonchoo.my.h2h";
+  if (IS_DEV) return "com.pyroappstudio.my.h2h.dev";
+  if (IS_PREVIEW) return "com.pyroappstudio.my.h2h.preview";
+  return "com.pyroappstudio.my.h2h";
 }
 
 export default {
