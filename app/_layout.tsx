@@ -15,6 +15,26 @@ import { Styles } from '@/constants/v2/Styles';
 import useThemeColor from '@/hooks/v2/useThemeColor';
 import ThemedText from '@/components/_ui/ThemedText';
 import Button from '@/components/_ui/button/Button';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://3384bbf63859cb4de9b305440ed7a0bc@o4511518901272576.ingest.us.sentry.io/4511518917066752',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 const screenOptions = { headerShown: false };
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('screen');
@@ -22,7 +42,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('screen');
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+export default Sentry.wrap(function RootLayout() {
   const initPlayerListener = usePlayersStore(state => state.initPlayerListener);
   const initMatchListener = useMatchesStore(state => state.initMatchListener);
   const terminatePlayerListener = usePlayersStore(state => state.terminatePlayerListener);
@@ -91,7 +111,7 @@ export default function RootLayout() {
       </ThemeProvider>
     </View>
   );
-}
+});
 
 function AppStack() {
   return (

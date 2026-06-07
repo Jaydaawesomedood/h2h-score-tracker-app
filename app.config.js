@@ -50,6 +50,14 @@ export default {
   },
   plugins: [
     [
+      "@sentry/react-native/expo",
+      {
+        "url": "https://sentry.io/",
+        "project": "head2head",
+        "organization": "jason-choo"
+      }
+    ],
+    [
       "expo-build-properties",
       {
         "android": {
