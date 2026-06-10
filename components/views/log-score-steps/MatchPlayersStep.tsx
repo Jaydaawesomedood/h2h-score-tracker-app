@@ -150,8 +150,10 @@ export default function MatchPlayersStep() {
   useEffect(() => {
     if (current !== 1) return;
     const expectedLength = type === 'doubles' ? 2 : 1;
-    checkIsNextDisabled({ sideA, sideB }, () => sideA.length === expectedLength && sideB.length === expectedLength);
-  }, [sideA, sideB]);
+    checkIsNextDisabled({ sideA, sideB }, () => (
+      sideA.length === expectedLength && sideB.length === expectedLength
+    ));
+  }, [current, sideA, sideB]);
 
   return (
     <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>

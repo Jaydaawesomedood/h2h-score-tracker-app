@@ -57,7 +57,7 @@ export default function MatchScoreStep() {
           Array.from(set).every((score) => score !== undefined && score.toString().trim()
         )))
     });
-  }, [sets]);
+  }, [current, sets]);
 
   return (
     <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>

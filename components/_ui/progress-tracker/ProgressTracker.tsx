@@ -45,11 +45,6 @@ export default function ProgressTracker(props: IProgressTrackerProps) {
     setTotalSteps(props.screens.length);
   }, []);
 
-  useEffect(() => {
-    if (!props.validationMap || !props.validationMap[current]) return;
-    checkIsNextDisabled(props.validationMap[current]);
-  }, [current]);
-
   return (
     <View style={[Styles.FLEX_COLUMN, { flex: 1 }]}>
       <View style={[Styles.FLEX_HORIZONTAL_CENTER, styles.section]}>

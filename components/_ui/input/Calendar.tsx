@@ -5,6 +5,7 @@ import { Calendar as RNCalendar } from "react-native-calendars";
 import { DateData, Direction } from "react-native-calendars/src/types";
 import DateHelper from "@/utils/v2/date-helper.util";
 import { View } from "react-native";
+import moment from "moment";
 
 interface ICalendarProps {
   date: string,
@@ -16,6 +17,7 @@ export default function Calendar(props: ICalendarProps) {
   const muted = useThemeColor('muted');
   const primary = useThemeColor('primary');
   const text = useThemeColor('text');
+  const textDisabled = useThemeColor('textDisabled');
   
   const selectedDate = useMemo(() => (
     DateHelper.toDateWithFormat(props.date, "DD/MM/YYYY", "YYYY-MM-DD")
@@ -38,6 +40,7 @@ export default function Calendar(props: ICalendarProps) {
     textMonthFontFamily: 'LeagueSpartanRegular',
     textDayHeaderFontFamily: 'LeagueSpartanRegular',
     todayButtonFontFamily: 'LeagueSpartanRegular',
+    textDisabledColor: textDisabled,
     'stylesheet.calendar.main': {
       monthView: {
         backgroundColor: 'transparent',
@@ -70,6 +73,8 @@ export default function Calendar(props: ICalendarProps) {
           },
         } : undefined}
         theme={calendarTheme}
+        maxDate={moment().format("YYYY-MM-DD")}
+        disableAllTouchEventsForDisabledDays
       />
     </View>
   );

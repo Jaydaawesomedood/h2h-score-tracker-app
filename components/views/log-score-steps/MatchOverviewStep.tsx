@@ -41,7 +41,7 @@ export default function MatchOverviewStep(props: IMatchOverviewProps) {
   useEffect(() => {
     if (current !== 0) return;
     checkIsNextDisabled({ date, type });
-  }, [date, type]);
+  }, [current, date, type]);
 
   return (
     <View style={[Styles.FLEX_COLUMN, { rowGap: 16, height: '100%' }]}>

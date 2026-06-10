@@ -23,7 +23,7 @@ export const THEMES: { light: Theme, dark: Theme } = {
     background: "#0b0b0b",
     card: "#212426",
     text: "#ffffff",
-    textDisabled: "#bbbbbb",
+    textDisabled: "#555555",
     border: '#303032',
     muted: '#8e8e8e',
     shade: "#666666",

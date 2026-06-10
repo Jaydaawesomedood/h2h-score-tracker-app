@@ -20,7 +20,7 @@ export default function PrimaryActionTabButton({ onPress} : IPrimaryActionTabBut
 const styles = StyleSheet.create({
 	button: {
 		position: 'absolute',
-		top: -30,
+		top: -40,
 		left: '50%',
 		transform: [{ translateX: -40 }],
 		borderRadius: 24,
